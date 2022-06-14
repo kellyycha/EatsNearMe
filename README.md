@@ -70,11 +70,8 @@ This app will help you decide on the best places to eat, to make the most out of
   * Click on restaurant card
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-![IMG-8943](https://user-images.githubusercontent.com/65841983/173663414-cd67f451-f12e-41e0-98f0-4d5f3ca9667f.jpg)
-![IMG-8944](https://user-images.githubusercontent.com/65841983/173663425-19b6364c-b975-4ad1-82a1-1b0b24282be2.jpg)
-
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+<img src="https://user-images.githubusercontent.com/65841983/173663414-cd67f451-f12e-41e0-98f0-4d5f3ca9667f.jpg" width=600>
+<img src="https://user-images.githubusercontent.com/65841983/173663425-19b6364c-b975-4ad1-82a1-1b0b24282be2.jpg" width=600>
 
 ### [BONUS] Digital Wireframes & Mockups
 
