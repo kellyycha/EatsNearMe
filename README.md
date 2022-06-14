@@ -30,22 +30,21 @@ This app will help you decide on the best places to eat, to make the most out of
 (more focused on spontaneous)
 * Users can log in
 * Set location and radius
-* Say yes or no for each restaurant
-* Pictures and info for each restaurant
-* Put info and links to yelp and instagram for each restaurant
+* Tinder-style swiping animation
+  * Swipe yes or no for each restaurant
+* Pictures, info, and links in detail view of restaurants
 * All the yes's go into folder according to location
 * Categorize by types of food 
-* Tinder-style swiping animation
 * Able to plan out a path to your destination to only show places along the way
-* After eating there, mark if you would/wouldn't go again to either save into a new folder or delete from the current folder
-* Map of all locations
-* Able to color code map pinpoints
-* Able to filter map by category
+* After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
 
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
-* Able to choose which folder to go to and name it.
-* sharing with favorite restaurants with friends
+* Map of all locations
+* Able to color code map pinpoints
+* Able to filter map by category
+* Able to choose which folder to go to and name it
+* Follow friends' accounts to see their favorite restaurants
 
 ### 2. Screen Archetypes
 
