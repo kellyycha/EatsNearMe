@@ -27,23 +27,24 @@ This app will help you decide on the best places to eat, to make the most out of
 ### 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
-
+(more focused on spontaneous)
 * Users can log in
 * Set location and radius
 * Say yes or no for each restaurant
 * Pictures and info for each restaurant
-* Put links to yelp and instagram for each restaurant
+* Put info and links to yelp and instagram for each restaurant
 * All the yes's go into folder according to location
 * Categorize by types of food 
 * Tinder-style swiping animation
-* Able to map out a path to your destination to only show places along the way
-* more spontaneous
+* Able to plan out a path to your destination to only show places along the way
 * After eating there, mark if you would/wouldn't go again to either save into a new folder or delete from the current folder
+* Map of all locations
+* Able to color code map pinpoints
+* Able to filter map by category
 
 **Optional Nice-to-have Stories**
-* Able to choose which folder to go to and name it
-* more planning
-* Leave a rating/ review that will show up on yelp/ google?
+(more focused on planning/sharing)
+* Able to choose which folder to go to and name it.
 * sharing with favorite restaurants with friends
 
 ### 2. Screen Archetypes
@@ -52,9 +53,18 @@ This app will help you decide on the best places to eat, to make the most out of
    * Users can log in
 * Restaurants Screen
    * Card view of restaurants to swipe through
+   * Can set radius, location, type of food
+* Restaurants Detail view
+   * All info on resaurant
+* Filters
+   * Categorize searches
 * Location Folders
    * Folders of restaurants
-
+* Location Folder contents
+   * All restaurants per folder
+* Map
+  * Saved places on a map
+* Profile/Settings
 
 ### 3. Navigation
 
@@ -62,12 +72,17 @@ This app will help you decide on the best places to eat, to make the most out of
 
 * Restaurants
 * Folders
+* Map
+* Profile/Settings
 
 **Flow Navigation** (Screen to Screen)
 
 * Log in screen
 * Details screen
   * Click on restaurant card
+* Filters screen
+* Location folder contents
+* Map color coordination button
 
 ## Wireframes
 <img src="https://user-images.githubusercontent.com/65841983/173663414-cd67f451-f12e-41e0-98f0-4d5f3ca9667f.jpg" width=600>
