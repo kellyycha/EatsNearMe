@@ -42,6 +42,7 @@ This app will help you decide on the best places to eat, to make the most out of
 * After eating there, mark if you would/wouldn't go again to either save into a new folder or delete from the current folder
 * Put links to yelp and instagram for each restaurant
 * Leave a rating/ review that will show up on yelp/ google?
+* sharing with favorite restaurants with friends.
 
 ### 2. Screen Archetypes
 
