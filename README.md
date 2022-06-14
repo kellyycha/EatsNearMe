@@ -63,11 +63,8 @@ This app will help you decide on the best places to eat, to make the most out of
 **Flow Navigation** (Screen to Screen)
 
 * Log in screen
-   * [list screen navigation here]
-   * ...
-* [list second screen here]
-   * [list screen navigation here]
-   * ...
+* Details screen
+  * Click on restaurant card
 
 ## Wireframes
 [Add picture of your hand sketched wireframes in this section]
