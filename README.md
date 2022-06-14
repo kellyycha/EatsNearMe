@@ -33,12 +33,11 @@ This app will help you decide on the best places to eat, to make the most out of
 * Say yes or no for each restaurant
 * Pictures and info for each restaurant
 * All the yes's go into folder according to location
-
-**Optional Nice-to-have Stories**
-
 * Categorize by types of food 
 * Tinder-style swiping animation
 * Able to map out a path to your destination to only show places along the way
+
+**Optional Nice-to-have Stories**
 * Able to choose which folder to go to and name it
 * After eating there, mark if you would/wouldn't go again to either save into a new folder or delete from the current folder
 * Put links to yelp and instagram for each restaurant
