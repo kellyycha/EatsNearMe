@@ -91,9 +91,31 @@ This app will help you decide on the best places to eat, to make the most out of
 <img width="607" alt="Screen Shot 2022-06-16 at 10 34 45 AM" src="https://user-images.githubusercontent.com/65841983/174132083-3babfa7a-1436-4cd0-9b51-f9f03c320be2.png">
 
 ## Schema 
-[This section will be completed in Unit 9]
+
 ### Models
-[Add table of models]
+
+Restaurant Details
+| Property         | Type     | Description                  |
+| ---------------- | -------- | ---------------------------- |
+| restaurantId     | String   | Unique ID for restaurant     |
+| restaurantName   | String   | Name of Restaurant           |
+| rating           | Number   | Yelp rating of restaurant    |
+| priceRange       | String   | Dollar sign range            |
+| category         | String   | Type of food                 |
+| restaurantTimes  | String   | Times reataurant is open     |
+| menu             | File     | Restaurant menu              |
+| image            | File     | Pictures of food             |
+| reviews          | String   | Reviews of restaurant        |
+| restaurantAddress| String   | Address of Restaurant        |
+| phoneNumber      | Number   | Phone number of restaurant   |
+| website          | String   | Website of restaurant        |
+
+User Details
+| Property         | Type     | Description                  |
+| ---------------- | -------- | ---------------------------- |
+| user             | Pointer  | User of the app              |
+| location         | String   | User location or address     |
+
 ### Networking
 - [Add list of network requests by screen ]
 - [Create basic snippets for each Parse network request]
