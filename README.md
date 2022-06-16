@@ -84,15 +84,11 @@ This app will help you decide on the best places to eat, to make the most out of
 * Map color coordination button
 
 ## Wireframes
-<img width="495" alt="Screen Shot 2022-06-16 at 10 34 02 AM" src="https://user-images.githubusercontent.com/65841983/174132039-3eb18aa3-12b3-4eff-99d2-79a5cd4399f2.png" width = 500>
-<img width="495" alt="Screen Shot 2022-06-16 at 10 34 21 AM" src="https://user-images.githubusercontent.com/65841983/174132049-b46f20e0-289e-4380-a067-21f8896cbf79.png">
+<img width="495" alt="Screen Shot 2022-06-16 at 10 34 02 AM" src="https://user-images.githubusercontent.com/65841983/174132039-3eb18aa3-12b3-4eff-99d2-79a5cd4399f2.png"> <img width="495" alt="Screen Shot 2022-06-16 at 10 34 21 AM" src="https://user-images.githubusercontent.com/65841983/174132049-b46f20e0-289e-4380-a067-21f8896cbf79.png">
 <img width="495" alt="Screen Shot 2022-06-16 at 10 34 29 AM" src="https://user-images.githubusercontent.com/65841983/174132061-d2e6201d-0c56-434e-b620-09b060e8481d.png">
 <img width="495" alt="Screen Shot 2022-06-16 at 10 34 34 AM" src="https://user-images.githubusercontent.com/65841983/174132072-dc2ae943-5503-4f17-ae54-c3293a079773.png">
 <img width="495" alt="Screen Shot 2022-06-16 at 10 34 38 AM" src="https://user-images.githubusercontent.com/65841983/174132079-6b12d974-c208-42e6-bd20-7b4d7ec5339f.png">
 <img width="607" alt="Screen Shot 2022-06-16 at 10 34 45 AM" src="https://user-images.githubusercontent.com/65841983/174132083-3babfa7a-1436-4cd0-9b51-f9f03c320be2.png">
-
-<img src="https://user-images.githubusercontent.com/65841983/173663414-cd67f451-f12e-41e0-98f0-4d5f3ca9667f.jpg" width=600>
-<img src="https://user-images.githubusercontent.com/65841983/173663425-19b6364c-b975-4ad1-82a1-1b0b24282be2.jpg" width=600>
 
 ### [BONUS] Digital Wireframes & Mockups
 
