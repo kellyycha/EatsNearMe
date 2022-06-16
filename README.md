@@ -90,10 +90,6 @@ This app will help you decide on the best places to eat, to make the most out of
 <img width="495" alt="Screen Shot 2022-06-16 at 10 34 38 AM" src="https://user-images.githubusercontent.com/65841983/174132079-6b12d974-c208-42e6-bd20-7b4d7ec5339f.png">
 <img width="607" alt="Screen Shot 2022-06-16 at 10 34 45 AM" src="https://user-images.githubusercontent.com/65841983/174132083-3babfa7a-1436-4cd0-9b51-f9f03c320be2.png">
 
-### [BONUS] Digital Wireframes & Mockups
-
-### [BONUS] Interactive Prototype
-
 ## Schema 
 [This section will be completed in Unit 9]
 ### Models
