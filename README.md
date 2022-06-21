@@ -37,6 +37,7 @@ This app will help you decide on the best places to eat, to make the most out of
 * Categorize by types of food 
 * Able to plan out a path to your destination to only show places along the way
 * After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
+* Use data from what the user liked to recommend a restaurant near you using push notifications
 
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
