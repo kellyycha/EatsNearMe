@@ -41,6 +41,7 @@ This app will help you decide on the best places to eat, to make the most out of
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
 * Map of all locations
+* Show directions to the restaurant
 * Able to color code map pinpoints
 * Able to filter map by category
 * Able to choose which folder to go to and name it
