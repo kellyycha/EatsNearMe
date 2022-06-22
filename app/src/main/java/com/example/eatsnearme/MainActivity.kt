@@ -11,7 +11,6 @@ import com.example.eatsnearme.login.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.saves.SavesFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.parse.ParseUser
 import kotlinx.android.synthetic.main.activity_main.*
 

@@ -30,14 +30,14 @@ class LoginActivity : AppCompatActivity() {
         btnLogin.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick login button")
             val username = etUsername.text.toString()
-            val password = etPassword!!.text.toString()
+            val password = etPassword.text.toString()
             loginUser(username, password)
         })
 
         btnSignUp.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick sign up button")
-            val username = etUsername!!.text.toString()
-            val password = etPassword!!.text.toString()
+            val username = etUsername.text.toString()
+            val password = etPassword.text.toString()
             signUpUser(username, password)
         })
     }
