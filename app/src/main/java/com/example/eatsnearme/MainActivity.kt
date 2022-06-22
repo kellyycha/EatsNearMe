@@ -13,10 +13,11 @@ import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.saves.SavesFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.parse.ParseUser
+import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
-    private lateinit var bottomNavView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +33,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.btnLogout) {
-            // compose icon has been selected
-            // navigate to the compose activity
             logoutUser()
             return true
         }
@@ -43,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private fun logoutUser() {
         Log.i(TAG, "attempting to log out")
         ParseUser.logOutInBackground()
-        val currentUser = ParseUser.getCurrentUser() // this will now be null
+        val currentUser = ParseUser.getCurrentUser()
         goLoginActivity()
     }
 
@@ -53,20 +52,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bottomNavigation() {
-        bottomNavView = findViewById(R.id.bottomNavigation)
-        bottomNavView.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            val fragment: Fragment
-            when (item.itemId) {
-                R.id.action_restaurants -> fragment = RestaurantsFragment()
-                R.id.action_saves -> fragment = SavesFragment()
-                R.id.action_profile -> fragment = ProfileFragment()
-                else -> fragment = ProfileFragment()
+        bottomNavigation.setOnNavigationItemSelectedListener {
+            val fragment: Fragment = when (it.itemId) {
+                R.id.action_restaurants -> RestaurantsFragment()
+                R.id.action_saves -> SavesFragment()
+                R.id.action_profile -> ProfileFragment()
+                else -> ProfileFragment()
             }
             fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit()
             true
-        })
+        }
         // Set default selection
-        bottomNavView.setSelectedItemId(R.id.action_restaurants)
+        bottomNavigation.selectedItemId = R.id.action_restaurants
     }
 
     companion object {

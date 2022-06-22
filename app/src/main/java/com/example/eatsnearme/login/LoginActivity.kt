@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eatsnearme.R
@@ -14,14 +12,10 @@ import com.parse.LogInCallback
 import com.parse.ParseException
 import com.parse.ParseUser
 import com.parse.SignUpCallback
+import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
     val TAG = "LoginActivity"
-
-    private var etUsername: EditText? = null
-    private var etPassword: EditText? = null
-    private lateinit var btnLogin: Button
-    private lateinit var btnSignUp: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,22 +24,16 @@ class LoginActivity : AppCompatActivity() {
         if (ParseUser.getCurrentUser() != null) {
             goMainActivity()
         }
-
         uiComponents()
     }
     private fun uiComponents() {
-        etUsername = findViewById(R.id.etUsername)
-        etPassword = findViewById(R.id.etPassword)
-
-        btnLogin = findViewById(R.id.btnLogin)
         btnLogin.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick login button")
-            val username = etUsername!!.text.toString()
+            val username = etUsername.text.toString()
             val password = etPassword!!.text.toString()
             loginUser(username, password)
         })
 
-        btnSignUp = findViewById(R.id.btnSignUp)
         btnSignUp.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick sign up button")
             val username = etUsername!!.text.toString()
