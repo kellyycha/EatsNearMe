@@ -1,33 +1,28 @@
 package com.example.eatsnearme.restaurants
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.eatsnearme.MainActivity
 import com.example.eatsnearme.R
+import com.example.eatsnearme.yelp.YelpRestaurant
+import com.example.eatsnearme.yelp.YelpSearchResult
+import com.example.eatsnearme.yelp.YelpService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RestaurantsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+private const val BASE_URL = "https://api.yelp.com/v3/"
+private const val API_KEY = "s_Q0zANLiLbbp8ga5gCjJ7K-MiwmTnqTIUzX9XFnBvYvFE7iN7nMDUf7e5a6JnC9CVLPEBTfyE1zVwV-Y3zfl9IadSiIvUFyhXHnILfz7_Gt6CjscNONxY6jAwOxYnYx"
 class RestaurantsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -38,23 +33,26 @@ class RestaurantsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_restaurants, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RestaurantsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RestaurantsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        val retrofit = Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).build()
+        val yelpService = retrofit.create(YelpService::class.java)
+        yelpService.searchRestaurants("Bearer $API_KEY", "Avocado Toast", "New York").enqueue(object :
+            Callback<YelpSearchResult> {
+
+            override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>){
+                Log.i(MainActivity.TAG, "onResponse $response")
             }
+
+            override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
+                Log.i(MainActivity.TAG, "onFailure $t")
+            }
+
+
+
+        })
+
+
+
     }
 }

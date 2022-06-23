@@ -1,4 +1,4 @@
-package com.example.eatsnearme.profile
+package com.example.eatsnearme.saved
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.eatsnearme.R
 
-
-class ProfileFragment : Fragment() {
-
+class SavedFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,7 +18,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        return inflater.inflate(R.layout.fragment_saved, container, false)
     }
 
 }

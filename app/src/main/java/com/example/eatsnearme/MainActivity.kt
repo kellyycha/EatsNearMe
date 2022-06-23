@@ -10,10 +10,11 @@ import androidx.fragment.app.Fragment
 import com.example.eatsnearme.login.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
 import com.example.eatsnearme.restaurants.RestaurantsFragment
-import com.example.eatsnearme.saves.SavesFragment
+import com.example.eatsnearme.saved.SavedFragment
 import com.parse.ParseUser
 import kotlinx.android.synthetic.main.activity_main.*
 
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
@@ -21,11 +22,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         bottomNavigation()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu: this adds items to the action bar if it is present
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
@@ -54,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener {
             val fragment: Fragment = when (it.itemId) {
                 R.id.action_restaurants -> RestaurantsFragment()
-                R.id.action_saves -> SavesFragment()
+                R.id.action_saved -> SavedFragment()
                 R.id.action_profile -> ProfileFragment()
                 else -> ProfileFragment()
             }

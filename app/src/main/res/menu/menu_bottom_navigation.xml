@@ -7,7 +7,7 @@
         android:title="Reataurants"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_saves"
+        android:id="@+id/action_saved"
         android:enabled="true"
         android:title="Saved"
         app:showAsAction="ifRoom" />
