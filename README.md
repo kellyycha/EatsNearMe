@@ -47,6 +47,7 @@ This app will help you decide on the best places to eat, to make the most out of
 * Able to filter map by category
 * Able to choose which folder to go to and name it
 * Follow friends' accounts to see their favorite restaurants
+* implicit intent to open map app to give directions
 
 ### 2. Screen Archetypes
 
