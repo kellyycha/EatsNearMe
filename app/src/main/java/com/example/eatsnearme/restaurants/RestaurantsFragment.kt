@@ -14,6 +14,7 @@ import com.example.eatsnearme.yelp.YelpService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlinx.android.synthetic.main.fragment_restaurants.*
 
 class RestaurantsFragment : Fragment() {
 
@@ -21,26 +22,25 @@ class RestaurantsFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_restaurants, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         fetchRestaurants()
+
     }
 
     private fun fetchRestaurants() {
         val yelpService = YelpService.create()
-        yelpService.searchRestaurants("Bearer $API_KEY", "Avocado Toast", "New York")
+        yelpService.searchRestaurants("Bearer $API_KEY", "Ramen", "San Fransisco")
             .enqueue(object : Callback<YelpSearchResult> {
 
             override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>){
                 Log.i(MainActivity.TAG, "onResponse $response")
+
             }
 
             override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {
