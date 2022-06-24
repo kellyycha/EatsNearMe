@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/layout/fragment_saved.xml" value="0.5760416666666667" />
         <entry key="app/src/main/res/layout/fragment_saves.xml" value="0.5619791666666667" />
         <entry key="app/src/main/res/layout/item_restaurants.xml" value="0.5760416666666667" />
+        <entry key="app/src/main/res/layout/item_saved.xml" value="0.575" />
         <entry key="app/src/main/res/menu/menu_bottom_navigation.xml" value="0.48072916666666665" />
         <entry key="app/src/main/res/menu/menu_main.xml" value="0.48072916666666665" />
         <entry key="app/src/main/res/xml/fileprovider.xml" value="0.32760416666666664" />

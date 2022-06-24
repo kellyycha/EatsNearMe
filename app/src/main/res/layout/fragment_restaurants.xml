@@ -16,7 +16,7 @@
         app:cardElevation="5dp"
         app:cardCornerRadius="15dp">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="450dp"
             android:orientation="vertical">
@@ -24,12 +24,24 @@
             <ImageView
                 android:id="@+id/ivYelpPic"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="400dp"
                 android:layout_weight="1"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivYelpPic"
+                android:layout_alignLeft="@id/ivYelpPic"
+                android:layout_alignRight="@id/ivYelpPic"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
+                tools:text="Restaurant Name" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,7 +50,7 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/ivNo"
+                android:id="@+id/btnNo"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
@@ -46,7 +58,7 @@
                 android:text="No" />
 
             <Button
-                android:id="@+id/ivYes"
+                android:id="@+id/btnYes"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
