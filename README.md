@@ -52,6 +52,7 @@ This app will help you decide on the best places to eat, to make the most out of
 1. Set a destination from your current location to find restaurants along the way
    * Use Google Maps API
    * Idea 1: Find a path to get to your destination and set multiple small radii along those lines and show restaurants within those radii.
+   * Since there are multiple ways to get from one place to another, only following one path would be restricting. There might be a restaurant a few streets over that won't even be too out of the way, but not within the direct path. Therefore, one solution to this can be to see if I can find all of the alternate routes and combine those radii to find retaurants within all of them. 
    * Idea 2: Determine a straight line that goes from your location to the destination and set an oval boundary between the two to find restaurants within there, so that they will still be on the way, but not on the exact/ shortest path.
    * Maybe find a way to implement both ideas so the user can toggle "fastest route" if they're in more of a rush and would rather not deviate farther than they need to from the single path.
 2. Push notifications for recommended restaurants near you based on user saved restaruant data
