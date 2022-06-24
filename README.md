@@ -49,6 +49,17 @@ This app will help you decide on the best places to eat, to make the most out of
 * Follow friends' accounts to see their favorite restaurants
 * implicit intent to open map app to give directions
 
+**Complex Features + ideas to execute them**
+1. Set a destination from your current location to find restaurants along the way
+   * Use Google Maps API
+   * Idea 1: Find a path to get to your destination and set multiple small radii along those lines and show restaurants within those radii.
+   * Idea 2: Determine a straight line that goes from your location to the destination and set an oval boundary between the two to find restaurants within there, so that they will still be on the way, but not on the exact/ shortest path.
+   * Maybe find a way to implement both ideas so the user can toggle "fastest route" if they're in more of a rush and would rather not deviate farther than they need to from the single path.
+2. Push notifications for recommended restaurants near you based on user saved restaruant data
+   * See the user's saved restaurants, skipped restaurants, and favorited restaurants (ones they've tried and marked that they like) and create a weighting system of the types of restaurants that the user prefers.
+   * This will be based on types of cusine, reviews, and price range.
+   * Find restaurants, whether that be ones they do not know about or ones that are already on their list but have not tried yet, that it feels the user would especially like and recommend them a restaurant with a push notification if they are ever close to the area.
+   
 ### 2. Screen Archetypes
 
 * Log In
