@@ -14,13 +14,12 @@ Original App Design Project - README
 This app will help you decide on the best places to eat, to make the most out of your spontaneous trips. If you have downtime in a random city and want to visit a good restaurant that is also nearby, it can be hard to research and choose the best one right then and there. So, using a dating app style for restaurants, you can quickly see some pictures and basic information of each restaurant to determine if it will be the right fit for you. If you want to find places to visit in advance, you can also set your location to other areas to see whats around there.
 
 ### App Evaluation
-[Evaluation of your app across the following attributes]
 - **Category:** Food, Planning
-- **Mobile:**
-- **Story:**
-- **Market:**
-- **Habit:**
-- **Scope:**
+- **Mobile:** This app would be primarily developed for mobile due to its spontaneous nature. But would perhaps be just as viable on a computer, especially if I add more features regarding planning. Functionality wouldn't be limited to mobile devices, however mobile version could potentially have more features, such as the push notifications.
+- **Story:** Retrieves data for restaurants around the area for the user to decide where to eat.
+- **Market:** Any individual could choose to use this app.
+- **Habit:** This app could be used as often or unoften as the user wanted depending on if they are visiting new cities or want to go out with friends and find places to eat.
+- **Scope:** First we would start with spontaneous decisions and recommendations, then perhaps this could evolve into a foodie tour planning app with a map of saved locations, reminders to make reservations, and saving into custom folders. In adition, this could also become a restaurant recommendation sharing app amongst friends and popular food bloggers.
 
 ## Product Spec
 
@@ -131,6 +130,12 @@ User Details
 | location         | String   | User location or address     |
 
 ### Networking
-- [Add list of network requests by screen ]
-- [Create basic snippets for each Parse network request]
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
+List of network requests by screen
+* Restaurants Screen
+   * (Read/GET) Get restaurant data from Yelp to display
+   * (Create/POST) Save the restaurant
+   * (Delete) Reject the restaurant
+* Saved Restaurants Screen
+   * (Read/GET) Query all the restaurants that user has saved
+* Profile Screen
+(Read/GET) Query logged in user object
