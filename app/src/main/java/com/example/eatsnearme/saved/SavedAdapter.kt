@@ -29,6 +29,8 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
         fun bind(saved: SavedRestaurants) {
             itemView.tvSavedName.text = saved.getRestaurantName()
 
+
+
         }
 
     }

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.eatsnearme.login.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
+import com.example.eatsnearme.restaurants.GetRestaurants
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.saved.SavedFragment
 import com.parse.ParseUser
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        GetRestaurants().fetchRestaurants()
         bottomNavigation()
     }
 

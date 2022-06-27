@@ -57,7 +57,7 @@ open class SavedFragment : Fragment() {
 
                 // for debugging purposes let's print every post description to logcat
                 for (restaurant in restaurants) {
-                    Log.i(TAG,"Restaurant: " + restaurant.getRestaurantName().toString() + ", username: " + restaurant.getUser()!!.username)
+                    Log.i(TAG,"Restaurant: " + restaurant.getRestaurantName().toString())
                 }
 
                 // save received posts to list and notify adapter of new data
