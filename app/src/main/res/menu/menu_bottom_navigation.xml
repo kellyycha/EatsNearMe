@@ -4,16 +4,19 @@
     <item
         android:id="@+id/action_restaurants"
         android:enabled="true"
+        android:icon="@drawable/utensils"
         android:title="Reataurants"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_saved"
         android:enabled="true"
+        android:icon="@drawable/save"
         android:title="Saved"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_profile"
         android:enabled="true"
+        android:icon="@drawable/user"
         android:title="Profile"
         app:showAsAction="ifRoom" />
 </menu>

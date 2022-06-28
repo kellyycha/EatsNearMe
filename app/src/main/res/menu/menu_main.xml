@@ -5,10 +5,11 @@
 
     <item
         android:id="@+id/btnLogout"
+        android:layout_marginEnd="100dp"
+        android:icon="@drawable/logout"
         android:title="Log Out"
         android:visible="true"
-        android:layout_marginEnd="100dp"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 
 
 </menu>
