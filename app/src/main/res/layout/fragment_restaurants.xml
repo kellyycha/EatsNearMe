@@ -9,6 +9,62 @@
     tools:context=".restaurants.RestaurantsFragment">
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etSearchFood"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:hint="Search Type of Food"
+            android:textAlignment="viewStart"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="20dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Search"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnSetLocation"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Set Location"
+            android:textSize="12sp" />
+
+        <EditText
+            android:id="@+id/etRadius"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:hint="Radius"
+            android:textAlignment="viewStart"
+            android:textSize="12sp"
+            android:inputType="number"/>
+
+        <Button
+            android:id="@+id/btnGo"
+            android:layout_width="20dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="GO!"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="500dp"
