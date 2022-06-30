@@ -2,23 +2,30 @@ package com.example.eatsnearme.restaurants
 
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.ViewModel
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.yelp.API_KEY
 import com.example.eatsnearme.yelp.YelpRestaurant
+import com.example.eatsnearme.yelp.YelpSearchResult
 import com.example.eatsnearme.yelp.YelpService
 import com.parse.ParseUser
 import com.parse.SaveCallback
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.runBlocking
+import okhttp3.internal.notify
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.lifecycle.ViewModel
-import com.example.eatsnearme.yelp.YelpSearchResult
-import kotlinx.coroutines.flow.*
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 private const val TAG = "GetRestaurants"
 
 class RestaurantsViewModel : ViewModel() {
-
+//    val lock = ReentrantLock()
+//    val condition = lock.newCondition()
+    var loaded = false
     val restaurants = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow(0)
@@ -34,14 +41,16 @@ class RestaurantsViewModel : ViewModel() {
     }
 
     fun resetStateFlow(typeOfFood: String) {
-        fetchRestaurants(typeOfFood)
         _stateFlow.value = 0
+        restaurants.clear()
+        loaded = false
+        fetchRestaurants(typeOfFood)
     }
 
     init {
         // TODO: When I change tabs and go back, init is called again and restaurants automatically clears. how do I prevent this?
         Log.i(TAG, "init")
-        if (restaurants.size == 0){
+        if (restaurants.isEmpty()){
             fetchRestaurants("")
         }
     }
@@ -58,9 +67,26 @@ class RestaurantsViewModel : ViewModel() {
                         Log.w(TAG, "did not receive valid response body from Yelp API")
                         return
                     }
-                    restaurants.clear()
+
+//                    //TODO: check if restaurant already saved
+//                    for (restaurant in body.restaurants){
+//                        Log.i(TAG, "looping through restaurants: $restaurant")
+//                        Log.i(TAG, "saved: ${SavedFragment().getSavedNamesList()}")
+//                        for (saved in SavedFragment().getSavedNamesList()){
+//                            Log.i(TAG, "looping through saved: $saved")
+//                            if (restaurant.name == saved){
+//                                Log.i(TAG, "restaurant already saved")
+//                            }
+//                            else{
+//                                restaurants.add(restaurant)
+//                            }
+//                        }
+//                    }
+                    Log.i(TAG, "Adding restaurants...")
                     restaurants.addAll(body.restaurants)
-                    Log.i(TAG, "restaurants: $restaurants")
+                    loaded = true
+                    Log.i(TAG, "loaded restaurants: $restaurants")
+
                 }
 
                 override fun onFailure(call: Call<YelpSearchResult>, t: Throwable) {

@@ -19,6 +19,7 @@ const val TAG = "SavedFragment"
 private const val QUERY_LIMIT = 20
 
 open class SavedFragment : Fragment() {
+    //val savedNamesList = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,6 @@ open class SavedFragment : Fragment() {
         val adapter = SavedAdapter(requireContext(), allSaved)
         rvSaved.adapter = adapter
         rvSaved.layoutManager = LinearLayoutManager(requireContext())
-
         querySaved(allSaved, adapter)
     }
 
@@ -54,10 +54,9 @@ open class SavedFragment : Fragment() {
                     Log.e(TAG, "Issue with getting saved restaurants", e)
                     return@FindCallback;
                 }
-
-                // for debugging purposes let's print every post description to logcat
                 for (restaurant in restaurants) {
                     Log.i(TAG,"Restaurant: " + restaurant.getRestaurantName().toString())
+                    //savedNamesList.add(restaurant.getRestaurantName().toString())
                 }
 
                 // save received posts to list and notify adapter of new data
@@ -66,5 +65,12 @@ open class SavedFragment : Fragment() {
                 Log.i(TAG, "notified with restaurants: $restaurants")
             })
     }
+
+//    @JvmName("getSavedNamesList1")
+//    fun getSavedNamesList(): ArrayList<String> {
+//        return savedNamesList
+//
+//    }
+
 
 }

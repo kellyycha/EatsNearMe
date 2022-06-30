@@ -25,5 +25,9 @@ class SavedRestaurants : ParseObject() {
     fun setRestaurantName(restaurant: String?) {
         put(KEY_RESTAURANT, restaurant!!)
     }
+
+//    fun getAllSaved(user: ParseUser) : ArrayList<String> {
+//        //TODO: get list of saved restaurants per user here?
+//    }
     
 }
