@@ -16,9 +16,11 @@ import kotlinx.android.synthetic.main.fragment_restaurants.*
 import kotlinx.coroutines.InternalCoroutinesApi
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 private const val TAG = "RestaurantsFragment"
 
@@ -42,7 +44,9 @@ open class RestaurantsFragment : Fragment() {
         collectLatestLifecycleFlow(viewModel.stateFlow) { index ->
             // TODO:
             //  My problem is that this is being called before fetchRestaurants is finished,
-            //  so the list is not populated yet, causing there to be nothing to index
+            //  so the list is not populated yet, causing there to be nothing to index.
+            //  for now, delay is "working" but fix this by checking if restaurants.size > 0
+            delay(1000L)
             show(index)
         }
     }
