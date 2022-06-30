@@ -14,9 +14,8 @@ import com.parse.ParseUser
 import com.parse.SignUpCallback
 import kotlinx.android.synthetic.main.activity_login.*
 
-private const val TAG = "LoginActivity"
-
 class LoginActivity : AppCompatActivity() {
+    private val TAG = "LoginActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

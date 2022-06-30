@@ -7,10 +7,11 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.example.eatsnearme.login.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
 import com.example.eatsnearme.restaurants.RestaurantsFragment
-import com.example.eatsnearme.restaurants.ViewModelRestaurants
+import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.example.eatsnearme.saved.SavedFragment
 import com.parse.ParseUser
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        ViewModelRestaurants().fetchRestaurants("")
         bottomNavigation()
     }
 
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bottomNavigation() {
-        bottomNavigation.setOnNavigationItemSelectedListener {
+        bottomNavigation.setOnItemSelectedListener {
             val fragment: Fragment = when (it.itemId) {
                 R.id.action_restaurants -> RestaurantsFragment()
                 R.id.action_saved -> SavedFragment()
