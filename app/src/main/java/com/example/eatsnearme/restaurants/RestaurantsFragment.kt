@@ -11,16 +11,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.example.eatsnearme.R
 import com.example.eatsnearme.yelp.YelpRestaurant
-import com.parse.ParseUser
 import kotlinx.android.synthetic.main.fragment_restaurants.*
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import okhttp3.internal.wait
-import kotlin.concurrent.withLock
 
 private const val TAG = "RestaurantsFragment"
 
@@ -49,8 +45,7 @@ open class RestaurantsFragment : Fragment() {
                 is RestaurantsViewModel.RestaurantState.Success -> {
                     Log.i(TAG, "Finished Loading, show restaurant")
                     spinner.visibility = View.GONE
-
-                    show()
+                    show(it.restaurant)
                 }
             }
         }
@@ -91,21 +86,12 @@ open class RestaurantsFragment : Fragment() {
         })
     }
 
-    private fun show() {
-        val restaurants = viewModel.getRestaurantList()
-        val index = viewModel.getRestaurantIndex()
-        Log.i(TAG, "Index: $index List: $restaurants")
-        if (index < restaurants.size) {
-            restaurant = viewModel.getRestaurantList()[index]
-            tvName.text = restaurant.name
-            context?.let {
-                Glide.with(it)
-                    .load(restaurant.image_url)
-                    .into(ivYelpPic)
-            }
-        }
-        else{
-            Log.i(TAG, "Can't show")
+    private fun show(restaurant: YelpRestaurant) {
+        tvName.text = restaurant.name
+        context?.let {
+            Glide.with(it)
+                .load(restaurant.image_url)
+                .into(ivYelpPic)
         }
     }
 }
