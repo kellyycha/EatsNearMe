@@ -19,6 +19,8 @@ interface YelpService {
         @Query("term") searchTerm: String,
         @Query("location") location: String) : Call<YelpSearchResult>
 
+    // TODO: add radius field
+
     companion object {
         fun create(): YelpService {
             val retrofit = Retrofit.Builder()

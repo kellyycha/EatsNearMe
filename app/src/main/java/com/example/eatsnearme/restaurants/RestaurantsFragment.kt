@@ -44,11 +44,12 @@ open class RestaurantsFragment : Fragment() {
             when(it){
                 is RestaurantsViewModel.RestaurantState.Loading -> {
                     Log.i(TAG, "Loading")
-                    spinner.visibility = View.VISIBLE;
+                    spinner.visibility = View.VISIBLE
                 }
                 is RestaurantsViewModel.RestaurantState.Success -> {
                     Log.i(TAG, "Finished Loading, show restaurant")
-                    spinner.visibility = View.GONE;
+                    spinner.visibility = View.GONE
+
                     show()
                 }
             }
@@ -56,19 +57,22 @@ open class RestaurantsFragment : Fragment() {
     }
 
     private fun buttons() {
+
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
-            viewModel.resetStateFlow(etSearchFood.text.toString())
+            viewModel.resetStateFlow(etSearchFood.text.toString(), etLocation.text.toString())
         }
 
-        btnSetLocation.setOnClickListener {
+        btnLocation.setOnClickListener {
             Log.i(TAG, "Clicked Set Location")
-            // TODO: set location on google maps
+            // TODO: if empty, use current location
+            viewModel.resetStateFlow(etSearchFood.text.toString(), etLocation.text.toString())
         }
-        btnGo.setOnClickListener {
-            Log.i(TAG, "Clicked Go")
-            // TODO: Set Radius
-        }
+
+//        btnRadius.setOnClickListener {
+//            Log.i(TAG, "Clicked Set Radius")
+//            // TODO: Set Radius
+//        }
 
         btnPrev.setOnClickListener {
             Log.i(TAG, "Clicked Previous")
@@ -78,9 +82,7 @@ open class RestaurantsFragment : Fragment() {
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
             Log.i(TAG, "current restaurant: $restaurant")
-            val currentUser = ParseUser.getCurrentUser()
-            viewModel.saveRestaurant(restaurant.name, currentUser) // save just restaurant or save pic, name, etc. info separately?
-            viewModel.nextRestaurant()
+            viewModel.saveRestaurant(restaurant.name) // save just restaurant or save pic, name, etc. info separately?
         })
 
         btnNo.setOnClickListener(View.OnClickListener {

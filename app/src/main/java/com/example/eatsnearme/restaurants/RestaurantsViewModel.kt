@@ -4,10 +4,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.eatsnearme.SavedRestaurants
-import com.example.eatsnearme.yelp.API_KEY
-import com.example.eatsnearme.yelp.YelpRestaurant
-import com.example.eatsnearme.yelp.YelpSearchResult
-import com.example.eatsnearme.yelp.YelpService
+import com.example.eatsnearme.yelp.*
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,21 +37,24 @@ class RestaurantsViewModel : ViewModel() {
         }
     }
 
-    fun resetStateFlow(typeOfFood: String) {
+    fun resetStateFlow(typeOfFood: String, location: String) {
         index = 0
         restaurants.clear()
         _stateFlow.value = RestaurantState.Loading
-        fetchRestaurants(typeOfFood)
+        fetchRestaurants(typeOfFood, location)
     }
 
     init {
-        fetchRestaurants("")
+        // TODO: use device current location. for now, default to SF
+        fetchRestaurants("", "San Francisco")
     }
 
-    private fun fetchRestaurants(typeOfFood: String) {
+    private fun fetchRestaurants(typeOfFood: String, location: String) {
         Log.i(TAG, "type of food: $typeOfFood")
+        Log.i(TAG, "Location: $location")
+
         val yelpService = YelpService.create()
-        yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, "San Francisco")
+        yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, location)
             .enqueue(object : Callback<YelpSearchResult> {
                 override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                     Log.i(TAG, "onResponse $response")
@@ -81,7 +81,8 @@ class RestaurantsViewModel : ViewModel() {
             })
     }
 
-    fun saveRestaurant(restaurantName: String, currentUser: ParseUser?) {
+    fun saveRestaurant(restaurantName: String) {
+        val currentUser = ParseUser.getCurrentUser()
         val saved = SavedRestaurants()
         saved.setUser(currentUser)
         saved.setRestaurantName(restaurantName)
@@ -97,6 +98,8 @@ class RestaurantsViewModel : ViewModel() {
             }
             Log.i(TAG, "Restaurant save was successful")
         })
+
+        nextRestaurant()
     }
 
     fun getRestaurantList() : MutableList<YelpRestaurant> {
