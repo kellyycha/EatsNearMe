@@ -12,45 +12,35 @@ import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.runBlocking
-import okhttp3.internal.notify
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 private const val TAG = "GetRestaurants"
 
 class RestaurantsViewModel : ViewModel() {
-    var loaded = false
     val restaurants = mutableListOf<YelpRestaurant>()
 
-    private val _stateFlow = MutableStateFlow(0)
-    val stateFlow= _stateFlow
+    private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
+    val stateFlow:StateFlow<RestaurantState> = _stateFlow
+
+    var index = 0
 
     fun nextRestaurant() {
-        if (_stateFlow.value < restaurants.size) {
-            _stateFlow.value += 1
-        }
-        else {
-            Log.i(TAG, "no more restaurants in the list")
-        }
+        index++
+        Log.i(TAG,"index: $index")
+        _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
     }
 
     fun resetStateFlow(typeOfFood: String) {
-        _stateFlow.value = 0
+        index = 0
         restaurants.clear()
-        loaded = false
+        _stateFlow.value = RestaurantState.Loading
         fetchRestaurants(typeOfFood)
     }
 
     init {
-        Log.i(TAG, "init")
-        if (restaurants.isEmpty()){
-            fetchRestaurants("")
-        }
+        fetchRestaurants("")
     }
 
     private fun fetchRestaurants(typeOfFood: String) {
@@ -66,24 +56,13 @@ class RestaurantsViewModel : ViewModel() {
                         return
                     }
 
-//                    //TODO: check if restaurant already saved
-//                    for (restaurant in body.restaurants){
-//                        Log.i(TAG, "looping through restaurants: $restaurant")
-//                        Log.i(TAG, "saved: ${SavedFragment().getSavedNamesList()}")
-//                        for (saved in SavedFragment().getSavedNamesList()){
-//                            Log.i(TAG, "looping through saved: $saved")
-//                            if (restaurant.name == saved){
-//                                Log.i(TAG, "restaurant already saved")
-//                            }
-//                            else{
-//                                restaurants.add(restaurant)
-//                            }
-//                        }
-//                    }
+                    //TODO: check if restaurant already saved
+
                     Log.i(TAG, "Adding restaurants...")
                     restaurants.addAll(body.restaurants)
-                    loaded = true
                     Log.i(TAG, "loaded restaurants: $restaurants")
+
+                    _stateFlow.value = RestaurantState.Success(restaurants[index])
 
                 }
 
@@ -115,4 +94,14 @@ class RestaurantsViewModel : ViewModel() {
     fun getRestaurantList() : MutableList<YelpRestaurant> {
         return restaurants
     }
+
+    fun getRestaurantIndex() : Int {
+        return index
+    }
+
+    sealed class RestaurantState {
+        object Loading : RestaurantState()
+        class Success(var restaurant : YelpRestaurant) : RestaurantState()
+    }
+
 }

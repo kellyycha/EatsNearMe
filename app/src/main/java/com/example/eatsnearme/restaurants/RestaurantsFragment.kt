@@ -41,27 +41,17 @@ open class RestaurantsFragment : Fragment() {
     @OptIn(InternalCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttons()
-        collectLatestLifecycleFlow(viewModel.stateFlow) { index ->
-            // TODO:
-            //  My problem is that this is being called before fetchRestaurants is finished,
-            //  so the list is not populated yet, causing there to be nothing to index.
-            //  for now, delay is "working" but fix this by checking if restaurants.size > 0
-
-
-            //TODO: try coroutine scope
-            CoroutineScope(Main).launch {
-                Log.i(TAG, "checking load...")
-                // TODO: This is mostly working for now, but sometimes when I click search, this part doesnt run ?? like the log statments don't show up
-                Log.i(TAG, "is restaurants list empty? : ${viewModel.getRestaurantList()}")
-                while(!viewModel.loaded){
-                    Log.i(TAG, "delaying...")
-                    delay(100)
+        collectLatestLifecycleFlow(viewModel.stateFlow) {
+            when(it){
+                is RestaurantsViewModel.RestaurantState.Loading -> {
+                    Log.i(TAG, "Loading")
+                    // TODO: show a spinning wheel
                 }
-                Log.i(TAG, "restaurants list is populated! ${viewModel.getRestaurantList()}")
-                show(index)
-
+                is RestaurantsViewModel.RestaurantState.Success -> {
+                    Log.i(TAG, "Finished Loading, show restaurant")
+                    show()
+                }
             }
-
         }
     }
 
@@ -96,8 +86,9 @@ open class RestaurantsFragment : Fragment() {
             viewModel.nextRestaurant()
         })
     }
-    private fun show(index: Int) {
+    private fun show() {
         val restaurants = viewModel.getRestaurantList()
+        val index = viewModel.getRestaurantIndex()
         Log.i(TAG, "Index: $index List: $restaurants")
         if (index < restaurants.size) {
             restaurant = viewModel.getRestaurantList()[index]
