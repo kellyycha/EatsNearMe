@@ -20,6 +20,7 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
+    val restaurantsFragment = RestaurantsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,8 @@ class MainActivity : AppCompatActivity() {
     private fun bottomNavigation() {
         bottomNavigation.setOnItemSelectedListener {
             val fragment: Fragment = when (it.itemId) {
-                R.id.action_restaurants -> RestaurantsFragment()
+                // not new
+                R.id.action_restaurants -> restaurantsFragment
                 R.id.action_saved -> SavedFragment()
                 R.id.action_profile -> ProfileFragment()
                 else -> ProfileFragment()

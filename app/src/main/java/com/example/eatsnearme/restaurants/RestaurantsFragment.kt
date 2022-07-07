@@ -47,26 +47,6 @@ open class RestaurantsFragment : Fragment() {
             //  so the list is not populated yet, causing there to be nothing to index.
             //  for now, delay is "working" but fix this by checking if restaurants.size > 0
 
-            //delay(1000L)
-
-//            // TODO: try wait function
-//            waitForCondition(1000, 100)
-
-//            //TODO: try locking ?
-//            viewModel.lock.withLock {
-//                Log.i(TAG, "Waiting...")
-//                //while (viewModel.restaurants.isEmpty()){
-//                viewModel.condition.await()
-//                //}
-//            }
-
-//            //TODO: try run blocking
-//            Log.i(TAG, "before run blocking...")
-//            runBlocking{
-//                while(viewModel.restaurants.isEmpty()){
-//                    delay(100)
-//                }
-//            }
 
             //TODO: try coroutine scope
             CoroutineScope(Main).launch {
@@ -99,6 +79,8 @@ open class RestaurantsFragment : Fragment() {
             Log.i(TAG, "Clicked Go")
             // Set Radius
         }
+
+        // add a back button
 
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
@@ -139,15 +121,3 @@ fun <T> Fragment.collectLatestLifecycleFlow(flow: Flow<T>, collect: suspend (T) 
         }
     }
 }
-
-//tailrec suspend fun waitForCondition(maxDelay: Long, checkPeriod: Long) : Boolean{
-//    Log.i(TAG, "Loaded: ${RestaurantsViewModel().loaded}")
-//    if (maxDelay < 0){
-//        return false
-//    }
-//    if (RestaurantsViewModel().loaded) {
-//        return true
-//    }
-//    delay(checkPeriod)
-//    return waitForCondition(maxDelay - checkPeriod, checkPeriod)
-//}

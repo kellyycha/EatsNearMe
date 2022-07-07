@@ -11,6 +11,7 @@ import com.example.eatsnearme.yelp.YelpService
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.runBlocking
 import okhttp3.internal.notify
@@ -23,13 +24,11 @@ import kotlin.concurrent.withLock
 private const val TAG = "GetRestaurants"
 
 class RestaurantsViewModel : ViewModel() {
-//    val lock = ReentrantLock()
-//    val condition = lock.newCondition()
     var loaded = false
     val restaurants = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow(0)
-    val stateFlow = _stateFlow.asStateFlow()
+    val stateFlow= _stateFlow
 
     fun nextRestaurant() {
         if (_stateFlow.value < restaurants.size) {
@@ -48,7 +47,6 @@ class RestaurantsViewModel : ViewModel() {
     }
 
     init {
-        // TODO: When I change tabs and go back, init is called again and restaurants automatically clears. how do I prevent this?
         Log.i(TAG, "init")
         if (restaurants.isEmpty()){
             fetchRestaurants("")
@@ -117,6 +115,4 @@ class RestaurantsViewModel : ViewModel() {
     fun getRestaurantList() : MutableList<YelpRestaurant> {
         return restaurants
     }
-
 }
-
