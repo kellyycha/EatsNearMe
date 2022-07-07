@@ -20,7 +20,7 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
-    val restaurantsFragment = RestaurantsFragment()
+    private val restaurantsFragment = RestaurantsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

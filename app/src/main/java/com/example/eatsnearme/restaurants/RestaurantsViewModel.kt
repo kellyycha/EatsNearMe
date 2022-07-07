@@ -32,6 +32,14 @@ class RestaurantsViewModel : ViewModel() {
         _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
     }
 
+    fun prevRestaurant() {
+        if (index > 0){
+            index--
+            Log.i(TAG,"index: $index")
+            _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
+        }
+    }
+
     fun resetStateFlow(typeOfFood: String) {
         index = 0
         restaurants.clear()

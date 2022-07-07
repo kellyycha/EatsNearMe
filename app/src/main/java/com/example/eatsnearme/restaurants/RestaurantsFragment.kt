@@ -38,17 +38,17 @@ open class RestaurantsFragment : Fragment() {
     }
 
 
-    @OptIn(InternalCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         buttons()
         collectLatestLifecycleFlow(viewModel.stateFlow) {
             when(it){
                 is RestaurantsViewModel.RestaurantState.Loading -> {
                     Log.i(TAG, "Loading")
-                    // TODO: show a spinning wheel
+                    spinner.visibility = View.VISIBLE;
                 }
                 is RestaurantsViewModel.RestaurantState.Success -> {
                     Log.i(TAG, "Finished Loading, show restaurant")
+                    spinner.visibility = View.GONE;
                     show()
                 }
             }
@@ -63,19 +63,21 @@ open class RestaurantsFragment : Fragment() {
 
         btnSetLocation.setOnClickListener {
             Log.i(TAG, "Clicked Set Location")
-            // Set location on google maps
+            // TODO: set location on google maps
         }
         btnGo.setOnClickListener {
             Log.i(TAG, "Clicked Go")
-            // Set Radius
+            // TODO: Set Radius
         }
 
-        // add a back button
+        btnPrev.setOnClickListener {
+            Log.i(TAG, "Clicked Previous")
+            viewModel.prevRestaurant()
+        }
 
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
             Log.i(TAG, "current restaurant: $restaurant")
-            Log.i(TAG, "list of restaurants: ${viewModel.getRestaurantList()}")
             val currentUser = ParseUser.getCurrentUser()
             viewModel.saveRestaurant(restaurant.name, currentUser) // save just restaurant or save pic, name, etc. info separately?
             viewModel.nextRestaurant()
@@ -86,6 +88,7 @@ open class RestaurantsFragment : Fragment() {
             viewModel.nextRestaurant()
         })
     }
+
     private fun show() {
         val restaurants = viewModel.getRestaurantList()
         val index = viewModel.getRestaurantIndex()
