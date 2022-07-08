@@ -37,7 +37,7 @@ class RestaurantsViewModel : ViewModel() {
         }
     }
 
-    fun resetStateFlow(typeOfFood: String, location: String) {
+    fun searchRestaurants(typeOfFood: String, location: String) {
         index = 0
         restaurants.clear()
         _stateFlow.value = RestaurantState.Loading
@@ -49,6 +49,7 @@ class RestaurantsViewModel : ViewModel() {
         fetchRestaurants("", "San Francisco")
     }
 
+    // TODO: add radius parameter
     private fun fetchRestaurants(typeOfFood: String, location: String) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
@@ -100,14 +101,6 @@ class RestaurantsViewModel : ViewModel() {
         })
 
         nextRestaurant()
-    }
-
-    fun getRestaurantList() : MutableList<YelpRestaurant> {
-        return restaurants
-    }
-
-    fun getRestaurantIndex() : Int {
-        return index
     }
 
     sealed class RestaurantState {

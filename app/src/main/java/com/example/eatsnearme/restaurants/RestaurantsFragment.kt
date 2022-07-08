@@ -43,6 +43,7 @@ open class RestaurantsFragment : Fragment() {
                     spinner.visibility = View.VISIBLE
                 }
                 is RestaurantsViewModel.RestaurantState.Success -> {
+                    restaurant = it.restaurant
                     Log.i(TAG, "Finished Loading, show restaurant")
                     spinner.visibility = View.GONE
                     show(it.restaurant)
@@ -55,19 +56,9 @@ open class RestaurantsFragment : Fragment() {
 
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
-            viewModel.resetStateFlow(etSearchFood.text.toString(), etLocation.text.toString())
+            // TODO: if location empty, use current location, if radius empty, use 0.5 miles
+            viewModel.searchRestaurants(etSearchFood.text.toString(), etLocation.text.toString())
         }
-
-        btnLocation.setOnClickListener {
-            Log.i(TAG, "Clicked Set Location")
-            // TODO: if empty, use current location
-            viewModel.resetStateFlow(etSearchFood.text.toString(), etLocation.text.toString())
-        }
-
-//        btnRadius.setOnClickListener {
-//            Log.i(TAG, "Clicked Set Radius")
-//            // TODO: Set Radius
-//        }
 
         btnPrev.setOnClickListener {
             Log.i(TAG, "Clicked Previous")
@@ -76,7 +67,6 @@ open class RestaurantsFragment : Fragment() {
 
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
-            Log.i(TAG, "current restaurant: $restaurant")
             viewModel.saveRestaurant(restaurant.name) // save just restaurant or save pic, name, etc. info separately?
         })
 
