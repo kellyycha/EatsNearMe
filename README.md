@@ -35,18 +35,20 @@ This app will help you decide on the best places to eat, to make the most out of
 * All the yes's go into folder according to location
 * Categorize by types of food 
 * Able to plan out a path to your destination to only show places along the way
+* Toggle a map fragment to show where restaurants are
 * After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
-* Use data from what the user liked to recommend a restaurant near you using push notifications
+* Use the Model–View–ViewModel architectural pattern to organize the code.
+* Use state flows to update the UI when the data changes
 
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
-* Map of all locations
 * Show directions to the restaurant
 * Able to color code map pinpoints
 * Able to filter map by category
 * Able to choose which folder to go to and name it
 * Follow friends' accounts to see their favorite restaurants
 * implicit intent to open map app to give directions
+* Use data from what the user liked to recommend a restaurant near you using push notifications
 
 **Complex Features + ideas to execute them**
 1. Set a destination from your current location to find restaurants along the way
@@ -55,7 +57,8 @@ This app will help you decide on the best places to eat, to make the most out of
    * Since there are multiple ways to get from one place to another, only following one path would be restricting. There might be a restaurant a few streets over that won't even be too out of the way, but not within the direct path. Therefore, one solution to this can be to see if I can find all of the alternate routes and combine those radii to find retaurants within all of them. 
    * Idea 2: Determine a straight line that goes from your location to the destination and set an oval boundary between the two to find restaurants within there, so that they will still be on the way, but not on the exact/ shortest path.
    * Maybe find a way to implement both ideas so the user can toggle "fastest route" if they're in more of a rush and would rather not deviate farther than they need to from the single path.
-2. Push notifications for recommended restaurants near you based on user saved restaruant data
+2. Tinder swiping animation
+3. (Back up idea) Push notifications for recommended restaurants near you based on user saved restaruant data
    * See the user's saved restaurants, skipped restaurants, and favorited restaurants (ones they've tried and marked that they like) and create a weighting system of the types of restaurants that the user prefers.
    * This will be based on types of cusine, reviews, and price range.
    * Find restaurants, whether that be ones they do not know about or ones that are already on their list but have not tried yet, that it feels the user would especially like and recommend them a restaurant with a push notification if they are ever close to the area.
