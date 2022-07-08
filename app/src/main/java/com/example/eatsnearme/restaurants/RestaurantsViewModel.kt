@@ -3,8 +3,10 @@ package com.example.eatsnearme.restaurants
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import com.example.eatsnearme.MainActivity
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.yelp.*
+import com.google.android.material.internal.ContextUtils.getActivity
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,8 +47,8 @@ class RestaurantsViewModel : ViewModel() {
     }
 
     init {
-        // TODO: use device current location. for now, default to SF
-        fetchRestaurants("", "San Francisco")
+        LocationService().getCurrentLocation()
+        fetchRestaurants("", LocationService().getCoordinates())
     }
 
     // TODO: add radius parameter

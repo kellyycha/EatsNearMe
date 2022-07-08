@@ -7,11 +7,10 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.example.eatsnearme.login.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
+import com.example.eatsnearme.restaurants.LocationService
 import com.example.eatsnearme.restaurants.RestaurantsFragment
-import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.example.eatsnearme.saved.SavedFragment
 import com.parse.ParseUser
 import kotlinx.android.synthetic.main.activity_main.*
@@ -26,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNavigation()
+//        LocationService().getCurrentLocation()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
