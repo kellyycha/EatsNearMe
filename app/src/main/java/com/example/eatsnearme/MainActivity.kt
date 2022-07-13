@@ -9,24 +9,25 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.eatsnearme.login.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
-import com.example.eatsnearme.restaurants.LocationService
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.saved.SavedFragment
 import com.parse.ParseUser
 import kotlinx.android.synthetic.main.activity_main.*
 
-private const val TAG = "MainActivity"
-
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
     private val restaurantsFragment = RestaurantsFragment()
+
+    companion object {
+        const val TAG = "MainActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNavigation()
-//        LocationService().getCurrentLocation()
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -69,7 +70,4 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.selectedItemId = R.id.action_restaurants
     }
 
-    companion object {
-        const val TAG = "MainActivity"
-    }
 }

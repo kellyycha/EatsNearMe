@@ -1,28 +1,39 @@
 package com.example.eatsnearme.restaurants
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.bumptech.glide.Glide
 import com.example.eatsnearme.R
 import com.example.eatsnearme.yelp.YelpRestaurant
 import kotlinx.android.synthetic.main.fragment_restaurants.*
-import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
-private const val TAG = "RestaurantsFragment"
 
-open class RestaurantsFragment : Fragment() {
+class RestaurantsFragment : Fragment() {
     private lateinit var restaurant: YelpRestaurant
-    private val viewModel: RestaurantsViewModel by viewModels()
+    private lateinit var currLocation: String
+    //private val viewModel: RestaurantsViewModel by viewModels()
+
+    private val viewModel: RestaurantsViewModel by lazy {
+        val activity = requireNotNull(this.activity) {
+        }
+        ViewModelProviders.of(this, RestaurantsViewModel.Factory(activity.application))
+            .get(RestaurantsViewModel::class.java)
+    }
+
+    companion object {
+        const val TAG = "RestaurantsFragment"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,31 +44,50 @@ open class RestaurantsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_restaurants, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        buttons()
+
+        collectLatestLifecycleFlow(viewModel.locStateFlow) {
+            when(it){
+                is RestaurantsViewModel.LocationState.Loading -> {
+                    Log.i(TAG, "Loading location")
+                    spinner.visibility = View.VISIBLE
+                }
+                is RestaurantsViewModel.LocationState.Success -> {
+                    currLocation = it.coordinates
+                    Log.i(TAG, "Finished Loading, got coordinates")
+                    spinner.visibility = View.GONE
+                    buttons(currLocation)
+
+                }
+            }
+        }
         collectLatestLifecycleFlow(viewModel.stateFlow) {
             when(it){
                 is RestaurantsViewModel.RestaurantState.Loading -> {
-                    Log.i(TAG, "Loading")
+                    Log.i(TAG, "Loading restaurants")
                     spinner.visibility = View.VISIBLE
                 }
                 is RestaurantsViewModel.RestaurantState.Success -> {
                     restaurant = it.restaurant
                     Log.i(TAG, "Finished Loading, show restaurant")
                     spinner.visibility = View.GONE
-                    show(it.restaurant)
+                    show(restaurant)
                 }
             }
         }
     }
 
-    private fun buttons() {
+    private fun buttons(currLocation: String) {
 
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
-            // TODO: if location empty, use current location, if radius empty, use 0.5 miles
-            viewModel.searchRestaurants(etSearchFood.text.toString(), etLocation.text.toString())
+            // TODO: if radius empty, use 0.5 miles
+            if (etLocation.text.isEmpty()){
+                viewModel.searchRestaurants(etSearchFood.text.toString(), currLocation)
+            }
+            else{
+                viewModel.searchRestaurants(etSearchFood.text.toString(), etLocation.text.toString())
+            }
         }
 
         btnPrev.setOnClickListener {
