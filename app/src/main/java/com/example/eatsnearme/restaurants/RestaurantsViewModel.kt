@@ -1,15 +1,14 @@
 package com.example.eatsnearme.restaurants
 
-import android.app.Application
+import android.app.Activity
+import android.content.Context
 import android.location.Location
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.eatsnearme.MainActivity
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.yelp.*
+import com.google.android.gms.location.LocationCallback
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
+class RestaurantsViewModel : ViewModel() {
 
     val restaurants = mutableListOf<YelpRestaurant>()
 
@@ -31,6 +30,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     var index = 0
     var currLocation = ""
+
 
     companion object {
         const val TAG = "RestaurantsViewModel"
@@ -50,18 +50,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun searchRestaurants(typeOfFood: String, location: String) {
-        index = 0
-        restaurants.clear()
-        _stateFlow.value = RestaurantState.Loading
-        fetchRestaurants(typeOfFood, location)
-    }
-
-    private fun getCurrentLocation() {
-        Log.i(MainActivity.TAG, "getting current Location")
-        LocationService().startListeningUserLocation(getApplication(), object : LocationService.MyLocationListener {
+    fun getLastCoordinates(context: Context) {
+        LocationService().getLastLocation(context as Activity, object : LocationService.MyLocationListener{
             override fun onLocationChanged(location: Location) {
-                Log.d(MainActivity.TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
+                Log.d(TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
                 currLocation = "${location.latitude}, ${location.longitude}"
                 _locStateFlow.tryEmit(LocationState.Success(currLocation))
                 fetchRestaurants("", currLocation)
@@ -69,14 +61,20 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         })
     }
 
-    init {
-        getCurrentLocation()
-    }
-
     // TODO: add radius parameter
-    private fun fetchRestaurants(typeOfFood: String, location: String) {
+    fun fetchRestaurants(typeOfFood: String, location: String?) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
+
+        index = 0
+        restaurants.clear()
+        _stateFlow.value = RestaurantState.Loading
+
+        // TODO: if location is null or empty, get last known location if location permission is enabled
+
+        if(location.isNullOrEmpty()){
+            LocationService().getLastLocation()
+        }
 
         val yelpService = YelpService.create()
         yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, location)
@@ -135,16 +133,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     sealed class LocationState {
         object Loading : LocationState()
         class Success(var coordinates : String) : LocationState()
-    }
-
-    class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(RestaurantsViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return RestaurantsViewModel(app) as T
-            }
-            throw IllegalArgumentException("Unable to construct viewmodel")
-        }
     }
 
 }
