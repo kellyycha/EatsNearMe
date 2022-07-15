@@ -16,7 +16,8 @@ interface YelpService {
     fun searchRestaurants(
         @Header("Authorization") authHeader: String,
         @Query("term") searchTerm: String,
-        @Query("location") location: String) : Call<YelpSearchResult>
+        @Query("location") location: String,
+        @Query("radius") radius: Int) : Call<YelpSearchResult>
 
     // TODO: add radius field
 

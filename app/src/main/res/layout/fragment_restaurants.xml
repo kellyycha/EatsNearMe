@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:hint="Search Type of Food"
+            android:minHeight="48dp"
             android:textAlignment="viewStart"
             android:textSize="14sp" />
 
@@ -35,8 +36,9 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Current Location"
+            android:minHeight="48dp"
             android:textAlignment="viewStart"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
 
     </LinearLayout>
@@ -58,16 +60,22 @@
             android:id="@+id/etRadius"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:hint="0.5 mi"
+            android:hint="1000"
+            android:inputType="number"
+            android:minHeight="48dp"
             android:textAlignment="viewStart"
+            android:textSize="14sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:inputType="number"/>
+            android:text="meters" />
 
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginStart="100dp"
+            android:layout_marginStart="50dp"
             android:layout_marginEnd="30dp"
             android:layout_weight="1"
             android:text="Search"
@@ -132,17 +140,17 @@
             <Button
                 android:id="@+id/btnNo"
                 android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="50dp"
+                android:layout_marginStart="30dp"
                 android:text="No" />
 
             <Button
                 android:id="@+id/btnYes"
                 android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="50dp"
+                android:layout_marginEnd="30dp"
                 android:text="Yes" />
 
         </RelativeLayout>

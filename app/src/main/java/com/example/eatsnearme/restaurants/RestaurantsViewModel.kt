@@ -23,34 +23,41 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
 
-    var index = 0
-    var currLocation = ""
-
+    private var index = 0
+    private var currLocation = ""
 
     companion object {
         const val TAG = "RestaurantsViewModel"
+        const val defaultRadius = "1000"
     }
 
     fun nextRestaurant() {
-        index++
-        Log.i(TAG,"index: $index")
-        _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
+        if (restaurants.size > index+1){
+            index++
+            _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
+        }
+        else{
+            Toast.makeText(getApplication(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     fun prevRestaurant() {
         if (index > 0){
             index--
-            Log.i(TAG,"index: $index")
             _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
+        }
+        else{
+            Toast.makeText(getApplication(), "Cannot show previous", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun fetchRestaurantsForCurrentLocation(typeOfFood: String) {
+    private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, radius: Int) {
         LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
             override fun onLocationChanged(location: Location) {
                 Log.d(TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
                 currLocation = "${location.latitude}, ${location.longitude}"
-                queryYelp(typeOfFood, currLocation)
+                queryYelp(typeOfFood, currLocation, radius)
             }
         })
 
@@ -58,24 +65,30 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     init {
         Log.i(TAG, "init")
-        fetchRestaurants("","")
+        fetchRestaurants("","", defaultRadius)
     }
 
-    // TODO: add radius parameter
-    fun fetchRestaurants(typeOfFood: String, location: String) {
+    // TODO: if radius empty, use 0.5 miles (800 meters)
+    fun fetchRestaurants(typeOfFood: String, location: String, radius: String) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
+        Log.i(TAG, "radius: $radius")
 
         index = 0
         restaurants.clear()
         _stateFlow.value = RestaurantState.Loading
 
+        if (radius.isEmpty()){
+            fetchRestaurants(typeOfFood, location, defaultRadius)
+            return
+        }
+
         if(location.isEmpty() && LocationService().hasPermissions(getApplication())){
             Log.i(TAG, "no location")
-            fetchRestaurantsForCurrentLocation(typeOfFood)
+            fetchRestaurantsForCurrentLocation(typeOfFood, radius.toInt())
         }
         else if (location.isNotEmpty()){
-            queryYelp(typeOfFood, location)
+            queryYelp(typeOfFood, location, radius.toInt())
         }
         else{
             _stateFlow.value = RestaurantState.Idle
@@ -83,10 +96,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     }
 
-    private fun queryYelp(typeOfFood: String, location: String){
+    private fun queryYelp(typeOfFood: String, location: String, radius: Int){
         Log.i(TAG, "query yelp")
         val yelpService = YelpService.create()
-        yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, location)
+        yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, location, radius)
             .enqueue(object : Callback<YelpSearchResult> {
                 override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                     Log.i(TAG, "onResponse $response")
@@ -101,8 +114,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     Log.i(TAG, "Adding restaurants...")
                     restaurants.addAll(body.restaurants)
                     Log.i(TAG, "loaded restaurants: $restaurants")
+                    if (restaurants.isEmpty()){
+                        _stateFlow.value = RestaurantState.Idle
+                        Toast.makeText(getApplication(), "No restaurants within radius", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        _stateFlow.value = RestaurantState.Success(restaurants[index])
+                    }
 
-                    _stateFlow.value = RestaurantState.Success(restaurants[index])
 
                 }
 
@@ -122,11 +141,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.saveInBackground(SaveCallback { e ->
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
-                Toast.makeText(
-                    getApplication(),
-                    "Error while saving",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(getApplication(), "Error while saving", Toast.LENGTH_SHORT).show()
             }
             Log.i(TAG, "Restaurant save was successful")
         })

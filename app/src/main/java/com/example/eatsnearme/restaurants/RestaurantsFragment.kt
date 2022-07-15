@@ -48,8 +48,7 @@ class RestaurantsFragment : Fragment() {
 
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
-            // TODO: if radius empty, use 0.5 miles
-            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString())
+            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString(), etRadius.text.toString())
         }
 
         collectLatestLifecycleFlow(viewModel.stateFlow) {
@@ -145,18 +144,16 @@ class RestaurantsFragment : Fragment() {
         if(requestCode == LocationService.PERMISSION_REQUEST_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Log.i(TAG, "Permission Granted")
-                viewModel.fetchRestaurants("","")
+                viewModel.fetchRestaurants("","", RestaurantsViewModel.defaultRadius)
             }
             else {
                 Log.i(TAG, "Permission Denied")
                 if (etLocation.text.toString().isEmpty()){
                     Toast.makeText(context, "Enter a location", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
     }
-
 }
 
 fun <T> Fragment.collectLatestLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Unit) {
