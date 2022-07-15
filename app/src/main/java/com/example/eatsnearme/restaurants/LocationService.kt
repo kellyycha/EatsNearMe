@@ -1,119 +1,100 @@
 package com.example.eatsnearme.restaurants
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.example.eatsnearme.MainActivity
-import com.example.eatsnearme.R
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import java.util.concurrent.TimeUnit
 
-class LocationService : AppCompatActivity() {
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-    // hardcoded to test
-    private var currLatitude = "37.48075357532599"
-    private var currLongitude = "-122.1654402366265"
+class LocationService {
 
-    companion object {
-        private const val PERMISSION_REQUEST_CODE = 100
-        private const val TAG = "LocationService"
+    companion object{
+        val TIME_LIMIT: Long = TimeUnit.HOURS.toMillis(1L)
+        const val TAG = "LocationService"
+        const val PERMISSION_REQUEST_CODE = 100
+        lateinit var myLocationListener: MyLocationListener
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_profile)
-        fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this)
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-        getCurrentLocation()
+
+    interface MyLocationListener {
+        fun onLocationChanged(location: Location)
     }
 
-    fun getCurrentLocation() {
-        if(checkPermissions()) {
-            if(isLocationEnabled()) {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED
-                    && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-                    requestPermission()
-                    return
-                }
-                fusedLocationProviderClient.lastLocation.addOnCompleteListener(this) { task ->
-                    val location: Location? = task.result
-                    if (location == null) {
-                        Log.i(TAG, "Null Received")
-                    }
-                    else {
-                        Log.i(TAG, "Get Successful")
+    @SuppressLint("MissingPermission")
+    fun getLastLocation(context: Context, myListener: MyLocationListener) {
+        Log.i(TAG,"getting last location")
+        myLocationListener = myListener
 
-                        currLatitude = location.latitude.toString()
-                        currLongitude = location.longitude.toString()
-                        Log.i(TAG, "Latitude: $currLatitude")
-                        Log.i(TAG, "Longitude: $currLongitude}")
-                    }
+        LocationListener { location -> myLocationListener.onLocationChanged(location) }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        if (isLocationEnabled(context)) {
+            Log.i(TAG,"location is enabled")
+            fusedLocationClient.lastLocation.addOnCompleteListener { task ->
+                val location = task.result
+                if (location == null || System.currentTimeMillis() - location.time > TIME_LIMIT) {
+                    requestNewLocationData(context)
+                } else {
+                    Log.i(TAG,"use last location")
+                    myLocationListener.onLocationChanged(location)
                 }
             }
-            else{
-                Log.i(TAG, "Turn on Location")
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
-            }
-        }
-        else{
-            Log.i(TAG, "Request Permission")
-            requestPermission()
+        } else {
+            Log.i(TAG,"location not enabled")
+            Toast.makeText(context, "please turn on your location", Toast.LENGTH_LONG).show()
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            context.startActivity(intent)
         }
     }
 
-    private fun checkPermissions(): Boolean {
-        return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
-    }
-
-    private fun isLocationEnabled(): Boolean {
-        val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-    }
-
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(this,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION),
-            PERMISSION_REQUEST_CODE
+    private fun isLocationEnabled(context: Context): Boolean {
+        val locationManager = context.getSystemService(LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<out String>,
-                                            grantResults: IntArray) {
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if(requestCode == PERMISSION_REQUEST_CODE){
-            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Log.i(TAG, "Permission Granted")
-                getCurrentLocation()
+    @SuppressLint("MissingPermission")
+    private fun requestNewLocationData(context: Context){
+        Log.i(TAG,"requesting new location")
+        fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_LOW_POWER, null)
+            .addOnSuccessListener { task ->
+                Log.i(TAG,"in oncompletelistener")
+                if (task == null) {
+                    Log.i(TAG, "unable to get location")
+                    Toast.makeText(
+                        context,
+                        "unable to get location, please try again later",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Log.i(TAG, "location: $task")
+                    myLocationListener.onLocationChanged(task)
+                }
             }
-            else {
-                Log.i(TAG, "Permission Denied")
-            }
-        }
     }
 
-    fun getCoordinates() : String {
-        return "$currLatitude, $currLongitude"
+    fun hasPermissions(context: Context): Boolean {
+        Log.i(RestaurantsFragment.TAG, "Checking Permissions")
+        return (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED)
     }
 
 }
