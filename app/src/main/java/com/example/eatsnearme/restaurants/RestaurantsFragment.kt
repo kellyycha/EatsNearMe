@@ -1,23 +1,20 @@
 package com.example.eatsnearme.restaurants
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
-import com.example.eatsnearme.MainActivity
 import com.example.eatsnearme.R
 import com.example.eatsnearme.yelp.YelpRestaurant
 import kotlinx.android.synthetic.main.fragment_restaurants.*
@@ -28,9 +25,8 @@ import kotlinx.coroutines.launch
 
 class RestaurantsFragment : Fragment() {
     private lateinit var restaurant: YelpRestaurant
-    private lateinit var currLocation: String
 
-    private val viewModel: RestaurantsViewModel by viewModels()
+    private val viewModel: RestaurantsViewModel by activityViewModels()
 
     companion object {
         const val TAG = "RestaurantsFragment"
@@ -48,54 +44,38 @@ class RestaurantsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requestPermissionsIfNeed(requireContext())
 
-        collectLatestLifecycleFlow(viewModel.locStateFlow) {
-            when(it){
-                is RestaurantsViewModel.LocationState.Loading -> {
-                    Log.i(TAG, "Loading location")
-                    spinner.visibility = View.VISIBLE
-                }
-                is RestaurantsViewModel.LocationState.Success -> {
-                    currLocation = it.coordinates
-                    Log.i(TAG, "Finished Loading, got coordinates")
-                    spinner.visibility = View.GONE
-                    buttons(currLocation)
+        initializeCardButtons()
 
-                }
-            }
+        btnSearch.setOnClickListener {
+            Log.i(TAG, "Clicked Search")
+            // TODO: if radius empty, use 0.5 miles
+            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString())
         }
+
         collectLatestLifecycleFlow(viewModel.stateFlow) {
             when(it){
                 is RestaurantsViewModel.RestaurantState.Loading -> {
                     Log.i(TAG, "Loading restaurants")
                     spinner.visibility = View.VISIBLE
+                    hideCardUI()
+                }
+                is RestaurantsViewModel.RestaurantState.Idle -> {
+                    Log.i(TAG, "no location - idle state")
+                    spinner.visibility = View.GONE
+                    hideCardUI()
                 }
                 is RestaurantsViewModel.RestaurantState.Success -> {
                     restaurant = it.restaurant
                     Log.i(TAG, "Finished Loading, show restaurant")
                     spinner.visibility = View.GONE
-                    show(restaurant)
+                    showCardUI(restaurant)
+
                 }
             }
         }
     }
 
-    private fun buttons(currLocation: String) {
-
-        btnSearch.setOnClickListener {
-            Log.i(TAG, "Clicked Search")
-            // TODO: if radius empty, use 0.5 miles
-
-            //viewModel.getLastCoordinates(requireContext())
-
-//            //I want to get a new current location when I click.
-//            if (etLocation.text.isEmpty()){
-//                viewModel.fetchRestaurants(etSearchFood.text.toString(), currLocation)
-//            }
-//            else{
-            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString())
-//            }
-        }
-
+    private fun initializeCardButtons() {
         btnPrev.setOnClickListener {
             Log.i(TAG, "Clicked Previous")
             viewModel.prevRestaurant()
@@ -112,7 +92,23 @@ class RestaurantsFragment : Fragment() {
         })
     }
 
-    private fun show(restaurant: YelpRestaurant) {
+    private fun hideCardUI(){
+        //cvRestaurantCard.visibility = View.INVISIBLE
+        btnPrev.visibility = View.GONE
+        btnYes.visibility = View.GONE
+        btnNo.visibility = View.GONE
+        tvName.visibility = View.GONE
+        ivYelpPic.visibility = View.GONE
+    }
+
+    private fun showCardUI(restaurant: YelpRestaurant) {
+        //cvRestaurantCard.visibility = View.VISIBLE
+        btnPrev.visibility = View.VISIBLE
+        btnYes.visibility = View.VISIBLE
+        btnNo.visibility = View.VISIBLE
+        tvName.visibility = View.VISIBLE
+        ivYelpPic.visibility = View.VISIBLE
+
         tvName.text = restaurant.name
         context?.let {
             Glide.with(it)
@@ -124,23 +120,12 @@ class RestaurantsFragment : Fragment() {
     // this is called every time, so when there is permission, it gets the coordinates so resets. have to fix
     private fun requestPermissionsIfNeed(context: Context) {
         Log.i(TAG, "requesting")
-        if (hasPermissions(context)) {
+        if (LocationService().hasPermissions(context)) {
             Log.i(TAG,"has permissions")
-            viewModel.getLastCoordinates(context)
             return
         }
-        else {
-            Log.i(TAG,"need to request permissions")
-            requestPermission(context)
-        }
-    }
-
-    private fun hasPermissions(context: Context): Boolean {
-        Log.i(TAG, "Checking Permissions")
-        return (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED)
+        Log.i(TAG,"need to request permissions")
+        requestPermission(context)
     }
 
     private fun requestPermission(context: Context) {
@@ -154,11 +139,6 @@ class RestaurantsFragment : Fragment() {
         )
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.i(TAG, "on Activity Result")
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<out String>,
                                             grantResults: IntArray) {
@@ -168,12 +148,14 @@ class RestaurantsFragment : Fragment() {
         if(requestCode == LocationService.PERMISSION_REQUEST_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Log.i(TAG, "Permission Granted")
-                requestPermission(requireContext())
-//                viewModel.getLastCoordinates(requireContext())
+                viewModel.fetchRestaurants("","")
             }
             else {
                 Log.i(TAG, "Permission Denied")
-                requestPermission(requireContext())
+                if (etLocation.text.toString().isEmpty()){
+                    Toast.makeText(context, "Enter a location", Toast.LENGTH_SHORT).show()
+                }
+
             }
         }
     }

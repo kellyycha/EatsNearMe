@@ -1,14 +1,12 @@
 package com.example.eatsnearme.restaurants
 
-import android.app.Activity
-import android.content.Context
+import android.app.Application
 import android.location.Location
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.yelp.*
-import com.google.android.gms.location.LocationCallback
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,15 +16,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class RestaurantsViewModel : ViewModel() {
+class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
 
     val restaurants = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
-
-    private val _locStateFlow = MutableStateFlow<LocationState>(LocationState.Loading)
-    val locStateFlow:StateFlow<LocationState> = _locStateFlow
 
     var index = 0
     var currLocation = ""
@@ -50,19 +45,24 @@ class RestaurantsViewModel : ViewModel() {
         }
     }
 
-    fun getLastCoordinates(context: Context) {
-        LocationService().getLastLocation(context as Activity, object : LocationService.MyLocationListener{
+    private fun fetchRestaurantsForCurrentLocation(typeOfFood: String) {
+        LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
             override fun onLocationChanged(location: Location) {
                 Log.d(TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
                 currLocation = "${location.latitude}, ${location.longitude}"
-                _locStateFlow.tryEmit(LocationState.Success(currLocation))
-                fetchRestaurants("", currLocation)
+                queryYelp(typeOfFood, currLocation)
             }
         })
+
+    }
+
+    init {
+        Log.i(TAG, "init")
+        fetchRestaurants("","")
     }
 
     // TODO: add radius parameter
-    fun fetchRestaurants(typeOfFood: String, location: String?) {
+    fun fetchRestaurants(typeOfFood: String, location: String) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
 
@@ -70,12 +70,21 @@ class RestaurantsViewModel : ViewModel() {
         restaurants.clear()
         _stateFlow.value = RestaurantState.Loading
 
-        // TODO: if location is null or empty, get last known location if location permission is enabled
-
-        if(location.isNullOrEmpty()){
-            LocationService().getLastLocation()
+        if(location.isEmpty() && LocationService().hasPermissions(getApplication())){
+            Log.i(TAG, "no location")
+            fetchRestaurantsForCurrentLocation(typeOfFood)
+        }
+        else if (location.isNotEmpty()){
+            queryYelp(typeOfFood, location)
+        }
+        else{
+            _stateFlow.value = RestaurantState.Idle
         }
 
+    }
+
+    private fun queryYelp(typeOfFood: String, location: String){
+        Log.i(TAG, "query yelp")
         val yelpService = YelpService.create()
         yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, location)
             .enqueue(object : Callback<YelpSearchResult> {
@@ -114,7 +123,7 @@ class RestaurantsViewModel : ViewModel() {
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
                 Toast.makeText(
-                    RestaurantsFragment().context,
+                    getApplication(),
                     "Error while saving",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -127,12 +136,8 @@ class RestaurantsViewModel : ViewModel() {
 
     sealed class RestaurantState {
         object Loading : RestaurantState()
+        object Idle : RestaurantState()
         class Success(var restaurant : YelpRestaurant) : RestaurantState()
-    }
-
-    sealed class LocationState {
-        object Loading : LocationState()
-        class Success(var coordinates : String) : LocationState()
     }
 
 }
