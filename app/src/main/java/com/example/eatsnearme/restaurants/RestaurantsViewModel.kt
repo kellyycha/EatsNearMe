@@ -1,12 +1,12 @@
 package com.example.eatsnearme.restaurants
 
+import android.app.Application
+import android.location.Location
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
-import com.example.eatsnearme.MainActivity
+import androidx.lifecycle.AndroidViewModel
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.yelp.*
-import com.google.android.material.internal.ContextUtils.getActivity
 import com.parse.ParseUser
 import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,15 +15,21 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private const val TAG = "GetRestaurants"
 
-class RestaurantsViewModel : ViewModel() {
+class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
+
     val restaurants = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
 
     var index = 0
+    var currLocation = ""
+
+
+    companion object {
+        const val TAG = "RestaurantsViewModel"
+    }
 
     fun nextRestaurant() {
         index++
@@ -39,23 +45,46 @@ class RestaurantsViewModel : ViewModel() {
         }
     }
 
-    fun searchRestaurants(typeOfFood: String, location: String) {
-        index = 0
-        restaurants.clear()
-        _stateFlow.value = RestaurantState.Loading
-        fetchRestaurants(typeOfFood, location)
+    private fun fetchRestaurantsForCurrentLocation(typeOfFood: String) {
+        LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
+            override fun onLocationChanged(location: Location) {
+                Log.d(TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
+                currLocation = "${location.latitude}, ${location.longitude}"
+                queryYelp(typeOfFood, currLocation)
+            }
+        })
+
     }
 
     init {
-        LocationService().getCurrentLocation()
-        fetchRestaurants("", LocationService().getCoordinates())
+        Log.i(TAG, "init")
+        fetchRestaurants("","")
     }
 
     // TODO: add radius parameter
-    private fun fetchRestaurants(typeOfFood: String, location: String) {
+    fun fetchRestaurants(typeOfFood: String, location: String) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
 
+        index = 0
+        restaurants.clear()
+        _stateFlow.value = RestaurantState.Loading
+
+        if(location.isEmpty() && LocationService().hasPermissions(getApplication())){
+            Log.i(TAG, "no location")
+            fetchRestaurantsForCurrentLocation(typeOfFood)
+        }
+        else if (location.isNotEmpty()){
+            queryYelp(typeOfFood, location)
+        }
+        else{
+            _stateFlow.value = RestaurantState.Idle
+        }
+
+    }
+
+    private fun queryYelp(typeOfFood: String, location: String){
+        Log.i(TAG, "query yelp")
         val yelpService = YelpService.create()
         yelpService.searchRestaurants("Bearer $API_KEY", typeOfFood, location)
             .enqueue(object : Callback<YelpSearchResult> {
@@ -94,7 +123,7 @@ class RestaurantsViewModel : ViewModel() {
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
                 Toast.makeText(
-                    RestaurantsFragment().context,
+                    getApplication(),
                     "Error while saving",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -107,6 +136,7 @@ class RestaurantsViewModel : ViewModel() {
 
     sealed class RestaurantState {
         object Loading : RestaurantState()
+        object Idle : RestaurantState()
         class Success(var restaurant : YelpRestaurant) : RestaurantState()
     }
 

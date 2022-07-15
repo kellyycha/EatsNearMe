@@ -15,16 +15,21 @@ import com.parse.SignUpCallback
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
-    private val TAG = "LoginActivity"
+    companion object {
+        const val TAG = "LoginActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        Log.i(TAG, "in log in")
+        uiComponents()
+
         if (ParseUser.getCurrentUser() != null) {
             goMainActivity()
         }
-        uiComponents()
+
     }
     private fun uiComponents() {
         btnLogin.setOnClickListener(View.OnClickListener {
