@@ -8,6 +8,7 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eatsnearme.R
 import com.example.eatsnearme.SavedRestaurants
+import com.example.eatsnearme.yelp.YelpRestaurant
 import kotlinx.android.synthetic.main.item_saved.view.*
 
 
@@ -27,9 +28,8 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(saved: SavedRestaurants) {
-            itemView.tvSavedName.text = saved.getRestaurantName()
 
-
+            itemView.tvSavedName.text = saved.getRestaurantName().toString()
 
         }
 

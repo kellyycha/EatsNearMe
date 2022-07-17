@@ -82,12 +82,12 @@ class RestaurantsFragment : Fragment() {
 
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
-            viewModel.saveRestaurant(restaurant.name) // save just restaurant or save pic, name, etc. info separately?
+            viewModel.storeRestaurant(restaurant,true)
         })
 
         btnNo.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick no button")
-            viewModel.nextRestaurant()
+            viewModel.storeRestaurant(restaurant, false)
         })
     }
 

@@ -1,6 +1,7 @@
 package com.example.eatsnearme.yelp
 
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 data class YelpSearchResult (
     @SerializedName("total") val total: Int,
@@ -15,8 +16,12 @@ data class YelpRestaurant(
     val image_url: String,
     @SerializedName("distance") val distance_meters: Double,
     val categories: List<YelpCategory>,
-    val location: YelpLocation
+    val location: YelpLocation,
+    @SerializedName("display_phone") val phone: String,
+    val is_open_now: Boolean,
+    // add photos
 )
+
 
 data class YelpCategory(
     val title: String

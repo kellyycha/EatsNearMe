@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.example.eatsnearme.SavedRestaurants
+import com.example.eatsnearme.saved.SavedFragment
 import com.example.eatsnearme.yelp.*
 import com.parse.ParseUser
 import com.parse.SaveCallback
@@ -18,7 +19,8 @@ import retrofit2.Response
 
 class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
 
-    val restaurants = mutableListOf<YelpRestaurant>()
+    val restaurantResults = mutableListOf<YelpRestaurant>()
+    val restaurantDisplay = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
@@ -32,9 +34,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun nextRestaurant() {
-        if (restaurants.size > index+1){
+        if (restaurantDisplay.size > index+1){
             index++
-            _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
+            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
         }
         else{
             Toast.makeText(getApplication(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
@@ -45,7 +47,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     fun prevRestaurant() {
         if (index > 0){
             index--
-            _stateFlow.tryEmit(RestaurantState.Success(restaurants[index]))
+            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
         }
         else{
             Toast.makeText(getApplication(), "Cannot show previous", Toast.LENGTH_SHORT).show()
@@ -65,17 +67,19 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     init {
         Log.i(TAG, "init")
+        // TODO: load saved restaurants before fetching.
+        //  right now it only filters after clicking saved tab and going back and then clicking search again
         fetchRestaurants("","", defaultRadius)
     }
 
-    // TODO: if radius empty, use 0.5 miles (800 meters)
     fun fetchRestaurants(typeOfFood: String, location: String, radius: String) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
         Log.i(TAG, "radius: $radius")
 
         index = 0
-        restaurants.clear()
+        restaurantResults.clear()
+        restaurantDisplay.clear()
         _stateFlow.value = RestaurantState.Loading
 
         if (radius.isEmpty()){
@@ -109,17 +113,23 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         return
                     }
 
-                    //TODO: check if restaurant already saved
+                    Log.i(TAG, "Adding all restaurants...")
+                    restaurantResults.addAll(body.restaurants)
 
-                    Log.i(TAG, "Adding restaurants...")
-                    restaurants.addAll(body.restaurants)
-                    Log.i(TAG, "loaded restaurants: $restaurants")
-                    if (restaurants.isEmpty()){
+                    for (restaurant in restaurantResults){
+                        if (!isSkipped(restaurant) && !isSaved(restaurant)){
+                            restaurantDisplay.add(restaurant)
+                        }
+                    }
+
+                    Log.i(TAG, "all restaurants: $restaurantResults")
+                    Log.i(TAG, "display restaurants: $restaurantDisplay")
+                    if (restaurantDisplay.isEmpty()){
                         _stateFlow.value = RestaurantState.Idle
                         Toast.makeText(getApplication(), "No restaurants within radius", Toast.LENGTH_SHORT).show()
                     }
                     else{
-                        _stateFlow.value = RestaurantState.Success(restaurants[index])
+                        _stateFlow.value = RestaurantState.Success(restaurantDisplay[index])
                     }
 
 
@@ -132,11 +142,31 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             })
     }
 
-    fun saveRestaurant(restaurantName: String) {
+    private fun isSaved(restaurant: YelpRestaurant): Boolean{
+        if (restaurant.name in SavedFragment().getSavedList()){
+            return true
+        }
+        return false
+    }
+
+    private fun isSkipped(restaurant: YelpRestaurant): Boolean{
+        if (restaurant.name in SavedFragment().getSkippedList()){
+            return true
+        }
+        return false
+    }
+
+    fun storeRestaurant(restaurant: YelpRestaurant, isSaved: Boolean) {
         val currentUser = ParseUser.getCurrentUser()
         val saved = SavedRestaurants()
+        saved.setIsSaved(isSaved)
         saved.setUser(currentUser)
-        saved.setRestaurantName(restaurantName)
+        saved.setRestaurantName(restaurant.name)
+        saved.setRestaurantPrice(restaurant.price)
+        saved.setRestaurantRating(restaurant.rating)
+        saved.setRestaurantImage(restaurant.image_url)
+        saved.setRestaurantDistance(restaurant.distance_meters)
+        saved.setRestaurantReviewCount(restaurant.review_count)
 
         saved.saveInBackground(SaveCallback { e ->
             if (e != null) {
@@ -148,6 +178,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
         nextRestaurant()
     }
+
 
     sealed class RestaurantState {
         object Loading : RestaurantState()
