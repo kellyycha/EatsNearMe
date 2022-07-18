@@ -41,6 +41,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
         }
         else{
+            _stateFlow.value = RestaurantState.Idle
             Toast.makeText(getApplication(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
         }
 
@@ -174,6 +175,11 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setRestaurantDistance(restaurant.distance_meters)
         saved.setRestaurantReviewCount(restaurant.review_count)
         saved.setRestaurantAddress(restaurant.location.address)
+        var categories = ""
+        for (i in restaurant.categories.indices){
+            categories += restaurant.categories[i].title+", "
+        }
+        saved.setRestaurantCategories(categories.dropLast(2))
 
         saved.saveInBackground(SaveCallback { e ->
             if (e != null) {

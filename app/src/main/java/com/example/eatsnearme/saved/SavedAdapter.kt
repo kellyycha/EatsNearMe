@@ -30,8 +30,10 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(saved: SavedRestaurants) {
 
-            itemView.tvSavedName.text = saved.getRestaurantName().toString()
-            itemView.tvSavedAddress.text = saved.getRestaurantAddress().toString()
+            itemView.tvSavedName.text = saved.getRestaurantName()
+            itemView.tvSavedAddress.text = saved.getRestaurantAddress()
+            itemView.tvCategories.text = saved.getRestaurantCategories()
+            itemView.tvPrice.text = saved.getRestaurantPrice()
             Glide.with(context).load(saved.getRestaurantImage()).into(itemView.ivPic1)
 
         }

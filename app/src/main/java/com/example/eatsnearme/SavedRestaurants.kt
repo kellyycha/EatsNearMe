@@ -100,8 +100,12 @@ class SavedRestaurants : ParseObject() {
         put(KEY_ADDRESS, address!!)
     }
 
-    // TODO: How to add fields for categories?
+    fun getRestaurantCategories(): String? {
+        return getString(KEY_CATEGORIES)
+    }
 
-//val categories: List<YelpCategory>,
+    fun setRestaurantCategories(categories: String?) {
+        put(KEY_CATEGORIES, categories!!)
+    }
 
 }
