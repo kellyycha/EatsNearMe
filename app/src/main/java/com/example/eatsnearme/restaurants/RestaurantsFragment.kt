@@ -98,6 +98,8 @@ class RestaurantsFragment : Fragment() {
         btnNo.visibility = View.GONE
         tvName.visibility = View.GONE
         ivYelpPic.visibility = View.GONE
+        ratingBar.visibility = View.GONE
+        tvPrice.visibility = View.GONE
     }
 
     private fun showCardUI(restaurant: YelpRestaurant) {
@@ -106,8 +108,12 @@ class RestaurantsFragment : Fragment() {
         btnNo.visibility = View.VISIBLE
         tvName.visibility = View.VISIBLE
         ivYelpPic.visibility = View.VISIBLE
+        ratingBar.visibility = View.VISIBLE
+        tvPrice.visibility = View.VISIBLE
 
         tvName.text = restaurant.name
+        tvPrice.text = restaurant.price
+        ratingBar.rating = restaurant.rating.toFloat()
         context?.let {
             Glide.with(it)
                 .load(restaurant.image_url)

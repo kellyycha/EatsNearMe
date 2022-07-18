@@ -46,6 +46,7 @@ class SavedFragment : Fragment() {
     }
 
     private fun querySaved(allSaved: ArrayList<SavedRestaurants>, adapter: SavedAdapter) {
+        Log.i(TAG,"loading saved and skipped")
         savedList.clear()
         val query: ParseQuery<SavedRestaurants> = ParseQuery.getQuery(SavedRestaurants::class.java)
         query.include(KEY_USER)

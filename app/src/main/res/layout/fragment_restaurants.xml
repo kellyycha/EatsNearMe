@@ -86,7 +86,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cvRestaurantCard"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="520dp"
         android:layout_margin="15dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="5dp">
@@ -99,35 +99,77 @@
             <ImageView
                 android:id="@+id/ivYelpPic"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_weight="1"
+                android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/ivYelpPic"
-                android:layout_alignLeft="@id/ivYelpPic"
-                android:layout_alignRight="@id/ivYelpPic"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="10dp"
-                tools:text="Restaurant Name" />
 
-<!--            <Button-->
+            <!--            <Button-->
 <!--                android:id="@+id/btnPrev"-->
 <!--                android:layout_width="wrap_content"-->
 <!--                android:layout_height="wrap_content"-->
 <!--                android:text="Previous" />-->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="0dp"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/gradient" />
+
+            <LinearLayout
+                android:id="@+id/Words"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="390dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Restaurant Name" />
+
+                <TextView
+                    android:id="@+id/tvPrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textSize="18sp"
+                    tools:text="$$" />
+
+            </LinearLayout>
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Words"
+                android:layout_alignStart="@+id/Words"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="6dp"
+                android:max="5"
+                android:numStars="5"
+                android:progressTint="@color/sage"
+                android:rating="4"
+                android:scaleX="2"
+                android:scaleY="2" />
 
             <ProgressBar
                 android:id="@+id/spinner"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:indeterminateTint="@color/sage" />
 
         </RelativeLayout>
 
