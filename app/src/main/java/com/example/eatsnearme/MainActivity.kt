@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 open class MainActivity : AppCompatActivity() {
     private val fragmentManager = supportFragmentManager
     private var restaurantsFragment = RestaurantsFragment()
+    private var savedFragment = SavedFragment()
 
     companion object {
         const val TAG = "MainActivity"
@@ -62,15 +63,17 @@ open class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnItemSelectedListener {
             val fragment: Fragment = when (it.itemId) {
                 R.id.action_restaurants -> restaurantsFragment
-                R.id.action_saved -> SavedFragment()
+                R.id.action_saved -> savedFragment
                 R.id.action_profile -> ProfileFragment()
                 else -> ProfileFragment()
             }
             fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit()
             true
         }
-        // Set default selection
-        bottomNavigation.selectedItemId = R.id.action_restaurants
+
+        // Set default selection to saved to load saved/skipped restaurants first.
+        // TODO: is there any way to do this with having default as restaurants tab?
+        bottomNavigation.selectedItemId = R.id.action_saved
     }
 
 }

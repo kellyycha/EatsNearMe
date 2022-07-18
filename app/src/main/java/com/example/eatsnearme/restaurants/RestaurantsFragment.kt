@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.example.eatsnearme.R
+import com.example.eatsnearme.saved.SavedFragment
 import com.example.eatsnearme.yelp.YelpRestaurant
 import kotlinx.android.synthetic.main.fragment_restaurants.*
 import kotlinx.coroutines.flow.Flow
@@ -75,10 +76,10 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun initializeCardButtons() {
-        btnPrev.setOnClickListener {
-            Log.i(TAG, "Clicked Previous")
-            viewModel.prevRestaurant()
-        }
+//        btnPrev.setOnClickListener {
+//            Log.i(TAG, "Clicked Previous")
+//            viewModel.prevRestaurant()
+//        }
 
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
@@ -92,7 +93,7 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun hideCardUI(){
-        btnPrev.visibility = View.GONE
+//        btnPrev.visibility = View.GONE
         btnYes.visibility = View.GONE
         btnNo.visibility = View.GONE
         tvName.visibility = View.GONE
@@ -100,7 +101,7 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun showCardUI(restaurant: YelpRestaurant) {
-        btnPrev.visibility = View.VISIBLE
+//        btnPrev.visibility = View.VISIBLE
         btnYes.visibility = View.VISIBLE
         btnNo.visibility = View.VISIBLE
         tvName.visibility = View.VISIBLE

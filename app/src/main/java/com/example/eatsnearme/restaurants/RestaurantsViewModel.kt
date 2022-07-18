@@ -19,13 +19,15 @@ import retrofit2.Response
 
 class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
 
-    val restaurantResults = mutableListOf<YelpRestaurant>()
-    val restaurantDisplay = mutableListOf<YelpRestaurant>()
+    private val restaurantResults = mutableListOf<YelpRestaurant>()
+    private val restaurantDisplay = mutableListOf<YelpRestaurant>()
+    //private val restaurantSkipped = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
 
     private var index = 0
+    //private var skippedIndex = 0
     private var currLocation = ""
 
     companion object {
@@ -33,9 +35,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         const val defaultRadius = "1000"
     }
 
-    fun nextRestaurant() {
+    private fun nextRestaurant() {
         if (restaurantDisplay.size > index+1){
-            index++
+            // index++
             _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
         }
         else{
@@ -44,15 +46,16 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     }
 
-    fun prevRestaurant() {
-        if (index > 0){
-            index--
-            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
-        }
-        else{
-            Toast.makeText(getApplication(), "Cannot show previous", Toast.LENGTH_SHORT).show()
-        }
-    }
+//    fun prevRestaurant() {
+//        Log.i(TAG, "index: $skippedIndex, skipped: $restaurantSkipped")
+//        if (skippedIndex > 0){
+//            skippedIndex--
+//            _stateFlow.tryEmit(RestaurantState.Success(restaurantSkipped[skippedIndex]))
+//        }
+//        else{
+//            Toast.makeText(getApplication(), "Cannot show previous", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
     private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, radius: Int) {
         LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
@@ -80,6 +83,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         index = 0
         restaurantResults.clear()
         restaurantDisplay.clear()
+        //restaurantSkipped.clear()
         _stateFlow.value = RestaurantState.Loading
 
         if (radius.isEmpty()){
@@ -151,6 +155,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun isSkipped(restaurant: YelpRestaurant): Boolean{
         if (restaurant.name in SavedFragment().getSkippedList()){
+//            skippedIndex++
+//            restaurantSkipped.add(restaurant)
             return true
         }
         return false
@@ -162,7 +168,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setIsSaved(isSaved)
         saved.setUser(currentUser)
         saved.setRestaurantName(restaurant.name)
-        saved.setRestaurantPrice(restaurant.price)
+        //saved.setRestaurantPrice(restaurant.price)
         saved.setRestaurantRating(restaurant.rating)
         saved.setRestaurantImage(restaurant.image_url)
         saved.setRestaurantDistance(restaurant.distance_meters)
@@ -175,6 +181,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             }
             Log.i(TAG, "Restaurant save was successful")
         })
+
+
+        restaurantDisplay.remove(restaurant)
+
+//        if (!isSaved){
+//            skippedIndex++
+//            restaurantSkipped.add(restaurant)
+//        }
 
         nextRestaurant()
     }
