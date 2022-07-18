@@ -173,6 +173,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setRestaurantImage(restaurant.image_url)
         saved.setRestaurantDistance(restaurant.distance_meters)
         saved.setRestaurantReviewCount(restaurant.review_count)
+        saved.setRestaurantAddress(restaurant.location.address)
 
         saved.saveInBackground(SaveCallback { e ->
             if (e != null) {

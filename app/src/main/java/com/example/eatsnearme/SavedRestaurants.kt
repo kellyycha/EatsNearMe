@@ -18,7 +18,7 @@ const val KEY_REVIEW_COUNT = "reviewCount"
 const val KEY_IMAGE_URL = "imageUrl"
 const val KEY_DISTANCE_METERS = "distance"
 const val KEY_CATEGORIES = "categories"
-const val KEY_LOCATION = "location"
+const val KEY_ADDRESS = "address"
 
 
 @ParseClassName("SavedRestaurants")
@@ -92,8 +92,16 @@ class SavedRestaurants : ParseObject() {
         put(KEY_DISTANCE_METERS, distance)
     }
 
-    // TODO: How to add fields for categories or location?
+    fun getRestaurantAddress(): String? {
+        return getString(KEY_ADDRESS)
+    }
+
+    fun setRestaurantAddress(address: String?) {
+        put(KEY_ADDRESS, address!!)
+    }
+
+    // TODO: How to add fields for categories?
 
 //val categories: List<YelpCategory>,
-//val location: YelpLocation
+
 }

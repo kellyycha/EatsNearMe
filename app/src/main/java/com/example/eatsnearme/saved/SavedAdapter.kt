@@ -31,6 +31,7 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
         fun bind(saved: SavedRestaurants) {
 
             itemView.tvSavedName.text = saved.getRestaurantName().toString()
+            itemView.tvSavedAddress.text = saved.getRestaurantAddress().toString()
             Glide.with(context).load(saved.getRestaurantImage()).into(itemView.ivPic1)
 
         }
