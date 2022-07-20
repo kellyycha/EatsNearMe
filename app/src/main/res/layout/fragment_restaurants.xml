@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <EditText
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:hint="Search Type of Food"
-            android:minHeight="48dp"
+            android:minHeight="30dp"
             android:textAlignment="viewStart"
             android:textSize="14sp" />
 
@@ -36,16 +36,39 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="Current Location"
-            android:minHeight="48dp"
+            android:minHeight="30dp"
             android:textAlignment="viewStart"
             android:textSize="14sp" />
-
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="14sp"
+            android:text="Heading towards: " />
+
+        <EditText
+            android:id="@+id/etDestination"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="Destination Location"
+            android:minHeight="30dp"
+            android:textAlignment="viewStart"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <TextView
@@ -62,7 +85,7 @@
             android:layout_height="wrap_content"
             android:hint="1000"
             android:inputType="number"
-            android:minHeight="48dp"
+            android:minHeight="30dp"
             android:textAlignment="viewStart"
             android:textSize="14sp" />
         <TextView
@@ -74,7 +97,7 @@
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="30dp"
             android:layout_weight="1"
@@ -85,15 +108,15 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvRestaurantCard"
-        android:layout_width="match_parent"
-        android:layout_height="520dp"
+        android:layout_width="350dp"
+        android:layout_height="480dp"
         android:layout_margin="15dp"
         app:cardCornerRadius="15dp"
         app:cardElevation="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="430dp"
             android:orientation="vertical">
 
             <ImageView
@@ -124,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="390dp"
+                android:layout_marginTop="370dp"
                 android:orientation="horizontal">
 
                 <TextView

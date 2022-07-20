@@ -13,7 +13,7 @@ data class YelpRestaurant(
     val price: String,
     val review_count: Int,
     val image_url: String,
-    @SerializedName("distance") val distance_meters: Double,
+    //@SerializedName("distance") val distance_meters: Double,
     val categories: List<YelpCategory>,
     val location: YelpLocation,
     @SerializedName("display_phone") val phone: String,

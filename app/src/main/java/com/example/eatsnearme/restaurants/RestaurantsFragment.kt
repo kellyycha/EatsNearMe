@@ -49,7 +49,7 @@ class RestaurantsFragment : Fragment() {
 
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
-            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString(), etRadius.text.toString())
+            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString(), etDestination.text.toString(), etRadius.text.toString())
         }
 
         collectLatestLifecycleFlow(viewModel.stateFlow) {
@@ -151,7 +151,7 @@ class RestaurantsFragment : Fragment() {
         if(requestCode == LocationService.PERMISSION_REQUEST_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Log.i(TAG, "Permission Granted")
-                viewModel.fetchRestaurants("","", RestaurantsViewModel.defaultRadius)
+                viewModel.fetchRestaurants("","", "", RestaurantsViewModel.defaultRadius)
             }
             else {
                 Log.i(TAG, "Permission Denied")

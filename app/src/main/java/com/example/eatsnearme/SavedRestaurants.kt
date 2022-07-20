@@ -16,7 +16,6 @@ const val KEY_RATING = "rating"
 const val KEY_PRICE = "price"
 const val KEY_REVIEW_COUNT = "reviewCount"
 const val KEY_IMAGE_URL = "imageUrl"
-const val KEY_DISTANCE_METERS = "distance"
 const val KEY_CATEGORIES = "categories"
 const val KEY_ADDRESS = "address"
 
@@ -82,14 +81,6 @@ class SavedRestaurants : ParseObject() {
 
     fun setRestaurantImage(imageUrl: String?) {
         put(KEY_IMAGE_URL, imageUrl!!)
-    }
-
-    fun getRestaurantDistance(): Double {
-        return getDouble(KEY_DISTANCE_METERS)
-    }
-
-    fun setRestaurantDistance(distance: Double) {
-        put(KEY_DISTANCE_METERS, distance)
     }
 
     fun getRestaurantAddress(): String? {
