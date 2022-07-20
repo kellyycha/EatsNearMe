@@ -1,7 +1,6 @@
 package com.example.eatsnearme.yelp
 
 import com.google.gson.annotations.SerializedName
-import java.util.*
 
 data class YelpSearchResult (
     @SerializedName("total") val total: Int,

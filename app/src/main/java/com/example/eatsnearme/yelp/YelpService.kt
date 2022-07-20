@@ -8,7 +8,7 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 private const val BASE_URL = "https://api.yelp.com/v3/"
-const val API_KEY = "s_Q0zANLiLbbp8ga5gCjJ7K-MiwmTnqTIUzX9XFnBvYvFE7iN7nMDUf7e5a6JnC9CVLPEBTfyE1zVwV-Y3zfl9IadSiIvUFyhXHnILfz7_Gt6CjscNONxY6jAwOxYnYx"
+const val YELP_API_KEY = "s_Q0zANLiLbbp8ga5gCjJ7K-MiwmTnqTIUzX9XFnBvYvFE7iN7nMDUf7e5a6JnC9CVLPEBTfyE1zVwV-Y3zfl9IadSiIvUFyhXHnILfz7_Gt6CjscNONxY6jAwOxYnYx"
 
 interface YelpService {
 
@@ -18,8 +18,6 @@ interface YelpService {
         @Query("term") searchTerm: String,
         @Query("location") location: String,
         @Query("radius") radius: Int) : Call<YelpSearchResult>
-
-    // TODO: add radius field
 
     companion object {
         fun create(): YelpService {
