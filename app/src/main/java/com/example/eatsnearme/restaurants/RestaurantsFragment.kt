@@ -49,7 +49,11 @@ class RestaurantsFragment : Fragment() {
 
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
-            viewModel.fetchRestaurants(etSearchFood.text.toString(), etLocation.text.toString(), etDestination.text.toString(), etRadius.text.toString())
+            viewModel.fetchRestaurants(
+                typeOfFood = etSearchFood.text.toString(),
+                location = etLocation.text.toString(),
+                destination = etDestination.text.toString(),
+                radius = etRadius.text.toString())
         }
 
         collectLatestLifecycleFlow(viewModel.stateFlow) {
@@ -76,10 +80,6 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun initializeCardButtons() {
-//        btnPrev.setOnClickListener {
-//            Log.i(TAG, "Clicked Previous")
-//            viewModel.prevRestaurant()
-//        }
 
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
@@ -93,7 +93,6 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun hideCardUI(){
-//        btnPrev.visibility = View.GONE
         btnYes.visibility = View.GONE
         btnNo.visibility = View.GONE
         tvName.visibility = View.GONE
@@ -103,7 +102,6 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun showCardUI(restaurant: YelpRestaurant) {
-//        btnPrev.visibility = View.VISIBLE
         btnYes.visibility = View.VISIBLE
         btnNo.visibility = View.VISIBLE
         tvName.visibility = View.VISIBLE
@@ -151,7 +149,7 @@ class RestaurantsFragment : Fragment() {
         if(requestCode == LocationService.PERMISSION_REQUEST_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Log.i(TAG, "Permission Granted")
-                viewModel.fetchRestaurants("","", "", RestaurantsViewModel.defaultRadius)
+                viewModel.fetchRestaurants()
             }
             else {
                 Log.i(TAG, "Permission Denied")

@@ -31,24 +31,20 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private val restaurantDisplay = mutableListOf<YelpRestaurant>()
     private var polylineCoordinates = mutableListOf<LatLng>()
     private var spacedCoordinates = mutableListOf<LatLng>()
-    //private val restaurantSkipped = mutableListOf<YelpRestaurant>()
 
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
 
     private var index = 0
-    //private var skippedIndex = 0
     private var currLocation = ""
 
     companion object {
         const val TAG = "RestaurantsViewModel"
         const val defaultRadius = "1000"
-        const val defaultPathRadius = "500"
     }
 
     private fun nextRestaurant() {
         if (restaurantDisplay.size > index+1){
-            // index++
             _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
         }
         else{
@@ -57,17 +53,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
 
     }
-
-//    fun prevRestaurant() {
-//        Log.i(TAG, "index: $skippedIndex, skipped: $restaurantSkipped")
-//        if (skippedIndex > 0){
-//            skippedIndex--
-//            _stateFlow.tryEmit(RestaurantState.Success(restaurantSkipped[skippedIndex]))
-//        }
-//        else{
-//            Toast.makeText(getApplication(), "Cannot show previous", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, destination: String, radius: Int) {
         LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
@@ -78,7 +63,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     queryYelp(typeOfFood, currLocation, radius)
                 }
                 else{
-                    getPath(typeOfFood, currLocation, destination)
+                    getPath(typeOfFood, currLocation, destination, radius.toInt())
                 }
 
             }
@@ -90,10 +75,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         Log.i(TAG, "init")
         // TODO: load saved restaurants before fetching.
         //  right now it only filters after clicking saved tab and going back and then clicking search again
-        fetchRestaurants("","", "", defaultRadius)
+        fetchRestaurants()
     }
 
-    fun fetchRestaurants(typeOfFood: String, location: String, destination: String, radius: String) {
+    fun fetchRestaurants(typeOfFood: String = "", location: String = "", destination: String = "", radius: String = defaultRadius) {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
         Log.i(TAG, "radius: $radius")
@@ -101,7 +86,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         index = 0
         restaurantResults.clear()
         restaurantDisplay.clear()
-        //restaurantSkipped.clear()
         _stateFlow.value = RestaurantState.Loading
 
         if (radius.isEmpty()){
@@ -117,7 +101,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             queryYelp(typeOfFood, location, radius.toInt())
         }
         else if (location.isNotEmpty() && destination.isNotEmpty()){
-            getPath(typeOfFood, location, destination)
+            getPath(typeOfFood, location, destination, radius.toInt())
         }
         else{
             _stateFlow.value = RestaurantState.Idle
@@ -125,7 +109,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     }
 
-    private fun getPath(typeOfFood: String, origin: String, destination: String) {
+    private fun getPath(typeOfFood: String, origin: String, destination: String, radius: Int) {
         Log.i("MAPS", "getting path")
         polylineCoordinates.clear()
         val mapsService = MapsService.create()
@@ -145,7 +129,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     Log.i("MAPS", "overview polyline results: $polylineCoordinates")
 
 
-                    getSpacedPoints(polylineCoordinates, typeOfFood)
+                    getSpacedPoints(polylineCoordinates, typeOfFood, radius)
 
                 }
 
@@ -155,14 +139,12 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             })
     }
 
-    private fun getSpacedPoints(polylineCoordinates: MutableList<LatLng>, typeOfFood: String) {
+    private fun getSpacedPoints(polylineCoordinates: MutableList<LatLng>, typeOfFood: String, radius: Int) {
         spacedCoordinates.clear()
         Log.i("MAPS","amt in all: ${polylineCoordinates.size}")
 
         var index1 = 0
         var index2 = 1
-
-        //spacedCoordinates.add(polylineCoordinates[index1])
 
         while(index2 < polylineCoordinates.size){
             var start = polylineCoordinates[index1]
@@ -171,7 +153,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             val results = FloatArray(1)
             Location.distanceBetween(start.latitude, start.longitude, next.latitude, next.longitude, results)
 
-            if (results[0] > defaultPathRadius.toInt()){
+            if (results[0] > radius){
                 spacedCoordinates.add(next)
                 index1 = index2
                 index2++
@@ -181,14 +163,12 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             }
         }
 
-        //spacedCoordinates.add(polylineCoordinates[index2-1])
-
         Log.i("MAPS","amt in spaced: ${spacedCoordinates.size}")
 
         for (coord in spacedCoordinates) {
             Log.i("MAPS", "spaced: ${coord.latitude},${coord.longitude}")
             val location = "${coord.latitude},${coord.longitude}"
-            queryYelp(typeOfFood, location, defaultPathRadius.toInt())
+            queryYelp(typeOfFood, location, radius)
         }
 
     }
@@ -213,7 +193,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
                     for (restaurant in restaurantResults){
                         if (!isSkipped(restaurant) && !isSaved(restaurant)
-                            && restaurant !in restaurantDisplay && !(restaurant.location.address.isNullOrEmpty())){
+                            && restaurant !in restaurantDisplay && restaurant.location.address.isNotEmpty()){
                             restaurantDisplay.add(restaurant)
                         }
                     }
@@ -283,14 +263,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             Log.i(TAG, "Restaurant save was successful")
         })
 
-
         restaurantDisplay.remove(restaurant)
-
-//        if (!isSaved){
-//            skippedIndex++
-//            restaurantSkipped.add(restaurant)
-//        }
-
         nextRestaurant()
     }
 
