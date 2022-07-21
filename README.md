@@ -27,18 +27,18 @@ This app will help you decide on the best places to eat, to make the most out of
 
 **Required Must-have Stories**
 (more focused on spontaneous)
-* Users can log in
-* Use current location and default radius or set a location and radius
+* [x] Users can log in
+* [x] Use current location and default radius or set a location and radius
 * Tinder-style swiping animation
-  * Swipe yes or no for each restaurant
+  * [x] Select yes or no for each restaurant
 * Pictures, info, and links in detail view of restaurants
-* All the yes's go into saved tab
+* [x] All the yes's go into saved tab
 * Filtering in search
-* Able to plan out a path to your destination to only show places along the way
+* [x] Able to plan out a path to your destination to only show places along the way
 * Map view to show where the restaurant is 
 * After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
-* Use the Model–View–ViewModel architectural pattern to organize the code
-* Use state flows to update the UI when the data changes
+* [x] Use the Model–View–ViewModel architectural pattern to organize the code
+* [x] Use state flows to update the UI when the data changes
 
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
