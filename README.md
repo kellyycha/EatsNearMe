@@ -29,29 +29,29 @@ This app will help you decide on the best places to eat, to make the most out of
 (more focused on spontaneous)
 * [x] Users can log in
 * [x] Use current location and default radius or set a location and radius
-* Tinder-style swiping animation
+* [ ] Tinder-style swiping animation
   * [x] Select yes or no for each restaurant
-* Pictures, info, and links in detail view of restaurants
+* [ ] Pictures, info, and links in detail view of restaurants
 * [x] All the yes's go into saved tab
-* Filtering in search
+* [ ] Filtering in search
 * [x] Able to plan out a path to your destination to only show places along the way
-* Map view to show where the restaurant is 
-* After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
+* [ ] Map view to show where the restaurant is 
+* [ ] After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
 * [x] Use the Model–View–ViewModel architectural pattern to organize the code
 * [x] Use state flows to update the UI when the data changes
 
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
-* Show directions to restaurant
-* Add an overall map view to your saved restaurants
-* Able to color code map pinpoints
-* Able to filter map by category
-* Sort saved restaurants in folders by location
-* Follow friends' accounts to see their favorite restaurants
-* Use data from what the user liked to recommend a restaurant near you using push notifications
-   * See the user's saved restaurants, skipped restaurants, and favorited restaurants (ones they've tried and marked that they like) and create a weighting system of the types of restaurants that the user prefers.
-   * This will be based on types of cusine, reviews, and price range.
-   * Find restaurants, whether that be ones they do not know about or ones that are already on their list but have not tried yet, that it feels the user would especially like and recommend them a restaurant with a push notification if they are ever close to the area.
+* [ ] Show directions to restaurant
+* [ ] Add an overall map view to your saved restaurants
+* [ ] Able to color code map pinpoints
+* [ ] Able to filter map by category
+* [ ] Sort saved restaurants in folders by location
+* [ ] Follow friends' accounts to see their favorite restaurants
+* [ ] Use data from what the user liked to recommend a restaurant near you using push notifications
+   * [ ] See the user's saved restaurants, skipped restaurants, and favorited restaurants (ones they've tried and marked that they like) and create a weighting system of the types of restaurants that the user prefers.
+   * [ ] This will be based on types of cusine, reviews, and price range.
+   * [ ] Find restaurants, whether that be ones they do not know about or ones that are already on their list but have not tried yet, that it feels the user would especially like and recommend them a restaurant with a push notification if they are ever close to the area.
 
 **Complex Features + ideas to execute them**
 1. Set a destination from your current location to find restaurants along the way
