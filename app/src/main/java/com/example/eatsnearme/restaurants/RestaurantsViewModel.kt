@@ -41,6 +41,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     companion object {
         const val TAG = "RestaurantsViewModel"
         const val defaultRadius = "1000"
+        const val defaultPathRadius = "200"
     }
 
     private fun nextRestaurant() {
@@ -63,7 +64,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     queryYelp(typeOfFood, currLocation, radius)
                 }
                 else{
-                    getPath(typeOfFood, currLocation, destination, radius.toInt())
+                    getPath(typeOfFood, currLocation, destination, radius)
                 }
 
             }
@@ -78,9 +79,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         fetchRestaurants()
     }
 
-    fun fetchRestaurants(typeOfFood: String = "", location: String = "", destination: String = "", radius: String = defaultRadius) {
+    fun fetchRestaurants(typeOfFood: String = "", location: String = "", destination: String = "", radius: String = "") {
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
+        Log.i(TAG, "destination: $destination")
         Log.i(TAG, "radius: $radius")
 
         index = 0
@@ -89,8 +91,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         _stateFlow.value = RestaurantState.Loading
 
         if (radius.isEmpty()){
-            fetchRestaurants(typeOfFood, location, destination, defaultRadius)
-            return
+            if(destination.isEmpty()){
+                fetchRestaurants(typeOfFood, location, destination, defaultRadius)
+                return
+            }
+            else{
+                fetchRestaurants(typeOfFood, location, destination, defaultPathRadius)
+                return
+            }
         }
 
         if(location.isEmpty() && LocationService().hasPermissions(getApplication())){
@@ -111,6 +119,11 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun getPath(typeOfFood: String, origin: String, destination: String, radius: Int) {
         Log.i("MAPS", "getting path")
+        Log.i(TAG, "type of food: $typeOfFood")
+        Log.i(TAG, "origin: $origin")
+        Log.i(TAG, "destination: $destination")
+        Log.i(TAG, "radius: $radius")
+
         polylineCoordinates.clear()
         val mapsService = MapsService.create()
         mapsService.searchPath(MAPS_API_KEY, origin, destination, "WALKING")

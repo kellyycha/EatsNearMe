@@ -54,6 +54,12 @@ class RestaurantsFragment : Fragment() {
                 location = etLocation.text.toString(),
                 destination = etDestination.text.toString(),
                 radius = etRadius.text.toString())
+            if (etDestination.text.toString().isNotEmpty()){
+                etRadius.hint = "200"
+            }
+            else{
+                etRadius.hint = "1000"
+            }
         }
 
         collectLatestLifecycleFlow(viewModel.stateFlow) {

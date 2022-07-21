@@ -126,13 +126,6 @@
                 android:scaleType="centerCrop"
                 tools:srcCompat="@tools:sample/avatars" />
 
-
-            <!--            <Button-->
-<!--                android:id="@+id/btnPrev"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Previous" />-->
-
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
