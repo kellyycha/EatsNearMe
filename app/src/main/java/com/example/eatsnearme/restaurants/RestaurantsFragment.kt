@@ -8,6 +8,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -16,8 +19,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.example.eatsnearme.R
-import com.example.eatsnearme.saved.SavedFragment
 import com.example.eatsnearme.yelp.YelpRestaurant
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.bottom_sheet_filter.*
 import kotlinx.android.synthetic.main.fragment_restaurants.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -47,18 +52,34 @@ class RestaurantsFragment : Fragment() {
 
         initializeCardButtons()
 
-        btnSearch.setOnClickListener {
-            Log.i(TAG, "Clicked Search")
-            viewModel.fetchRestaurants(
-                typeOfFood = etSearchFood.text.toString(),
-                location = etLocation.text.toString(),
-                destination = etDestination.text.toString(),
-                radius = etRadius.text.toString())
-            if (etDestination.text.toString().isNotEmpty()){
-                etRadius.hint = "200"
+        btnFilter.setOnClickListener{
+            val bttomSheetview = layoutInflater.inflate(R.layout.bottom_sheet_filter, null)
+
+            val btnSearch = bttomSheetview.findViewById<FloatingActionButton>(R.id.btnSearch)
+            val btnExitFilter = bttomSheetview.findViewById<ImageButton>(R.id.btnExitFilter)
+            val etSearchFood = bttomSheetview.findViewById<EditText>(R.id.etSearchFood)
+            val etLocation = bttomSheetview.findViewById<EditText>(R.id.etLocation)
+            val etDestination = bttomSheetview.findViewById<EditText>(R.id.etDestination)
+            val etRadius = bttomSheetview.findViewById<EditText>(R.id.etRadius)
+
+            val dialog = BottomSheetDialog(requireContext())
+
+            dialog.setCancelable(false)
+            dialog.setContentView(bttomSheetview)
+            dialog.show()
+
+            btnSearch.setOnClickListener {
+                Log.i(TAG, "Clicked Search")
+                viewModel.fetchRestaurants(
+                    typeOfFood = etSearchFood.text.toString(),
+                    location = etLocation.text.toString(),
+                    destination = etDestination.text.toString(),
+                    radius = etRadius.text.toString())
+                dialog.dismiss()
             }
-            else{
-                etRadius.hint = "1000"
+
+           btnExitFilter.setOnClickListener {
+                dialog.dismiss()
             }
         }
 
@@ -105,6 +126,7 @@ class RestaurantsFragment : Fragment() {
         ivYelpPic.visibility = View.GONE
         ratingBar.visibility = View.GONE
         tvPrice.visibility = View.GONE
+        gradient.visibility = View.GONE
     }
 
     private fun showCardUI(restaurant: YelpRestaurant) {
@@ -114,6 +136,7 @@ class RestaurantsFragment : Fragment() {
         ivYelpPic.visibility = View.VISIBLE
         ratingBar.visibility = View.VISIBLE
         tvPrice.visibility = View.VISIBLE
+        gradient.visibility = View.VISIBLE
 
         tvName.text = restaurant.name
         tvPrice.text = restaurant.price

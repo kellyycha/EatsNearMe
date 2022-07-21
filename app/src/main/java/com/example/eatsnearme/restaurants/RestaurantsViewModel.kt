@@ -91,14 +91,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         _stateFlow.value = RestaurantState.Loading
 
         if (radius.isEmpty()){
-            if(destination.isEmpty()){
-                fetchRestaurants(typeOfFood, location, destination, defaultRadius)
-                return
-            }
-            else{
-                fetchRestaurants(typeOfFood, location, destination, defaultPathRadius)
-                return
-            }
+            fetchRestaurants( typeOfFood, location, destination, if (destination.isEmpty()) defaultRadius else defaultPathRadius)
+            return
         }
 
         if(location.isEmpty() && LocationService().hasPermissions(getApplication())){
@@ -244,8 +238,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun isSkipped(restaurant: YelpRestaurant): Boolean{
         if (restaurant.name in SavedFragment().getSkippedList()){
-//            skippedIndex++
-//            restaurantSkipped.add(restaurant)
             return true
         }
         return false
@@ -257,7 +249,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setIsSaved(isSaved)
         saved.setUser(currentUser)
         saved.setRestaurantName(restaurant.name)
-        //saved.setRestaurantPrice(restaurant.price)
+        saved.setRestaurantPrice(restaurant.price)
         saved.setRestaurantRating(restaurant.rating)
         saved.setRestaurantImage(restaurant.image_url)
         saved.setRestaurantReviewCount(restaurant.review_count)
