@@ -8,7 +8,7 @@ data class YelpSearchResult (
 )
 
 data class YelpRestaurant(
-    val name: String,
+    var name: String,
     val rating: Double,
     val price: String,
     val review_count: Int,

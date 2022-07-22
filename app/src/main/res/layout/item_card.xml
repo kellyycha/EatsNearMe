@@ -80,10 +80,10 @@
                 style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/btnNo"
                 android:layout_alignStart="@+id/Words"
+                android:layout_alignParentBottom="true"
                 android:layout_marginStart="50dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginBottom="20dp"
                 android:max="5"
                 android:numStars="5"
                 android:progressTint="@color/sage"
@@ -91,27 +91,6 @@
                 android:scaleX="2"
                 android:scaleY="2" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btnNo"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="50dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="#FF6060"
-                android:src="@android:drawable/ic_menu_close_clear_cancel" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btnYes"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="#2EE353"
-                android:src="?android:attr/textCheckMark" />
 
         </RelativeLayout>
 
