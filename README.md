@@ -33,16 +33,17 @@ This app will help you decide on the best places to eat, to make the most out of
   * [x] Select yes or no for each restaurant
 * [ ] Pictures, info, and links in detail view of restaurants
 * [x] All the yes's go into saved tab
-* [ ] Filtering in search
+* [ ] Filtering in search: Let the users select prices, food category, rating, number of reviews.
 * [x] Able to plan out a path to your destination to only show places along the way
+   * [x] optimize the search query to load restaurants along the path when the current list is exhausted so too many restaurants are not queried at once.
 * [ ] Map view to show where the restaurant is 
-* [ ] After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
 * [x] Use the Model–View–ViewModel architectural pattern to organize the code
 * [x] Use state flows to update the UI when the data changes
 
 **Optional Nice-to-have Stories**
 (more focused on planning/sharing)
 * [ ] Show directions to restaurant
+* [ ] After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
 * [ ] Add an overall map view to your saved restaurants
 * [ ] Able to color code map pinpoints
 * [ ] Able to filter map by category
@@ -56,13 +57,9 @@ This app will help you decide on the best places to eat, to make the most out of
 **Complex Features + ideas to execute them**
 1. Set a destination from your current location to find restaurants along the way
    * Use Google Maps API
-   * Idea 1: Find a path to get to your destination and set multiple small radii along those lines and show restaurants within those radii.
-   * Since there are multiple ways to get from one place to another, only following one path would be restricting. There might be a restaurant a few streets over that won't even be too out of the way, but not within the direct path. Therefore, one solution to this can be to see if I can find all of the alternate routes and combine those radii to find retaurants within all of them. 
-2. Implementing a filtering algorithm that shows results that are only within certain categories.
-   * Let the users select prices, food category, rating, number of reviews.
-3. (Stretch goal complex feature) Optimize the search query 
+   * Find a path to get to your destination and set multiple small radii along those lines and show restaurants within those radii.
+2. Optimize the search query 
    * Only add query additional restuarants along the path as the user exhausts the list instead of querying everything along the path.
-   * Show only the best match data before fetching more.
 5. (Stretch goal complex feature) Add background thread prefetching 
    * A problem I have was that the saved/skipped restaurants lists were not loaded initially before fetching the restaurants. For now, I went around this issue by loading the saved fragment first before changing tabs to the restaurants fragment. However, I want to try loading it in the background so that the first screen can be the restaurants screen, since it is the main screen of my app.
 
