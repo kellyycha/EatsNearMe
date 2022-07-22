@@ -28,6 +28,7 @@ import retrofit2.Response
 class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val restaurantResults = mutableListOf<YelpRestaurant>()
+    private val restaurantAllDisplay = mutableListOf<YelpRestaurant>()
     private val restaurantDisplay = mutableListOf<YelpRestaurant>()
     private var polylineCoordinates = mutableListOf<LatLng>()
     private var spacedCoordinates = mutableListOf<LatLng>()
@@ -35,24 +36,48 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private val _stateFlow = MutableStateFlow<RestaurantState>(RestaurantState.Loading)
     val stateFlow:StateFlow<RestaurantState> = _stateFlow
 
-    private var index = 0
     private var currLocation = ""
+    private var queryIndex = 0
 
     companion object {
         const val TAG = "RestaurantsViewModel"
+        const val MIN_SIZE = 10
         const val defaultRadius = "1000"
         const val defaultPathRadius = "200"
     }
 
-    private fun nextRestaurant() {
-        if (restaurantDisplay.size > index+1){
-            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[index]))
+    private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
+
+        // null check for if you start selecting restaurants without setting filters
+        if (typeOfFood == null || destination == null){
+            restaurantDisplay.remove(restaurant)
+            setStateForNext()
+            return
+        }
+
+        else if (radius.isNullOrEmpty()){
+            nextRestaurant(restaurant, typeOfFood, destination, defaultPathRadius)
+            return
+        }
+
+        restaurantDisplay.remove(restaurant)
+        setStateForNext()
+
+
+        if (destination.isNotEmpty()){
+            queryAsNeeded(typeOfFood, radius.toInt())
+        }
+
+    }
+
+    private fun setStateForNext(){
+        if (restaurantDisplay.size > 1){
+            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[0]))
         }
         else{
             _stateFlow.value = RestaurantState.Idle
             Toast.makeText(getApplication(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, destination: String, radius: Int) {
@@ -60,7 +85,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             override fun onLocationChanged(location: Location) {
                 Log.d(TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
                 currLocation = "${location.latitude}, ${location.longitude}"
-                if (destination.isEmpty()){
+                if (destination.isBlank()){
                     queryYelp(typeOfFood, currLocation, radius)
                 }
                 else{
@@ -85,24 +110,23 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         Log.i(TAG, "destination: $destination")
         Log.i(TAG, "radius: $radius")
 
-        index = 0
         restaurantResults.clear()
         restaurantDisplay.clear()
         _stateFlow.value = RestaurantState.Loading
 
-        if (radius.isEmpty()){
-            fetchRestaurants( typeOfFood, location, destination, if (destination.isEmpty()) defaultRadius else defaultPathRadius)
+        if (radius.isBlank()){
+            fetchRestaurants(typeOfFood, location, destination, if (destination.isBlank()) defaultRadius else defaultPathRadius)
             return
         }
 
-        if(location.isEmpty() && LocationService().hasPermissions(getApplication())){
+        if(location.isBlank() && LocationService().hasPermissions(getApplication())){
             Log.i(TAG, "no location")
             fetchRestaurantsForCurrentLocation(typeOfFood, destination, radius.toInt())
         }
-        else if (location.isNotEmpty() && destination.isEmpty()){
+        else if (location.isNotBlank() && destination.isBlank()){
             queryYelp(typeOfFood, location, radius.toInt())
         }
-        else if (location.isNotEmpty() && destination.isNotEmpty()){
+        else if (location.isNotBlank() && destination.isNotBlank()){
             getPath(typeOfFood, location, destination, radius.toInt())
         }
         else{
@@ -150,6 +174,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         spacedCoordinates.clear()
         Log.i("MAPS","amt in all: ${polylineCoordinates.size}")
 
+        for (coord in polylineCoordinates) {
+            Log.i("MAPS", "all: ${coord.latitude},${coord.longitude}")
+        }
+
         var index1 = 0
         var index2 = 1
 
@@ -170,12 +198,31 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             }
         }
 
+        if (spacedCoordinates.size == 0 && polylineCoordinates.size != 0){
+            spacedCoordinates.add(polylineCoordinates[index1])
+        }
+
         Log.i("MAPS","amt in spaced: ${spacedCoordinates.size}")
 
         for (coord in spacedCoordinates) {
             Log.i("MAPS", "spaced: ${coord.latitude},${coord.longitude}")
-            val location = "${coord.latitude},${coord.longitude}"
+        }
+
+        queryIndex = 0
+        queryAsNeeded(typeOfFood, radius)
+
+    }
+
+    private fun queryAsNeeded(typeOfFood: String, radius: Int){
+        Log.i("QUERY","query as needed")
+        Log.i("QUERY","list size: ${restaurantDisplay.size}")
+        if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
+            val coordinate = spacedCoordinates[queryIndex]
+            val location = "${coordinate.latitude},${coordinate.longitude}"
+            Log.i("QUERY","query yelp at: $location")
+            Log.i("QUERY","query index: $queryIndex")
             queryYelp(typeOfFood, location, radius)
+            queryIndex++
         }
 
     }
@@ -200,7 +247,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
                     for (restaurant in restaurantResults){
                         if (!isSkipped(restaurant) && !isSaved(restaurant)
-                            && restaurant !in restaurantDisplay && restaurant.location.address.isNotEmpty()){
+                            && restaurant !in restaurantAllDisplay
+                            && restaurant.location.address.isNotEmpty()
+                            && restaurant.image_url.isNotEmpty()){
+                            restaurantAllDisplay.add(restaurant)
                             restaurantDisplay.add(restaurant)
                         }
                     }
@@ -217,7 +267,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         Toast.makeText(getApplication(), "No restaurants within radius", Toast.LENGTH_SHORT).show()
                     }
                     else{
-                        _stateFlow.value = RestaurantState.Success(restaurantDisplay[index])
+                        _stateFlow.value = RestaurantState.Success(restaurantDisplay[0])
                     }
                 }
 
@@ -243,13 +293,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         return false
     }
 
-    fun storeRestaurant(restaurant: YelpRestaurant, isSaved: Boolean) {
+    fun storeRestaurant(restaurant: YelpRestaurant, isSaved: Boolean, typeOfFood: String? = "", destination: String? = "", radius: String? = "") {
         val currentUser = ParseUser.getCurrentUser()
         val saved = SavedRestaurants()
         saved.setIsSaved(isSaved)
         saved.setUser(currentUser)
         saved.setRestaurantName(restaurant.name)
-        saved.setRestaurantPrice(restaurant.price)
+        //TODO: crashes if restaurant price is not available (null), even though price column is not required in parse
+        //saved.setRestaurantPrice(restaurant.price)
         saved.setRestaurantRating(restaurant.rating)
         saved.setRestaurantImage(restaurant.image_url)
         saved.setRestaurantReviewCount(restaurant.review_count)
@@ -268,8 +319,20 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             Log.i(TAG, "Restaurant save was successful")
         })
 
-        restaurantDisplay.remove(restaurant)
-        nextRestaurant()
+        nextRestaurant(restaurant, typeOfFood, destination, radius)
+//        if (typeOfFood == null){
+//            restaurantDisplay.remove(restaurant)
+//            nextRestaurant()
+//            return
+//        }
+//
+//        else if (radius.isNullOrEmpty()){
+//            storeRestaurant(restaurant, isSaved, typeOfFood, destination, defaultPathRadius)
+//            return
+//        }
+//
+//        restaurantDisplay.remove(restaurant)
+//        nextRestaurant(typeOfFood, destination!!, radius)
     }
 
 

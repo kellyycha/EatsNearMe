@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
@@ -34,6 +33,11 @@ class RestaurantsFragment : Fragment() {
 
     private val viewModel: RestaurantsViewModel by activityViewModels()
 
+    private var typeOfFood : String? = null
+    private var location : String? = null
+    private var destination : String? = null
+    private var radius : String? = null
+
     companion object {
         const val TAG = "RestaurantsFragment"
     }
@@ -53,34 +57,7 @@ class RestaurantsFragment : Fragment() {
         initializeCardButtons()
 
         btnFilter.setOnClickListener{
-            val bttomSheetview = layoutInflater.inflate(R.layout.bottom_sheet_filter, null)
-
-            val btnSearch = bttomSheetview.findViewById<FloatingActionButton>(R.id.btnSearch)
-            val btnExitFilter = bttomSheetview.findViewById<ImageButton>(R.id.btnExitFilter)
-            val etSearchFood = bttomSheetview.findViewById<EditText>(R.id.etSearchFood)
-            val etLocation = bttomSheetview.findViewById<EditText>(R.id.etLocation)
-            val etDestination = bttomSheetview.findViewById<EditText>(R.id.etDestination)
-            val etRadius = bttomSheetview.findViewById<EditText>(R.id.etRadius)
-
-            val dialog = BottomSheetDialog(requireContext())
-
-            dialog.setCancelable(false)
-            dialog.setContentView(bttomSheetview)
-            dialog.show()
-
-            btnSearch.setOnClickListener {
-                Log.i(TAG, "Clicked Search")
-                viewModel.fetchRestaurants(
-                    typeOfFood = etSearchFood.text.toString(),
-                    location = etLocation.text.toString(),
-                    destination = etDestination.text.toString(),
-                    radius = etRadius.text.toString())
-                dialog.dismiss()
-            }
-
-           btnExitFilter.setOnClickListener {
-                dialog.dismiss()
-            }
+            showBottomSheet()
         }
 
         collectLatestLifecycleFlow(viewModel.stateFlow) {
@@ -106,16 +83,58 @@ class RestaurantsFragment : Fragment() {
         }
     }
 
-    private fun initializeCardButtons() {
+    private fun showBottomSheet() {
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_filter, null)
 
+        val btnSearch = bottomSheetView.findViewById<FloatingActionButton>(R.id.btnSearch)
+        val btnExitFilter = bottomSheetView.findViewById<ImageButton>(R.id.btnExitFilter)
+        val etSearchFood = bottomSheetView.findViewById<EditText>(R.id.etSearchFood)
+        val etLocation = bottomSheetView.findViewById<EditText>(R.id.etLocation)
+        val etDestination = bottomSheetView.findViewById<EditText>(R.id.etDestination)
+        val etRadius = bottomSheetView.findViewById<EditText>(R.id.etRadius)
+
+        val dialog = BottomSheetDialog(requireContext())
+
+        dialog.setCancelable(false)
+        dialog.setContentView(bottomSheetView)
+        dialog.show()
+
+        btnSearch.setOnClickListener {
+            Log.i(TAG, "Clicked Search")
+
+            typeOfFood = etSearchFood.text.toString()
+            location = etLocation.text.toString()
+            destination = etDestination.text.toString()
+            radius = etRadius.text.toString()
+
+            viewModel.fetchRestaurants(
+                typeOfFood = typeOfFood!!,
+                location = location!!,
+                destination = destination!!,
+                radius = radius!!)
+            dialog.dismiss()
+        }
+
+        btnExitFilter.setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+    private fun initializeCardButtons() {
         btnYes.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick yes button")
-            viewModel.storeRestaurant(restaurant,true)
+            viewModel.storeRestaurant(restaurant,true,
+                typeOfFood = typeOfFood,
+                destination = destination,
+                radius = radius)
         })
 
         btnNo.setOnClickListener(View.OnClickListener {
             Log.i(TAG, "onClick no button")
-            viewModel.storeRestaurant(restaurant, false)
+            viewModel.storeRestaurant(restaurant, false,
+                typeOfFood = typeOfFood,
+                destination = destination,
+                radius = radius)
         })
     }
 
