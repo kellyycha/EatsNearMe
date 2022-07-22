@@ -30,6 +30,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private val restaurantResults = mutableListOf<YelpRestaurant>()
     private val restaurantAllDisplay = mutableListOf<YelpRestaurant>()
     private val restaurantDisplay = mutableListOf<YelpRestaurant>()
+    private val restaurantNames = ArrayList<String>()
     private var polylineCoordinates = mutableListOf<LatLng>()
     private var spacedCoordinates = mutableListOf<LatLng>()
 
@@ -76,7 +77,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
         else{
             _stateFlow.value = RestaurantState.Idle
-            Toast.makeText(getApplication(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
+
         }
     }
 
@@ -112,6 +113,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
         restaurantResults.clear()
         restaurantDisplay.clear()
+        restaurantNames.clear()
         _stateFlow.value = RestaurantState.Loading
 
         if (radius.isBlank()){
@@ -260,11 +262,11 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
                     for (rest in restaurantDisplay){
                         Log.i("MAPS", "${rest.name}, ${rest.location.address}")
+                        restaurantNames.add(rest.name)
                     }
 
                     if (restaurantDisplay.isEmpty()){
                         _stateFlow.value = RestaurantState.Idle
-                        Toast.makeText(getApplication(), "No restaurants within radius", Toast.LENGTH_SHORT).show()
                     }
                     else{
                         _stateFlow.value = RestaurantState.Success(restaurantDisplay[0])
@@ -314,25 +316,19 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.saveInBackground(SaveCallback { e ->
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
-                Toast.makeText(getApplication(), "Error while saving", Toast.LENGTH_SHORT).show()
             }
             Log.i(TAG, "Restaurant save was successful")
         })
 
         nextRestaurant(restaurant, typeOfFood, destination, radius)
-//        if (typeOfFood == null){
-//            restaurantDisplay.remove(restaurant)
-//            nextRestaurant()
-//            return
-//        }
-//
-//        else if (radius.isNullOrEmpty()){
-//            storeRestaurant(restaurant, isSaved, typeOfFood, destination, defaultPathRadius)
-//            return
-//        }
-//
-//        restaurantDisplay.remove(restaurant)
-//        nextRestaurant(typeOfFood, destination!!, radius)
+    }
+
+    fun getRestaurantNames(): ArrayList<String> {
+        return restaurantNames
+    }
+
+    fun getRestaurantsToDisplay(): MutableList<YelpRestaurant> {
+        return restaurantDisplay
     }
 
 

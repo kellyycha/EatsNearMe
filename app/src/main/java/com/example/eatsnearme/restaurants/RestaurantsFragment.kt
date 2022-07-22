@@ -1,5 +1,6 @@
 package com.example.eatsnearme.restaurants
 
+//import kotlinx.android.synthetic.main.fragment_restaurants.*
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
@@ -8,9 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -21,11 +20,16 @@ import com.example.eatsnearme.R
 import com.example.eatsnearme.yelp.YelpRestaurant
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.lorentzos.flingswipe.SwipeFlingAdapterView
+import com.lorentzos.flingswipe.SwipeFlingAdapterView.onFlingListener
 import kotlinx.android.synthetic.main.bottom_sheet_filter.*
-import kotlinx.android.synthetic.main.fragment_restaurants.*
+import kotlinx.android.synthetic.main.fragment_cardswipe.*
+import kotlinx.android.synthetic.main.fragment_saved.*
+import kotlinx.android.synthetic.main.item_card.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 
 
 class RestaurantsFragment : Fragment() {
@@ -48,7 +52,7 @@ class RestaurantsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_restaurants, container, false)
+        return inflater.inflate(R.layout.fragment_cardswipe, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +72,8 @@ class RestaurantsFragment : Fragment() {
                     hideCardUI()
                 }
                 is RestaurantsViewModel.RestaurantState.Idle -> {
-                    Log.i(TAG, "no location - idle state")
+                    Log.i(TAG, "idle state")
+                    Toast.makeText(requireContext(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
                     spinner.visibility = View.GONE
                     hideCardUI()
                 }
@@ -76,11 +81,54 @@ class RestaurantsFragment : Fragment() {
                     restaurant = it.restaurant
                     Log.i(TAG, "Finished Loading, show restaurant")
                     spinner.visibility = View.GONE
+                    swipeCard(view)
                     showCardUI(restaurant)
 
                 }
             }
         }
+    }
+
+    private fun swipeCard(view: View) {
+        val swipeFlingAdapterView = view.findViewById<SwipeFlingAdapterView>(R.id.swipeFlingAdapterView)
+
+        //TODO: Make a custom adapter
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.item_card, R.id.tvName, viewModel.getRestaurantNames())
+
+        Log.i(TAG, "Restaurant Names: ${viewModel.getRestaurantNames()}")
+
+        swipeFlingAdapterView.adapter = arrayAdapter
+
+        swipeFlingAdapterView.setFlingListener(object : onFlingListener {
+            override fun removeFirstObjectInAdapter() {
+                viewModel.getRestaurantNames().removeAt(0)
+                arrayAdapter.notifyDataSetChanged()
+            }
+
+            override fun onLeftCardExit(dataObject: Any) {
+                Log.i(TAG, "swipe no")
+                viewModel.storeRestaurant(restaurant, false,
+                    typeOfFood = typeOfFood,
+                    destination = destination,
+                    radius = radius)
+            }
+
+            override fun onRightCardExit(dataObject: Any) {
+                Log.i(TAG, "swipe yes")
+                viewModel.storeRestaurant(restaurant,true,
+                    typeOfFood = typeOfFood,
+                    destination = destination,
+                    radius = radius)
+            }
+
+            override fun onAdapterAboutToEmpty(itemsInAdapter: Int) {
+
+            }
+
+            override fun onScroll(p0: Float) {
+
+            }
+        })
     }
 
     private fun showBottomSheet() {
@@ -121,41 +169,49 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun initializeCardButtons() {
-        btnYes.setOnClickListener(View.OnClickListener {
-            Log.i(TAG, "onClick yes button")
-            viewModel.storeRestaurant(restaurant,true,
-                typeOfFood = typeOfFood,
-                destination = destination,
-                radius = radius)
-        })
-
-        btnNo.setOnClickListener(View.OnClickListener {
-            Log.i(TAG, "onClick no button")
-            viewModel.storeRestaurant(restaurant, false,
-                typeOfFood = typeOfFood,
-                destination = destination,
-                radius = radius)
-        })
+//        btnYes.setOnClickListener(View.OnClickListener {
+//            Log.i(TAG, "onClick yes button")
+//            viewModel.storeRestaurant(restaurant,true,
+//                typeOfFood = typeOfFood,
+//                destination = destination,
+//                radius = radius)
+//        })
+//
+//        btnNo.setOnClickListener(View.OnClickListener {
+//            Log.i(TAG, "onClick no button")
+//            viewModel.storeRestaurant(restaurant, false,
+//                typeOfFood = typeOfFood,
+//                destination = destination,
+//                radius = radius)
+//        })
     }
 
     private fun hideCardUI(){
-        btnYes.visibility = View.GONE
-        btnNo.visibility = View.GONE
-        tvName.visibility = View.GONE
-        ivYelpPic.visibility = View.GONE
-        ratingBar.visibility = View.GONE
-        tvPrice.visibility = View.GONE
-        gradient.visibility = View.GONE
+//        btnYes.visibility = View.GONE
+//        btnNo.visibility = View.GONE
+//        tvName.visibility = View.GONE
+//        ivYelpPic.visibility = View.GONE
+//        ratingBar.visibility = View.GONE
+//        tvPrice.visibility = View.GONE
+//        gradient.visibility = View.GONE
     }
 
     private fun showCardUI(restaurant: YelpRestaurant) {
-        btnYes.visibility = View.VISIBLE
-        btnNo.visibility = View.VISIBLE
-        tvName.visibility = View.VISIBLE
-        ivYelpPic.visibility = View.VISIBLE
-        ratingBar.visibility = View.VISIBLE
-        tvPrice.visibility = View.VISIBLE
-        gradient.visibility = View.VISIBLE
+//        btnYes.visibility = View.VISIBLE
+//        btnNo.visibility = View.VISIBLE
+//        tvName.visibility = View.VISIBLE
+//        ivYelpPic.visibility = View.VISIBLE
+//        ratingBar.visibility = View.VISIBLE
+//        tvPrice.visibility = View.VISIBLE
+//        gradient.visibility = View.VISIBLE
+
+        val cardView = layoutInflater.inflate(R.layout.item_card, null)
+
+        val tvName = cardView.findViewById<TextView>(R.id.tvName)
+        val tvPrice = cardView.findViewById<TextView>(R.id.tvPrice)
+        val ratingBar = cardView.findViewById<RatingBar>(R.id.ratingBar)
+        val ivYelpPic = cardView.findViewById<ImageView>(R.id.ivYelpPic)
+
 
         tvName.text = restaurant.name
         tvPrice.text = restaurant.price

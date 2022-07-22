@@ -85,10 +85,8 @@ dependencies {
     // bottom sheet
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10'
 
-//    // range seek bar
-//    implementation 'com.appyvet:materialrangebar:1.4.8'
-//    implementation('com.appyvet:materialrangebar:1.4.8') {
-//        exclude module: 'support-compat'
-//    }
+    // card swipe
+    implementation 'com.lorentzos.swipecards:library:1.0.9@aar'
+
 
 }
