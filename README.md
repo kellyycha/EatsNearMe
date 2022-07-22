@@ -29,7 +29,7 @@ This app will help you decide on the best places to eat, to make the most out of
 (more focused on spontaneous)
 * [x] Users can log in
 * [x] Use current location and default radius or set a location and radius
-* [ ] Tinder-style swiping animation
+* [x] Tinder-style swiping animation
   * [x] Select yes or no for each restaurant
 * [ ] Pictures, info, and links in detail view of restaurants
 * [x] All the yes's go into saved tab
