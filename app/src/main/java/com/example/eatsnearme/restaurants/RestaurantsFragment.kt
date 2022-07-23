@@ -2,6 +2,7 @@ package com.example.eatsnearme.restaurants
 
 //import kotlinx.android.synthetic.main.fragment_restaurants.*
 import android.Manifest
+import android.animation.Animator
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -15,7 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.bumptech.glide.Glide
+import com.airbnb.lottie.LottieAnimationView
 import com.example.eatsnearme.R
 import com.example.eatsnearme.yelp.YelpRestaurant
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -29,7 +30,6 @@ import kotlinx.android.synthetic.main.item_card.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 
 
 class RestaurantsFragment : Fragment() {
@@ -57,6 +57,9 @@ class RestaurantsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requestPermissionsIfNeed(requireContext())
+
+        avYes.visibility = View.GONE
+        avNo.visibility = View.GONE
 
         btnFilter.setOnClickListener{
             showBottomSheet()
@@ -88,18 +91,16 @@ class RestaurantsFragment : Fragment() {
 
         val arrayAdapter = CardAdapter(requireContext(), R.layout.item_card, viewModel.getRestaurantsToDisplay())
 
-        Log.i(TAG, "Restaurant Names: ${viewModel.getRestaurantNames()}")
-
         swipeFlingAdapterView.adapter = arrayAdapter
 
         swipeFlingAdapterView.setFlingListener(object : onFlingListener {
             override fun removeFirstObjectInAdapter() {
-                viewModel.getRestaurantNames().removeAt(0)
                 arrayAdapter.notifyDataSetChanged()
             }
 
             override fun onLeftCardExit(dataObject: Any) {
                 Log.i(TAG, "swipe no")
+                playAndHideAnimation(avNo)
                 viewModel.storeRestaurant(restaurant, false,
                     typeOfFood = typeOfFood,
                     destination = destination,
@@ -108,6 +109,8 @@ class RestaurantsFragment : Fragment() {
 
             override fun onRightCardExit(dataObject: Any) {
                 Log.i(TAG, "swipe yes")
+
+                playAndHideAnimation(avYes)
                 viewModel.storeRestaurant(restaurant,true,
                     typeOfFood = typeOfFood,
                     destination = destination,
@@ -120,6 +123,25 @@ class RestaurantsFragment : Fragment() {
 
             override fun onScroll(p0: Float) {
 
+            }
+        })
+    }
+
+    private fun playAndHideAnimation(av: LottieAnimationView) {
+        av.visibility = View.VISIBLE
+        av.setMinFrame(0)
+        av.setMaxFrame(40)
+        av.playAnimation()
+
+        av.addAnimatorListener(object:Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+            override fun onAnimationEnd(animation: Animator?) {
+                av.visibility = View.GONE
+            }
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+            override fun onAnimationStart(animation: Animator?) {
             }
         })
     }
@@ -182,6 +204,7 @@ class RestaurantsFragment : Fragment() {
         )
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<out String>,
                                             grantResults: IntArray) {

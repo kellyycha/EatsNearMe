@@ -72,7 +72,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun setStateForNext(){
-        if (restaurantDisplay.size > 1){
+        if (restaurantDisplay.size > 0){
             _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[0]))
         }
         else{
@@ -321,10 +321,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         })
 
         nextRestaurant(restaurant, typeOfFood, destination, radius)
-    }
-
-    fun getRestaurantNames(): ArrayList<String> {
-        return restaurantNames
     }
 
     fun getRestaurantsToDisplay(): MutableList<YelpRestaurant> {

@@ -47,4 +47,22 @@
         app:layout_constraintStart_toStartOf="@+id/swipeFlingAdapterView"
         app:layout_constraintTop_toTopOf="@+id/swipeFlingAdapterView" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/avYes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/check"
+        app:lottie_speed="1" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/avNo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:lottie_rawRes="@raw/x"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_speed="1" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

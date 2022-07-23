@@ -88,5 +88,7 @@ dependencies {
     // card swipe
     implementation 'com.lorentzos.swipecards:library:1.0.9@aar'
 
-
+    // lottie animation
+    def lottieVersion = "3.4.0"
+    implementation "com.airbnb.android:lottie:5.2.0"
 }
