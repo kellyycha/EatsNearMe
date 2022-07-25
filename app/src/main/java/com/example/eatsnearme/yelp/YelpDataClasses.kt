@@ -9,12 +9,12 @@ data class YelpSearchResult (
 )
 
 data class YelpRestaurant(
+    var id: String,
     var name: String,
     val rating: Double,
     val price: String,
     val review_count: Int,
     val image_url: String,
-    //@SerializedName("distance") val distance_meters: Double,
     val categories: List<YelpCategory>,
     val location: YelpLocation,
     val coordinates: YelpCoordinates,

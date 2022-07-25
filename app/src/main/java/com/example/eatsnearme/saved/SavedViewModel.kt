@@ -1,14 +1,10 @@
 package com.example.eatsnearme.saved
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.example.eatsnearme.KEY_IS_SAVED
 import com.example.eatsnearme.KEY_USER
 import com.example.eatsnearme.SavedRestaurants
-import com.example.eatsnearme.restaurants.RestaurantsViewModel
-import com.example.eatsnearme.yelp.YelpRestaurant
 import com.parse.FindCallback
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -22,17 +18,19 @@ class SavedViewModel : ViewModel() {
         private const val TAG = "SavedViewModel"
     }
 
-    private var savedList = ArrayList<String>()
-    private var skippedList = ArrayList<String>()
+    private var savedIdList = ArrayList<String>()
+    private var skippedIdList = ArrayList<String>()
+    private val allSaved = ArrayList<SavedRestaurants>()
 
     private val _stateFlow = MutableStateFlow<SavedState>(SavedState.Loading)
     val stateFlow: StateFlow<SavedState> = _stateFlow
 
-    fun querySaved(allSaved: ArrayList<SavedRestaurants>, adapter: SavedAdapter) {
+    fun querySaved() {
         Log.i(TAG,"loading saved and skipped")
 
         _stateFlow.value = SavedState.Loading
-        savedList.clear()
+        savedIdList.clear()
+        allSaved.clear()
 
         val query: ParseQuery<SavedRestaurants> = ParseQuery.getQuery(SavedRestaurants::class.java)
         query.include(KEY_USER)
@@ -40,25 +38,24 @@ class SavedViewModel : ViewModel() {
             .whereEqualTo(KEY_IS_SAVED, true)
             .setLimit(QUERY_LIMIT)
             .addDescendingOrder("createdAt")
-            .findInBackground(FindCallback<SavedRestaurants> { restaurants, e ->
+            .findInBackground(FindCallback { restaurants, e ->
                 if (e != null) {
                     Log.e(SavedFragment.TAG, "Issue with getting saved restaurants", e)
                     return@FindCallback;
                 }
                 for (restaurant in restaurants) {
                     Log.i(SavedFragment.TAG, "Saved Restaurant: ${restaurant.getRestaurantName()}")
-                    savedList.add(restaurant.getRestaurantName().toString())
+                    savedIdList.add(restaurant.getRestaurantID().toString())
 
                 }
                 trackSkipped()
                 allSaved.addAll(restaurants)
-                adapter.notifyDataSetChanged()
-                _stateFlow.value = SavedState.Loaded
+                _stateFlow.value = SavedState.Loaded(allSaved)
             })
     }
 
     private fun trackSkipped() {
-        skippedList.clear()
+        skippedIdList.clear()
         val query: ParseQuery<SavedRestaurants> = ParseQuery.getQuery(SavedRestaurants::class.java)
         query.include(KEY_USER)
             .whereEqualTo(KEY_USER, ParseUser.getCurrentUser())
@@ -70,22 +67,22 @@ class SavedViewModel : ViewModel() {
                 }
                 for (restaurant in restaurants) {
                     Log.i(TAG, "Skipped Restaurant: ${restaurant.getRestaurantName()}")
-                    skippedList.add(restaurant.getRestaurantName().toString())
+                    skippedIdList.add(restaurant.getRestaurantID().toString())
 
                 }
             })
     }
 
     fun getSavedList(): ArrayList<String> {
-        return savedList
+        return savedIdList
     }
 
     fun getSkippedList(): ArrayList<String> {
-        return skippedList
+        return skippedIdList
     }
 
     sealed class SavedState {
         object Loading : SavedState()
-        object Loaded : SavedState()
+        data class Loaded(var allSaved : ArrayList<SavedRestaurants>): SavedState()
     }
 }

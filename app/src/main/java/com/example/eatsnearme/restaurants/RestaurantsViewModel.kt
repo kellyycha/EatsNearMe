@@ -48,8 +48,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     var radius : String? = null
 
     private val savedVM = SavedViewModel()
-    private val allSaved = ArrayList<SavedRestaurants>()
-    private val adapter = SavedAdapter(getApplication(), allSaved)
 
     companion object {
         const val TAG = "RestaurantsViewModel"
@@ -59,7 +57,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
-        savedVM.querySaved(allSaved, adapter)
 
         // null check for if you start selecting restaurants without setting filters
         if (typeOfFood == null || destination == null){
@@ -114,7 +111,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     init {
         Log.i(TAG, "init")
-        savedVM.querySaved(allSaved, adapter)
         fetchRestaurants()
     }
 
@@ -123,6 +119,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         Log.i(TAG, "Location: $location")
         Log.i(TAG, "destination: $destination")
         Log.i(TAG, "radius: $radius")
+
+        savedVM.querySaved()
 
         restaurantResults.clear()
         restaurantDisplay.clear()
@@ -320,14 +318,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun isSaved(restaurant: YelpRestaurant): Boolean{
-        if (restaurant.name in savedVM.getSavedList()){
+        if (restaurant.id in savedVM.getSavedList()){
             return true
         }
         return false
     }
 
     private fun isSkipped(restaurant: YelpRestaurant): Boolean{
-        if (restaurant.name in savedVM.getSkippedList()){
+        if (restaurant.id in savedVM.getSkippedList()){
             return true
         }
         return false
@@ -338,9 +336,11 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         val saved = SavedRestaurants()
         saved.setIsSaved(isSaved)
         saved.setUser(currentUser)
+        saved.setRestaurantID(restaurant.id)
         saved.setRestaurantName(restaurant.name)
-        //TODO: crashes if restaurant price is not available (null), even though price column is not required in parse
-        //saved.setRestaurantPrice(restaurant.price)
+        restaurant.price?.let { price ->
+            saved.setRestaurantPrice(price)
+        }
         saved.setRestaurantRating(restaurant.rating)
         saved.setRestaurantImage(restaurant.image_url)
         saved.setRestaurantReviewCount(restaurant.review_count)
@@ -373,7 +373,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     sealed class RestaurantState {
         object Loading : RestaurantState()
         object Idle : RestaurantState()
-        class Success(var restaurant : YelpRestaurant) : RestaurantState()
+        data class Success(var restaurant : YelpRestaurant) : RestaurantState()
     }
 
 }

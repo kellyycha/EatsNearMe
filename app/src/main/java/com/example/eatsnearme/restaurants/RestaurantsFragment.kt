@@ -22,16 +22,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lorentzos.flingswipe.SwipeFlingAdapterView
 import com.lorentzos.flingswipe.SwipeFlingAdapterView.onFlingListener
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.bottom_sheet_filter.*
 import kotlinx.android.synthetic.main.fragment_cardswipe.*
-import kotlinx.android.synthetic.main.fragment_saved.*
-import kotlinx.android.synthetic.main.item_card.*
-import kotlinx.android.synthetic.main.item_card.view.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
 
 class RestaurantsFragment : Fragment() {
     private lateinit var restaurant: YelpRestaurant

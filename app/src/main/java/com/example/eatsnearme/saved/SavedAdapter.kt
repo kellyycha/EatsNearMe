@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.eatsnearme.R
 import com.example.eatsnearme.SavedRestaurants
 import kotlinx.android.synthetic.main.item_saved.view.*
-
 
 class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaurants>) : RecyclerView.Adapter<SavedAdapter.ViewHolder>() {
 

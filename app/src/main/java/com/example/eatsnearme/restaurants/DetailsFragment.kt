@@ -1,8 +1,6 @@
 package com.example.eatsnearme.restaurants
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +13,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_details.*
-import kotlin.system.exitProcess
-
 
 class DetailsFragment : Fragment(), OnMapReadyCallback {
 
@@ -41,10 +37,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         btnExitDetail.setOnClickListener{
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-//            transaction.replace(R.id.flContainer, RestaurantsFragment())
             requireActivity().onBackPressed()
-            transaction.commit()
         }
 
         setRestaurantInfo()
