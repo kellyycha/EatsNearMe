@@ -29,11 +29,13 @@ class CardAdapter(context: Context?, resourceId: Int, items: List<YelpRestaurant
         val tvName = convertView?.findViewById<TextView>(R.id.tvName)
         val tvPrice = convertView?.findViewById<TextView>(R.id.tvPrice)
         val ratingBar = convertView?.findViewById<RatingBar>(R.id.ratingBar)
+        val tvReviewCount = convertView?.findViewById<TextView>(R.id.tvReviewCount)
         val ivYelpPic = convertView?.findViewById<ImageView>(R.id.ivYelpPic)
 
         tvName!!.text = cardItem!!.name
         tvPrice!!.text = cardItem.price
         ratingBar!!.rating = cardItem.rating.toFloat()
+        tvReviewCount!!.text = cardItem.review_count.toString()
         Glide.with(convertView!!.context).load(cardItem.image_url).into(ivYelpPic!!)
 
         return convertView

@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_above="@+id/ratingBar"
+                android:layout_above="@+id/Rating"
                 android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
@@ -75,21 +75,50 @@
 
             </LinearLayout>
 
-            <RatingBar
-                android:id="@+id/ratingBar"
-                style="@style/Widget.AppCompat.RatingBar.Small"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/Rating"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@+id/Words"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="50dp"
-                android:layout_marginBottom="20dp"
-                android:max="5"
-                android:numStars="5"
-                android:progressTint="@color/sage"
-                android:rating="4"
-                android:scaleX="2"
-                android:scaleY="2" />
+                android:layout_alignParentBottom="true">
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="20dp"
+                    android:max="5"
+                    android:numStars="5"
+                    android:progressBackgroundTint="#FFFFFF"
+                    android:progressTint="@color/sage"
+                    android:rating="4"
+                    android:scaleX="2"
+                    android:scaleY="2" />
+
+                <TextView
+                    android:id="@+id/tvReviewCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginStart="50dp"
+                    android:textColor="#85B590"
+                    android:textSize="16sp"
+                    tools:text="200" />
+
+                <TextView
+                    android:id="@+id/tvReviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="3dp"
+                    android:text="Reviews"
+                    android:textColor="#85B590"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
 
         </RelativeLayout>
 

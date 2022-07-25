@@ -99,8 +99,8 @@ class RestaurantsFragment : Fragment() {
         swipeFlingAdapterView.setOnItemClickListener { p0, p1 ->
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.flContainer, DetailsFragment())
-            transaction.disallowAddToBackStack()
-            transaction.commit() }
+            transaction.commit()
+        }
 
         swipeFlingAdapterView.setFlingListener(object : onFlingListener {
             override fun removeFirstObjectInAdapter() {

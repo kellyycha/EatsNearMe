@@ -6,23 +6,134 @@
     android:layout_height="match_parent"
     tools:context=".restaurants.DetailsFragment">
 
+    <ImageButton
+        android:id="@+id/btnExitDetail"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
+        app:tint="#000000" />
+
     <TextView
-        android:id="@+id/tvClickedName"
+        android:id="@+id/tvOpened"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="18dp"
+        android:text="Opened"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:text="Restaurant" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/Words"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Rating"
+        android:layout_alignParentStart="true"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnExitDetail">
+
+        <TextView
+            android:id="@+id/tvClickedName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Restaurant Name" />
+
+        <TextView
+            android:id="@+id/tvClickedPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="18sp"
+            tools:text="$$" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_alignStart="@+id/Words"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Words">
+
+        <RatingBar
+            android:id="@+id/clickedRatingBar"
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="5dp"
+            android:max="5"
+            android:numStars="5"
+            android:progressTint="@color/sage"
+            android:rating="4"
+            android:scaleX="2"
+            android:scaleY="2" />
+
+        <TextView
+            android:id="@+id/tvClickedReviewCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="3dp"
+            android:textColor="#85B590"
+            android:textSize="16sp"
+            tools:text="200" />
+
+        <TextView
+            android:id="@+id/tvReviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="3dp"
+            android:text="Reviews"
+            android:textColor="#85B590"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvClickedAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Rating"
+        tools:text="Address" />
+
+    <TextView
+        android:id="@+id/tvClickedPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvClickedAddress"
+        tools:text="Phone Number" />
+
 
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvClickedName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvClickedPhone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

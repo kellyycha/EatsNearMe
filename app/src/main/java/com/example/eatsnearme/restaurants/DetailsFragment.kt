@@ -1,5 +1,6 @@
 package com.example.eatsnearme.restaurants
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_details.*
+import kotlin.system.exitProcess
 
 
 class DetailsFragment : Fragment(), OnMapReadyCallback {
@@ -36,9 +38,32 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvClickedName.text = viewModel.getCurrentRestaurant().name
+        btnExitDetail.setOnClickListener{
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.flContainer, RestaurantsFragment())
+            transaction.commit()
+        }
+
+        setRestaurantInfo()
 
         initGoogleMap(savedInstanceState)
+    }
+
+    private fun setRestaurantInfo() {
+        tvClickedName.text = viewModel.getCurrentRestaurant().name
+        tvClickedPrice.text = viewModel.getCurrentRestaurant().price
+        clickedRatingBar.rating = viewModel.getCurrentRestaurant().rating.toFloat()
+        tvClickedReviewCount.text = viewModel.getCurrentRestaurant().review_count.toString()
+        tvClickedAddress.text = viewModel.getCurrentRestaurant().location.address
+        tvClickedPhone.text = viewModel.getCurrentRestaurant().phone
+        if (viewModel.getCurrentRestaurant().is_open_now){
+            tvOpened.text = "Open Now"
+            tvOpened.setTextColor(Color.parseColor("#32a832"))
+        }
+        else{
+            tvOpened.text = "Closed Now"
+            tvOpened.setTextColor(Color.parseColor("#e30707"))
+        }
     }
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {

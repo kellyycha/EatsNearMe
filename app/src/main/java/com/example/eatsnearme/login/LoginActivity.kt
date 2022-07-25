@@ -61,7 +61,6 @@ class LoginActivity : AppCompatActivity() {
                     return
                 }
                 goMainActivity()
-                Toast.makeText(this@LoginActivity, "Login success!", Toast.LENGTH_SHORT).show()
             }
         })
     }

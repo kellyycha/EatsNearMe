@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:background="#000000"
         android:backgroundTint="#1D6E6E6E"
@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -84,19 +84,15 @@
         app:layout_constraintTop_toTopOf="@+id/tvBottomText"
         app:layout_constraintVertical_bias="0.517" />
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="Eats Near Me"
-        android:textColor="#8FB493"
-        android:textSize="34sp"
-        android:textStyle="bold"
+        android:layout_marginTop="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_green" />
 
     <TextView
         android:id="@+id/tvBottomText"
