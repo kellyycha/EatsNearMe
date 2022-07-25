@@ -9,4 +9,13 @@
         android:id="@+id/rvSaved"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/savedSpinner"
+        style="?android:attr/progressBarStyle"
+        android:indeterminateTint="@color/sage"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center" />
+
 </FrameLayout>

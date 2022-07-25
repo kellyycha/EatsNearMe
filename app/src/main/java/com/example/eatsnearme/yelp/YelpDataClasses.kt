@@ -19,7 +19,7 @@ data class YelpRestaurant(
     val location: YelpLocation,
     val coordinates: YelpCoordinates,
     @SerializedName("display_phone") val phone: String,
-    val is_open_now: Boolean,
+    val is_open_now: Boolean
     // add photos
 )
 

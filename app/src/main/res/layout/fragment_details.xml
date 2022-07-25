@@ -12,11 +12,11 @@
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:backgroundTint="#00FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-        app:tint="#000000" />
+        app:tint="#000000"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
 
     <TextView
         android:id="@+id/tvOpened"

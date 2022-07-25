@@ -148,7 +148,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
     override fun onDestroy() {
         if(mapView != null) {
-            mapView.onDestroy();
+            mapView.onDestroy()
         }
         super.onDestroy()
     }

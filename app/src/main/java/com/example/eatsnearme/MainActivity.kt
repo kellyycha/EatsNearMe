@@ -70,9 +70,7 @@ open class MainActivity : AppCompatActivity() {
             true
         }
 
-        // Set default selection to saved to load saved/skipped restaurants first.
-        // TODO: is there any way to do this with having default as restaurants tab?
-        bottomNavigation.selectedItemId = R.id.action_saved
+        bottomNavigation.selectedItemId = R.id.action_restaurants
     }
 
 }

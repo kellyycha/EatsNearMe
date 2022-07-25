@@ -8,7 +8,8 @@ import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.googleMaps.DirectionsResponse
 import com.example.eatsnearme.googleMaps.MAPS_API_KEY
 import com.example.eatsnearme.googleMaps.MapsService
-import com.example.eatsnearme.saved.SavedFragment
+import com.example.eatsnearme.saved.SavedAdapter
+import com.example.eatsnearme.saved.SavedViewModel
 import com.example.eatsnearme.yelp.YELP_API_KEY
 import com.example.eatsnearme.yelp.YelpRestaurant
 import com.example.eatsnearme.yelp.YelpSearchResult
@@ -46,6 +47,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     var destination : String? = null
     var radius : String? = null
 
+    private val savedVM = SavedViewModel()
+    val allSaved = ArrayList<SavedRestaurants>()
+    val adapter = SavedAdapter(getApplication(), allSaved)
+
     companion object {
         const val TAG = "RestaurantsViewModel"
         const val MIN_SIZE = 10
@@ -54,6 +59,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
+        savedVM.querySaved(allSaved, adapter)
 
         // null check for if you start selecting restaurants without setting filters
         if (typeOfFood == null || destination == null){
@@ -108,8 +114,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     init {
         Log.i(TAG, "init")
-        // TODO: load saved restaurants before fetching.
-        //  right now it only filters after clicking saved tab and going back and then clicking search again
+        savedVM.querySaved(allSaved, adapter)
         fetchRestaurants()
     }
 
@@ -121,6 +126,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
         restaurantResults.clear()
         restaurantDisplay.clear()
+        restaurantAllDisplay.clear()
         _stateFlow.value = RestaurantState.Loading
 
         mapDestination = null
@@ -314,14 +320,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun isSaved(restaurant: YelpRestaurant): Boolean{
-        if (restaurant.name in SavedFragment().getSavedList()){
+        if (restaurant.name in savedVM.getSavedList()){
             return true
         }
         return false
     }
 
     private fun isSkipped(restaurant: YelpRestaurant): Boolean{
-        if (restaurant.name in SavedFragment().getSkippedList()){
+        if (restaurant.name in savedVM.getSkippedList()){
             return true
         }
         return false
