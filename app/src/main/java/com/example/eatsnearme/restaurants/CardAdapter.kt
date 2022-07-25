@@ -1,5 +1,6 @@
 package com.example.eatsnearme.restaurants
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -37,5 +38,4 @@ class CardAdapter(context: Context?, resourceId: Int, items: List<YelpRestaurant
 
         return convertView
     }
-
 }

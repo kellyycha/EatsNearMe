@@ -3,7 +3,6 @@ package com.example.eatsnearme.restaurants
 import android.app.Application
 import android.location.Location
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.googleMaps.DirectionsResponse
@@ -30,7 +29,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private val restaurantResults = mutableListOf<YelpRestaurant>()
     private val restaurantAllDisplay = mutableListOf<YelpRestaurant>()
     private val restaurantDisplay = mutableListOf<YelpRestaurant>()
-    private val restaurantNames = ArrayList<String>()
     private var polylineCoordinates = mutableListOf<LatLng>()
     private var spacedCoordinates = mutableListOf<LatLng>()
 
@@ -40,11 +38,19 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private var currLocation = ""
     private var queryIndex = 0
 
+    var mapOrigin: LatLng? = null
+    var mapDestination: LatLng? = null
+
+    var typeOfFood : String? = null
+    var location : String? = null
+    var destination : String? = null
+    var radius : String? = null
+
     companion object {
         const val TAG = "RestaurantsViewModel"
         const val MIN_SIZE = 10
         const val defaultRadius = "1000"
-        const val defaultPathRadius = "200"
+        const val defaultPathRadius = "100"
     }
 
     private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
@@ -83,9 +89,11 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, destination: String, radius: Int) {
         LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
-            override fun onLocationChanged(location: Location) {
-                Log.d(TAG,"Coordinates: ${location.latitude}, ${location.longitude}")
-                currLocation = "${location.latitude}, ${location.longitude}"
+            override fun onLocationChanged(currentLocation: Location) {
+                Log.d(TAG,"Coordinates: ${currentLocation.latitude}, ${currentLocation.longitude}")
+                currLocation = "${currentLocation.latitude}, ${currentLocation.longitude}"
+                mapOrigin = LatLng(currentLocation.latitude, currentLocation.longitude)
+                location = "Current Location"
                 if (destination.isBlank()){
                     queryYelp(typeOfFood, currLocation, radius)
                 }
@@ -113,8 +121,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
         restaurantResults.clear()
         restaurantDisplay.clear()
-        restaurantNames.clear()
         _stateFlow.value = RestaurantState.Loading
+
+        mapDestination = null
 
         if (radius.isBlank()){
             fetchRestaurants(typeOfFood, location, destination, if (destination.isBlank()) defaultRadius else defaultPathRadius)
@@ -122,18 +131,37 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
 
         if(location.isBlank() && LocationService().hasPermissions(getApplication())){
-            Log.i(TAG, "no location")
+            Log.i(TAG, "get current location")
             fetchRestaurantsForCurrentLocation(typeOfFood, destination, radius.toInt())
         }
         else if (location.isNotBlank() && destination.isBlank()){
+            setOriginLatLng(location)
             queryYelp(typeOfFood, location, radius.toInt())
         }
         else if (location.isNotBlank() && destination.isNotBlank()){
+            setOriginLatLng(location)
             getPath(typeOfFood, location, destination, radius.toInt())
         }
         else{
             _stateFlow.value = RestaurantState.Idle
         }
+
+    }
+
+    private fun setOriginLatLng(location: String) {
+        val mapsService = MapsService.create()
+        mapsService.searchPath(MAPS_API_KEY, location, location, "WALKING")
+            .enqueue(object : Callback<DirectionsResponse> {
+                override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
+                    val body = response.body() ?: return
+
+                    mapOrigin = LatLng(body.routes[0].legs[0].end_location.lat.toDouble(),body.routes[0].legs[0].end_location.lng.toDouble())
+                }
+
+                override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
+                    Log.i("MAPS", "onFailure $t")
+                }
+            })
 
     }
 
@@ -161,6 +189,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     polylineCoordinates = PolyUtil.decode(body.routes.component1().overview_polyline.points)
                     Log.i("MAPS", "overview polyline results: $polylineCoordinates")
 
+                    mapDestination = LatLng(body.routes[0].legs[0].end_location.lat.toDouble(),body.routes[0].legs[0].end_location.lng.toDouble())
 
                     getSpacedPoints(polylineCoordinates, typeOfFood, radius)
 
@@ -229,8 +258,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     }
 
-
     private fun queryYelp(typeOfFood: String, location: String, radius: Int){
+
         Log.i(TAG, "query yelp")
         val yelpService = YelpService.create()
 
@@ -262,10 +291,13 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
                     for (rest in restaurantDisplay){
                         Log.i("MAPS", "${rest.name}, ${rest.location.address}")
-                        restaurantNames.add(rest.name)
                     }
 
-                    if (restaurantDisplay.isEmpty()){
+
+                    if (restaurantDisplay.isEmpty() && queryIndex < spacedCoordinates.size){
+                        queryAsNeeded(typeOfFood, radius)
+                    }
+                    else if (restaurantDisplay.isEmpty()){
                         _stateFlow.value = RestaurantState.Idle
                     }
                     else{
@@ -325,6 +357,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     fun getRestaurantsToDisplay(): MutableList<YelpRestaurant> {
         return restaurantDisplay
+    }
+
+    fun getCurrentRestaurant(): YelpRestaurant{
+        return restaurantDisplay[0]
     }
 
 

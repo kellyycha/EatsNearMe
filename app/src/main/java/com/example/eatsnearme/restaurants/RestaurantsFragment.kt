@@ -23,10 +23,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lorentzos.flingswipe.SwipeFlingAdapterView
 import com.lorentzos.flingswipe.SwipeFlingAdapterView.onFlingListener
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_filter.*
 import kotlinx.android.synthetic.main.fragment_cardswipe.*
 import kotlinx.android.synthetic.main.fragment_saved.*
 import kotlinx.android.synthetic.main.item_card.*
+import kotlinx.android.synthetic.main.item_card.view.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -36,11 +38,6 @@ class RestaurantsFragment : Fragment() {
     private lateinit var restaurant: YelpRestaurant
 
     private val viewModel: RestaurantsViewModel by activityViewModels()
-
-    private var typeOfFood : String? = null
-    private var location : String? = null
-    private var destination : String? = null
-    private var radius : String? = null
 
     companion object {
         const val TAG = "RestaurantsFragment"
@@ -65,7 +62,7 @@ class RestaurantsFragment : Fragment() {
             showBottomSheet()
         }
 
-        collectLatestLifecycleFlow(viewModel.stateFlow) {
+        collectLatestLifecycleFlow(viewModel.stateFlow) { it ->
             when(it){
                 is RestaurantsViewModel.RestaurantState.Loading -> {
                     Log.i(TAG, "Loading restaurants")
@@ -73,7 +70,12 @@ class RestaurantsFragment : Fragment() {
                 }
                 is RestaurantsViewModel.RestaurantState.Idle -> {
                     Log.i(TAG, "idle state")
-                    Toast.makeText(requireContext(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
+                    if (!LocationService().hasPermissions(requireContext()) && viewModel.location.isNullOrEmpty()){
+                        Toast.makeText(context, "Enter a location", Toast.LENGTH_SHORT).show()
+                    }
+                    else{
+                        Toast.makeText(requireContext(), "No more restaurants to show", Toast.LENGTH_SHORT).show()
+                    }
                     spinner.visibility = View.GONE
                 }
                 is RestaurantsViewModel.RestaurantState.Success -> {
@@ -87,11 +89,18 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun swipeCard(view: View) {
+
         val swipeFlingAdapterView = view.findViewById<SwipeFlingAdapterView>(R.id.swipeFlingAdapterView)
 
         val arrayAdapter = CardAdapter(requireContext(), R.layout.item_card, viewModel.getRestaurantsToDisplay())
 
         swipeFlingAdapterView.adapter = arrayAdapter
+
+        swipeFlingAdapterView.setOnItemClickListener { p0, p1 ->
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.flContainer, DetailsFragment())
+            transaction.disallowAddToBackStack()
+            transaction.commit() }
 
         swipeFlingAdapterView.setFlingListener(object : onFlingListener {
             override fun removeFirstObjectInAdapter() {
@@ -102,9 +111,9 @@ class RestaurantsFragment : Fragment() {
                 Log.i(TAG, "swipe no")
                 playAndHideAnimation(avNo)
                 viewModel.storeRestaurant(restaurant, false,
-                    typeOfFood = typeOfFood,
-                    destination = destination,
-                    radius = radius)
+                    typeOfFood = viewModel.typeOfFood,
+                    destination = viewModel.destination,
+                    radius = viewModel.radius)
             }
 
             override fun onRightCardExit(dataObject: Any) {
@@ -112,9 +121,9 @@ class RestaurantsFragment : Fragment() {
 
                 playAndHideAnimation(avYes)
                 viewModel.storeRestaurant(restaurant,true,
-                    typeOfFood = typeOfFood,
-                    destination = destination,
-                    radius = radius)
+                    typeOfFood = viewModel.typeOfFood,
+                    destination = viewModel.destination,
+                    radius = viewModel.radius)
             }
 
             override fun onAdapterAboutToEmpty(itemsInAdapter: Int) {
@@ -165,16 +174,16 @@ class RestaurantsFragment : Fragment() {
         btnSearch.setOnClickListener {
             Log.i(TAG, "Clicked Search")
 
-            typeOfFood = etSearchFood.text.toString()
-            location = etLocation.text.toString()
-            destination = etDestination.text.toString()
-            radius = etRadius.text.toString()
+            viewModel.typeOfFood = etSearchFood.text.toString()
+            viewModel.location = etLocation.text.toString()
+            viewModel.destination = etDestination.text.toString()
+            viewModel.radius = etRadius.text.toString()
 
             viewModel.fetchRestaurants(
-                typeOfFood = typeOfFood!!,
-                location = location!!,
-                destination = destination!!,
-                radius = radius!!)
+                typeOfFood = viewModel.typeOfFood!!,
+                location = viewModel.location!!,
+                destination = viewModel.destination!!,
+                radius = viewModel.radius!!)
             dialog.dismiss()
         }
 
@@ -218,9 +227,6 @@ class RestaurantsFragment : Fragment() {
             }
             else {
                 Log.i(TAG, "Permission Denied")
-                if (etLocation.text.toString().isEmpty()){
-                    Toast.makeText(context, "Enter a location", Toast.LENGTH_SHORT).show()
-                }
             }
         }
     }
