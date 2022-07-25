@@ -39,7 +39,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private var currLocation = ""
     private var queryIndex = 0
 
-    var mapOrigin: LatLng? = null
+    lateinit var mapOrigin: LatLng
     var mapDestination: LatLng? = null
 
     var typeOfFood : String? = null
@@ -48,8 +48,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     var radius : String? = null
 
     private val savedVM = SavedViewModel()
-    val allSaved = ArrayList<SavedRestaurants>()
-    val adapter = SavedAdapter(getApplication(), allSaved)
+    private val allSaved = ArrayList<SavedRestaurants>()
+    private val adapter = SavedAdapter(getApplication(), allSaved)
 
     companion object {
         const val TAG = "RestaurantsViewModel"

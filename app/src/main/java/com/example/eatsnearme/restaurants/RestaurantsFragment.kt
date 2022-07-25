@@ -1,6 +1,5 @@
 package com.example.eatsnearme.restaurants
 
-//import kotlinx.android.synthetic.main.fragment_restaurants.*
 import android.Manifest
 import android.animation.Animator
 import android.content.Context
@@ -99,6 +98,7 @@ class RestaurantsFragment : Fragment() {
         swipeFlingAdapterView.setOnItemClickListener { p0, p1 ->
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.flContainer, DetailsFragment())
+            transaction.addToBackStack(null)
             transaction.commit()
         }
 

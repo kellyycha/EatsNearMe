@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintSet.GONE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.eatsnearme.R
@@ -23,6 +24,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
         const val TAG = "DetailsFragment"
         const val light_blue = 200F
+        const val padding = 200
     }
     private val viewModel: RestaurantsViewModel by activityViewModels()
 
@@ -40,7 +42,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
         btnExitDetail.setOnClickListener{
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.flContainer, RestaurantsFragment())
+//            transaction.replace(R.id.flContainer, RestaurantsFragment())
+            requireActivity().onBackPressed()
             transaction.commit()
         }
 
@@ -56,14 +59,17 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         tvClickedReviewCount.text = viewModel.getCurrentRestaurant().review_count.toString()
         tvClickedAddress.text = viewModel.getCurrentRestaurant().location.address
         tvClickedPhone.text = viewModel.getCurrentRestaurant().phone
-        if (viewModel.getCurrentRestaurant().is_open_now){
-            tvOpened.text = "Open Now"
-            tvOpened.setTextColor(Color.parseColor("#32a832"))
-        }
-        else{
-            tvOpened.text = "Closed Now"
-            tvOpened.setTextColor(Color.parseColor("#e30707"))
-        }
+
+        tvOpened.visibility = GONE
+        // TODO: Figure out why this is always false
+//        if (viewModel.getCurrentRestaurant().is_open_now){
+//            tvOpened.text = "Open Now"
+//            tvOpened.setTextColor(Color.parseColor("#32a832"))
+//        }
+//        else{
+//            tvOpened.text = "Closed Now"
+//            tvOpened.setTextColor(Color.parseColor("#e30707"))
+//        }
     }
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {
@@ -101,26 +107,26 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         builder.include(restaurantLocation)
 
         map.addMarker(MarkerOptions()
-            .position(viewModel.mapOrigin!!)
+            .position(viewModel.mapOrigin)
             .title(viewModel.location)
             .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
 
-        builder.include(viewModel.mapOrigin!!)
+        builder.include(viewModel.mapOrigin)
 
-        if (viewModel.mapDestination != null){
+        viewModel.mapDestination?.let { mapDestination ->
             map.addMarker(MarkerOptions()
-                .position(viewModel.mapDestination!!)
+                .position(mapDestination)
                 .title(viewModel.destination)
                 .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
-            builder.include(viewModel.mapDestination!!)
+            builder.include(mapDestination)
         }
+
 
         if (LocationService().hasPermissions(requireContext())){
             map.isMyLocationEnabled = true
         }
 
         val bounds = builder.build()
-        val padding = 200
         val cu = CameraUpdateFactory.newLatLngBounds(bounds, padding)
         map.moveCamera(cu)
 
