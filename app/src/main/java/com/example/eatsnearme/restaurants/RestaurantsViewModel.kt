@@ -8,7 +8,6 @@ import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.googleMaps.DirectionsResponse
 import com.example.eatsnearme.googleMaps.MAPS_API_KEY
 import com.example.eatsnearme.googleMaps.MapsService
-import com.example.eatsnearme.saved.SavedAdapter
 import com.example.eatsnearme.saved.SavedViewModel
 import com.example.eatsnearme.yelp.YELP_API_KEY
 import com.example.eatsnearme.yelp.YelpRestaurant
@@ -338,18 +337,17 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setUser(currentUser)
         saved.setRestaurantID(restaurant.id)
         saved.setRestaurantName(restaurant.name)
-        restaurant.price?.let { price ->
-            saved.setRestaurantPrice(price)
-        }
+        saved.setRestaurantPrice(restaurant.price)
+        saved.setRestaurantPhone(restaurant.phone)
         saved.setRestaurantRating(restaurant.rating)
         saved.setRestaurantImage(restaurant.image_url)
         saved.setRestaurantReviewCount(restaurant.review_count)
         saved.setRestaurantAddress(restaurant.location.address)
-        var categories = ""
-        for (i in restaurant.categories.indices){
-            categories += restaurant.categories[i].title+", "
-        }
-        saved.setRestaurantCategories(categories.dropLast(2))
+        saved.setRestaurantLatitude(restaurant.coordinates.latitude.toDouble())
+        saved.setRestaurantLongitude(restaurant.coordinates.longitude.toDouble())
+        saved.setIsOpened(restaurant.is_open_now)
+        val categories = categoriesToString(restaurant)
+        saved.setRestaurantCategories(categories)
 
         saved.saveInBackground(SaveCallback { e ->
             if (e != null) {
@@ -361,10 +359,19 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         nextRestaurant(restaurant, typeOfFood, destination, radius)
     }
 
+    fun categoriesToString(restaurant: YelpRestaurant): String {
+        var categories = ""
+        for (i in restaurant.categories.indices){
+            categories += restaurant.categories[i].title+", "
+        }
+        return categories.dropLast(2)
+    }
+
     fun getRestaurantsToDisplay(): MutableList<YelpRestaurant> {
         return restaurantDisplay
     }
 
+    // TODO: get rid of this
     fun getCurrentRestaurant(): YelpRestaurant{
         return restaurantDisplay[0]
     }

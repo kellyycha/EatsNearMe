@@ -9,7 +9,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -17,7 +19,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.airbnb.lottie.LottieAnimationView
 import com.example.eatsnearme.R
+import com.example.eatsnearme.details.DetailsFragment
+import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.yelp.YelpRestaurant
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lorentzos.flingswipe.SwipeFlingAdapterView
@@ -89,9 +94,28 @@ class RestaurantsFragment : Fragment() {
 
         swipeFlingAdapterView.adapter = arrayAdapter
 
+
         swipeFlingAdapterView.setOnItemClickListener { p0, p1 ->
+
+            val bundle = Bundle()
+            val currentRestaurant = Restaurant(false,
+                viewModel.getCurrentRestaurant().name,
+                viewModel.getCurrentRestaurant().rating,
+                viewModel.getCurrentRestaurant().price,
+                viewModel.getCurrentRestaurant().review_count,
+                viewModel.getCurrentRestaurant().image_url,
+                viewModel.categoriesToString(viewModel.getCurrentRestaurant()),
+                viewModel.getCurrentRestaurant().location.address,
+                LatLng(viewModel.getCurrentRestaurant().coordinates.latitude.toDouble(),viewModel.getCurrentRestaurant().coordinates.longitude.toDouble()),
+                viewModel.getCurrentRestaurant().phone,
+                viewModel.getCurrentRestaurant().is_open_now)
+            bundle.putParcelable("Restaurant", currentRestaurant)
+
+            val fragment = DetailsFragment()
+            fragment.arguments = bundle
+
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.flContainer, DetailsFragment())
+            transaction.replace(R.id.flContainer, fragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }

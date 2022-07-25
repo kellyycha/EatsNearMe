@@ -1,4 +1,4 @@
-package com.example.eatsnearme.restaurants
+package com.example.eatsnearme.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet.GONE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.eatsnearme.R
+import com.example.eatsnearme.restaurants.LocationService
+import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,7 +25,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         const val light_blue = 200F
         const val padding = 200
     }
-    private val viewModel: RestaurantsViewModel by activityViewModels()
+    private val viewModel: DetailsViewModel by viewModels()
+    private lateinit var inputRestaurant : Restaurant
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,10 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // get parcel and extract data
+        val args = this.arguments
+        inputRestaurant = args?.get("Restaurant") as Restaurant
+
         btnExitDetail.setOnClickListener{
             requireActivity().onBackPressed()
         }
@@ -46,12 +54,12 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setRestaurantInfo() {
-        tvClickedName.text = viewModel.getCurrentRestaurant().name
-        tvClickedPrice.text = viewModel.getCurrentRestaurant().price
-        clickedRatingBar.rating = viewModel.getCurrentRestaurant().rating.toFloat()
-        tvClickedReviewCount.text = viewModel.getCurrentRestaurant().review_count.toString()
-        tvClickedAddress.text = viewModel.getCurrentRestaurant().location.address
-        tvClickedPhone.text = viewModel.getCurrentRestaurant().phone
+        tvClickedName.text = inputRestaurant.name
+        tvClickedPrice.text = inputRestaurant.price
+        clickedRatingBar.rating = inputRestaurant.rating.toFloat()
+        tvClickedReviewCount.text = inputRestaurant.review_count.toString()
+        tvClickedAddress.text = inputRestaurant.address
+        tvClickedPhone.text = inputRestaurant.phone
 
         tvOpened.visibility = GONE
         // TODO: Figure out why this is always false
@@ -91,28 +99,29 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
         val builder = LatLngBounds.Builder()
 
-        val restaurantLocation = LatLng(viewModel.getCurrentRestaurant().coordinates.latitude.toDouble(),
-            viewModel.getCurrentRestaurant().coordinates.longitude.toDouble())
+        val restaurantLocation = LatLng(inputRestaurant.coordinates.latitude.toDouble(),
+            inputRestaurant.coordinates.longitude.toDouble())
 
         map.addMarker(MarkerOptions()
             .position(restaurantLocation)
-            .title(viewModel.getCurrentRestaurant().name))
+            .title(inputRestaurant.name))
         builder.include(restaurantLocation)
 
-        map.addMarker(MarkerOptions()
-            .position(viewModel.mapOrigin)
-            .title(viewModel.location)
-            .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
-
-        builder.include(viewModel.mapOrigin)
-
-        viewModel.mapDestination?.let { mapDestination ->
-            map.addMarker(MarkerOptions()
-                .position(mapDestination)
-                .title(viewModel.destination)
-                .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
-            builder.include(mapDestination)
-        }
+        // TODO: get origin and dest from view model
+//        map.addMarker(MarkerOptions()
+//            .position(viewModel.mapOrigin)
+//            .title(viewModel.location)
+//            .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
+//
+//        builder.include(viewModel.mapOrigin)
+//
+//        viewModel.mapDestination?.let { mapDestination ->
+//            map.addMarker(MarkerOptions()
+//                .position(mapDestination)
+//                .title(viewModel.destination)
+//                .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
+//            builder.include(mapDestination)
+//        }
 
 
         if (LocationService().hasPermissions(requireContext())){

@@ -19,7 +19,10 @@ const val KEY_REVIEW_COUNT = "reviewCount"
 const val KEY_IMAGE_URL = "imageUrl"
 const val KEY_CATEGORIES = "categories"
 const val KEY_ADDRESS = "address"
-
+const val KEY_PHONE = "phone"
+const val KEY_OPEN = "open_now"
+const val KEY_LATITUDE = "latitude"
+const val KEY_LONGITUDE = "longitude"
 
 @ParseClassName("SavedRestaurants")
 class SavedRestaurants : ParseObject() {
@@ -27,29 +30,29 @@ class SavedRestaurants : ParseObject() {
     fun getRestaurantID(): String? {
         return getString(KEY_ID)
     }
-    fun setRestaurantID(yelpId: String?) {
-        put(KEY_ID, yelpId!!)
+    fun setRestaurantID(yelpId: String) {
+        put(KEY_ID, yelpId)
     }
 
-    fun getIsSaved(): Boolean? {
+    fun getIsSaved(): Boolean {
         return getBoolean(KEY_IS_SAVED)
     }
-    fun setIsSaved(isSaved: Boolean?){
-        put(KEY_IS_SAVED, isSaved!!)
+    fun setIsSaved(isSaved: Boolean){
+        put(KEY_IS_SAVED, isSaved)
     }
 
     fun getUser(): ParseUser? {
         return getParseUser(KEY_USER)
     }
-    fun setUser(user: ParseUser?) {
-        put(KEY_USER, user!!)
+    fun setUser(user: ParseUser) {
+        put(KEY_USER, user)
     }
 
     fun getRestaurantName(): String? {
         return getString(KEY_NAME)
     }
-    fun setRestaurantName(name: String?) {
-        put(KEY_NAME, name!!)
+    fun setRestaurantName(name: String) {
+        put(KEY_NAME, name)
     }
 
     fun getRestaurantRating(): Double {
@@ -63,7 +66,7 @@ class SavedRestaurants : ParseObject() {
         return getString(KEY_PRICE)
     }
     fun setRestaurantPrice(price: String?) {
-        put(KEY_PRICE, price!!)
+        price?.let { p -> put(KEY_PRICE, p) }
     }
 
     fun getRestaurantReviewCount(): Int {
@@ -77,21 +80,49 @@ class SavedRestaurants : ParseObject() {
         return getString(KEY_IMAGE_URL)
     }
     fun setRestaurantImage(imageUrl: String?) {
-        put(KEY_IMAGE_URL, imageUrl!!)
+        imageUrl?.let { url -> put(KEY_IMAGE_URL, url) }
     }
 
     fun getRestaurantAddress(): String? {
         return getString(KEY_ADDRESS)
     }
-    fun setRestaurantAddress(address: String?) {
-        put(KEY_ADDRESS, address!!)
+    fun setRestaurantAddress(address: String) {
+        put(KEY_ADDRESS, address)
     }
 
     fun getRestaurantCategories(): String? {
         return getString(KEY_CATEGORIES)
     }
     fun setRestaurantCategories(categories: String?) {
-        put(KEY_CATEGORIES, categories!!)
+        categories?.let { c -> put(KEY_CATEGORIES, c) }
+    }
+
+    fun getRestaurantPhone(): String? {
+        return getString(KEY_PHONE)
+    }
+    fun setRestaurantPhone(phone: String?) {
+        phone?.let { p -> put(KEY_PHONE, p) }
+    }
+
+    fun getIsOpened(): Boolean {
+        return getBoolean(KEY_OPEN)
+    }
+    fun setIsOpened(isOpen: Boolean){
+        put(KEY_OPEN, isOpen)
+    }
+
+    fun getRestaurantLatitude(): Double {
+        return getDouble(KEY_LATITUDE)
+    }
+    fun setRestaurantLatitude(latitude: Double) {
+        put(KEY_LATITUDE, latitude)
+    }
+
+    fun getRestaurantLongitude(): Double {
+        return getDouble(KEY_LONGITUDE)
+    }
+    fun setRestaurantLongitude(longitude: Double) {
+        put(KEY_LONGITUDE, longitude)
     }
 
 }
