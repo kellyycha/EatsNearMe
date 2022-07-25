@@ -29,13 +29,14 @@ This app will help you decide on the best places to eat, to make the most out of
 (more focused on spontaneous)
 * [x] Users can log in
 * [x] Use current location and default radius or set a location and radius
-* [x] Tinder-style swiping animation
+* [x] Tinder-style swiping animation (use external library for visual polish requirement)
   * [x] Select yes or no for each restaurant
+  * [x] Yes and No animations for animation requirement
 * [ ] Pictures, info, and links in detail view of restaurants
 * [x] All the yes's go into saved tab
-* [ ] Filtering in search: Let the users select prices, food category, rating, number of reviews.
+* [ ] Filtering in search: Let the users select prices, food category, rating, number of reviews
 * [x] Able to plan out a path to your destination to only show places along the way
-   * [x] optimize the search query to load restaurants along the path when the current list is exhausted so too many restaurants are not queried at once.
+   * [x] Optimize the search query to load restaurants along the path when the current list is exhausted so too many restaurants are not queried at once
 * [ ] Map view to show where the restaurant is 
 * [x] Use the Model–View–ViewModel architectural pattern to organize the code
 * [x] Use state flows to update the UI when the data changes
@@ -50,16 +51,16 @@ This app will help you decide on the best places to eat, to make the most out of
 * [ ] Sort saved restaurants in folders by location
 * [ ] Follow friends' accounts to see their favorite restaurants
 * [ ] Use data from what the user liked to recommend a restaurant near you using push notifications
-   * [ ] See the user's saved restaurants, skipped restaurants, and favorited restaurants (ones they've tried and marked that they like) and create a weighting system of the types of restaurants that the user prefers.
-   * [ ] This will be based on types of cusine, reviews, and price range.
-   * [ ] Find restaurants, whether that be ones they do not know about or ones that are already on their list but have not tried yet, that it feels the user would especially like and recommend them a restaurant with a push notification if they are ever close to the area.
+   * [ ] See the user's saved restaurants, skipped restaurants, and favorited restaurants (ones they've tried and marked that they like) and create a weighting system of the types of restaurants that the user prefers
+   * [ ] This will be based on types of cusine, reviews, and price range
+   * [ ] Find restaurants, whether that be ones they do not know about or ones that are already on their list but have not tried yet, that it feels the user would especially like and recommend them a restaurant with a push notification if they are ever close to the area
 
 **Complex Features + ideas to execute them**
 1. Set a destination from your current location to find restaurants along the way
    * Use Google Maps API
-   * Find a path to get to your destination and set multiple small radii along those lines and show restaurants within those radii.
+   * Find a path to get to your destination and set multiple small radii along those lines and show restaurants within those radii
 2. Optimize the search query 
-   * Only add query additional restuarants along the path as the user exhausts the list instead of querying everything along the path.
+   * Only add query additional restuarants along the path as the user exhausts the list instead of querying everything along the path
 5. (Stretch goal complex feature) Add background thread prefetching 
    * A problem I have was that the saved/skipped restaurants lists were not loaded initially before fetching the restaurants. For now, I went around this issue by loading the saved fragment first before changing tabs to the restaurants fragment. However, I want to try loading it in the background so that the first screen can be the restaurants screen, since it is the main screen of my app.
 
