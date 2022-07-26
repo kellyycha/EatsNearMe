@@ -32,10 +32,12 @@ This app will help you decide on the best places to eat, to make the most out of
   * [ ] Filter search: Let the users select prices, food category, rating, number of reviews, open now
 * [x] Tinder-style swiping animation (use external library for visual polish requirement)
   * [x] Select yes or no for each restaurant
-  * [x] Yes and No animations for animation requirement
+  * [x] Yes and No animations
 * [x] Detail view of restaurants with info about the restaurant and map view
+  * [x] Animate transition between fragments (animation requirement)
 * [x] All the yes's go into saved tab
   * [x] Click on the restaurant in saved tab to open details view using parcelable
+  * [x] Swipe to delete from the list (gesture requirement)
 * [x] Able to plan out a path to your destination to only show places along the way
    * [x] Optimize the search query to load restaurants along the path when the current list is exhausted so too many restaurants are not queried at once
 * [x] Use the Model–View–ViewModel architectural pattern to organize the code
