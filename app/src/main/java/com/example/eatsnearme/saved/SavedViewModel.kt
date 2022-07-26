@@ -20,7 +20,7 @@ class SavedViewModel : ViewModel() {
 
     private var savedIdList = ArrayList<String>()
     private var skippedIdList = ArrayList<String>()
-    private val allSaved = ArrayList<SavedRestaurants>()
+    private val allSaved = mutableListOf<SavedRestaurants>()
 
     private val _stateFlow = MutableStateFlow<SavedState>(SavedState.Loading)
     val stateFlow: StateFlow<SavedState> = _stateFlow
@@ -83,6 +83,6 @@ class SavedViewModel : ViewModel() {
 
     sealed class SavedState {
         object Loading : SavedState()
-        data class Loaded(var allSaved : ArrayList<SavedRestaurants>): SavedState()
+        data class Loaded(var allSaved : MutableList<SavedRestaurants>): SavedState()
     }
 }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.system.exitProcess
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
 

@@ -1,13 +1,20 @@
 package com.example.eatsnearme.saved
 
+import android.content.Context
+import android.graphics.*
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SimpleAdapter
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.eatsnearme.R
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
@@ -47,10 +54,21 @@ class SavedFragment : Fragment() {
                     val adapter = SavedAdapter(requireActivity(), it.allSaved)
                     rvSaved.adapter = adapter
                     rvSaved.layoutManager = LinearLayoutManager(requireContext())
+
+                    val swipeHandler = object : SwipeToDeleteCallback(requireContext()) {
+                        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                            adapter.removeAt(viewHolder.adapterPosition)
+                        }
+                    }
+                    val itemTouchHelper = ItemTouchHelper(swipeHandler)
+                    itemTouchHelper.attachToRecyclerView(rvSaved)
+
                     adapter.notifyDataSetChanged()
+
                 }
             }
         }
     }
 
 }
+

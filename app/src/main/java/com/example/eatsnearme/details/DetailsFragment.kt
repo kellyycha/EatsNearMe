@@ -9,14 +9,17 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet.GONE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.eatsnearme.R
 import com.example.eatsnearme.restaurants.LocationService
 import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
+import com.example.eatsnearme.saved.SavedViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -39,6 +42,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     }
     private val viewModel: DetailsViewModel by activityViewModels()
     private val restaurantsVM: RestaurantsViewModel by activityViewModels()
+    private val savedVM: SavedViewModel by viewModels()
+
     private lateinit var inputRestaurant : Restaurant
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +64,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         inputRestaurant = args?.get(KEY_RESTAURANT) as Restaurant
 
         btnExitDetail.setOnClickListener{
+            //TODO: how to finish this process so it doesn't keep loading
             requireActivity().onBackPressed()
         }
 

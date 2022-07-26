@@ -1,10 +1,14 @@
 package com.example.eatsnearme.saved
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.eatsnearme.R
@@ -14,7 +18,7 @@ import com.example.eatsnearme.details.Restaurant
 import kotlinx.android.synthetic.main.item_saved.view.*
 
 
-class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaurants>) : RecyclerView.Adapter<SavedAdapter.ViewHolder>() {
+class SavedAdapter(val context: Context, private val allSaved: MutableList<SavedRestaurants>) : RecyclerView.Adapter<SavedAdapter.ViewHolder>() {
 
     companion object{
         const val TAG = "Saved"
@@ -25,6 +29,23 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
     }
 
     override fun getItemCount() = allSaved.size
+
+    fun removeAt(position: Int) {
+        Log.i("SIZE1", allSaved.size.toString())
+        allSaved[position].deleteInBackground { e ->
+            if (e == null) {
+                Log.i(TAG, "deleted")
+                allSaved.removeAt(position)
+                notifyItemRemoved(position)
+                Log.i("SIZE2", allSaved.size.toString())
+
+            }
+            else{
+                Log.i(TAG, "delete failed")
+            }
+        }
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: SavedAdapter.ViewHolder, position: Int) {
         val saved = allSaved[position]
