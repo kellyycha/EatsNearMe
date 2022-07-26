@@ -64,7 +64,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         inputRestaurant = args?.get(KEY_RESTAURANT) as Restaurant
 
         btnExitDetail.setOnClickListener{
-            //TODO: how to finish this process so it doesn't keep loading
             requireActivity().onBackPressed()
         }
 
