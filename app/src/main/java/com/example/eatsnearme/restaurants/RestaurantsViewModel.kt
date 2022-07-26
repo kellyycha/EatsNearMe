@@ -23,7 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class RestaurantsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val restaurantResults = mutableListOf<YelpRestaurant>()
@@ -53,6 +52,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         const val MIN_SIZE = 10
         const val defaultRadius = "1000"
         const val defaultPathRadius = "100"
+
+        // TODO: this doesnt work because not of type TravelMode
+        const val KEY_WALKING = "WALKING"
     }
 
     private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
@@ -74,7 +76,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
 
         if (destination.isNotEmpty()){
-            queryAsNeeded(typeOfFood, radius.toInt())
+            if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
+                queryAsNeeded(typeOfFood, radius.toInt())
+            }
+
         }
 
     }
@@ -153,7 +158,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun setOriginLatLng(location: String) {
         val mapsService = MapsService.create()
-        mapsService.searchPath(MAPS_API_KEY, location, location, "WALKING")
+        mapsService.searchPath(MAPS_API_KEY, location, location, KEY_WALKING)
             .enqueue(object : Callback<DirectionsResponse> {
                 override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
                     val body = response.body() ?: return
@@ -179,7 +184,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
         polylineCoordinates.clear()
         val mapsService = MapsService.create()
-        mapsService.searchPath(MAPS_API_KEY, origin, destination, "WALKING")
+        mapsService.searchPath(MAPS_API_KEY, origin, destination, KEY_WALKING)
             .enqueue(object : Callback<DirectionsResponse> {
                 override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
                     Log.i("MAPS", "onResponse $response")
@@ -254,14 +259,13 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private fun queryAsNeeded(typeOfFood: String, radius: Int){
         Log.i("QUERY","query as needed")
         Log.i("QUERY","list size: ${restaurantDisplay.size}")
-        if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
-            val coordinate = spacedCoordinates[queryIndex]
-            val location = "${coordinate.latitude},${coordinate.longitude}"
-            Log.i("QUERY","query yelp at: $location")
-            Log.i("QUERY","query index: $queryIndex")
-            queryYelp(typeOfFood, location, radius)
-            queryIndex++
-        }
+
+        val coordinate = spacedCoordinates[queryIndex]
+        val location = "${coordinate.latitude},${coordinate.longitude}"
+        Log.i("QUERY","query yelp at: $location")
+        Log.i("QUERY","query index: $queryIndex")
+        queryYelp(typeOfFood, location, radius)
+        queryIndex++
 
     }
 
@@ -286,8 +290,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     for (restaurant in restaurantResults){
                         if (!isSkipped(restaurant) && !isSaved(restaurant)
                             && restaurant !in restaurantAllDisplay
-                            && restaurant.location.address.isNotEmpty()
+                            && !restaurant.location.address.isNullOrEmpty()
                             && restaurant.image_url.isNotEmpty()){
+
                             restaurantAllDisplay.add(restaurant)
                             restaurantDisplay.add(restaurant)
                         }
@@ -300,8 +305,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         Log.i("MAPS", "${rest.name}, ${rest.location.address}")
                     }
 
-
-                    if (restaurantDisplay.isEmpty() && queryIndex < spacedCoordinates.size){
+                    if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
                         queryAsNeeded(typeOfFood, radius)
                     }
                     else if (restaurantDisplay.isEmpty()){
@@ -369,6 +373,10 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     fun getCurrentRestaurant(): YelpRestaurant{
         return restaurantDisplay.component1()
+    }
+
+    fun getPath(): MutableList<LatLng> {
+        return polylineCoordinates
     }
 
     sealed class RestaurantState {

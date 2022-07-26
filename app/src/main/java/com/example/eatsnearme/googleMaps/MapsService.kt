@@ -17,12 +17,11 @@ interface MapsService {
     @GET("directions/json")
     fun searchPath(
         @Query("key") key: String,
-        //LatLng | String | google.maps.Place,
-        @Query("origin") origin: String,
+        @Query("origin") origin: String, //LatLng | String | google.maps.Place,
         @Query("destination") destination: String,
-        // TravelMode Class?
-        @Query("travelMode") travelMode: String
+        @Query("travelMode") travelMode: String, //TravelMode
     ): Call<DirectionsResponse>
+
 
     companion object {
         fun create(): MapsService {

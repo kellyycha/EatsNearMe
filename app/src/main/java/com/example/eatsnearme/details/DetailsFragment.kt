@@ -42,7 +42,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     }
     private val viewModel: DetailsViewModel by activityViewModels()
     private val restaurantsVM: RestaurantsViewModel by activityViewModels()
-    private val savedVM: SavedViewModel by viewModels()
+    private var polyline: Polyline? = null
 
     private lateinit var inputRestaurant : Restaurant
 
@@ -157,8 +157,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                 }
                 is DetailsViewModel.CurrLocationState.Loaded -> {
                     Log.i(TAG, "Loaded location")
-                    val currLocationStr = latLngToString(curr.coordinates)
-                    drawPath(currLocationStr, inputRestaurant.address, map)
+//                    val currLocationStr = latLngToString(curr.coordinates)
+//                    drawPath(currLocationStr, inputRestaurant.address, map)
 
                     map.addMarker(
                         MarkerOptions()
@@ -185,11 +185,19 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                 is DetailsViewModel.PathState.Loaded -> {
                     detailSpinner.visibility = View.GONE
                     Log.i(TAG, "points: ${it.points}")
-                    val polylineOptions = PolylineOptions()
-                    polylineOptions.addAll(it.points).color(Color.BLUE)
-                    map.addPolyline(polylineOptions)
+                    addPolyline(it.points, map)
                 }
             }
+        }
+    }
+
+    private fun addPolyline(directionPoints: MutableList<LatLng>, map: GoogleMap) {
+        if (polyline == null) {
+            val line = PolylineOptions().color(Color.BLUE)
+            line.addAll(directionPoints)
+            polyline = map.addPolyline(line)
+        } else {
+            polyline!!.points = directionPoints
         }
     }
 
@@ -201,8 +209,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
         builder.include(origin)
 
-        val originStr = latLngToString(restaurantsVM.mapOrigin)
-        drawPath(originStr, inputRestaurant.address, map)
+//        val originStr = latLngToString(restaurantsVM.mapOrigin)
+//        drawPath(originStr, inputRestaurant.address, map)
 
         restaurantsVM.mapDestination?.let { destination ->
             map.addMarker(MarkerOptions()
@@ -211,8 +219,10 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
             builder.include(destination)
 
-            val destinationStr = latLngToString(destination)
-            drawPath(inputRestaurant.address, destinationStr, map)
+//            val destinationStr = latLngToString(destination)
+//            drawPath(inputRestaurant.address, destinationStr, map)
+
+            addPolyline(restaurantsVM.getPath(), map)
         }
 
         scaleMap(map, builder)

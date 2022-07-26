@@ -30,23 +30,6 @@ class SavedAdapter(val context: Context, private val allSaved: MutableList<Saved
 
     override fun getItemCount() = allSaved.size
 
-    fun removeAt(position: Int) {
-        Log.i("SIZE1", allSaved.size.toString())
-        allSaved[position].deleteInBackground { e ->
-            if (e == null) {
-                Log.i(TAG, "deleted")
-                allSaved.removeAt(position)
-                notifyItemRemoved(position)
-                Log.i("SIZE2", allSaved.size.toString())
-
-            }
-            else{
-                Log.i(TAG, "delete failed")
-            }
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onBindViewHolder(holder: SavedAdapter.ViewHolder, position: Int) {
         val saved = allSaved[position]
         holder.bind(saved)

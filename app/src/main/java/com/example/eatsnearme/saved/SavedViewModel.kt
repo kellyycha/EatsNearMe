@@ -14,75 +14,81 @@ import kotlinx.coroutines.flow.StateFlow
 class SavedViewModel : ViewModel() {
 
     companion object{
-        private const val QUERY_LIMIT = 20
+//        private const val QUERY_LIMIT = 20
         private const val TAG = "SavedViewModel"
     }
 
     private var savedIdList = ArrayList<String>()
     private var skippedIdList = ArrayList<String>()
     private val allSaved = mutableListOf<SavedRestaurants>()
+    private val allStored = mutableListOf<SavedRestaurants>()
 
     private val _stateFlow = MutableStateFlow<SavedState>(SavedState.Loading)
     val stateFlow: StateFlow<SavedState> = _stateFlow
 
     fun querySaved() {
-        Log.i(TAG,"loading saved and skipped")
-
         _stateFlow.value = SavedState.Loading
-        savedIdList.clear()
-        allSaved.clear()
+        allStored.clear()
 
         val query: ParseQuery<SavedRestaurants> = ParseQuery.getQuery(SavedRestaurants::class.java)
         query.include(KEY_USER)
             .whereEqualTo(KEY_USER, ParseUser.getCurrentUser())
-            .whereEqualTo(KEY_IS_SAVED, true)
-            .setLimit(QUERY_LIMIT)
+//            .setLimit(QUERY_LIMIT)
             .addDescendingOrder("createdAt")
             .findInBackground(FindCallback { restaurants, e ->
                 if (e != null) {
                     Log.e(SavedFragment.TAG, "Issue with getting saved restaurants", e)
                     return@FindCallback;
                 }
-                for (restaurant in restaurants) {
-                    Log.i(SavedFragment.TAG, "Saved Restaurant: ${restaurant.getRestaurantName()}")
-                    savedIdList.add(restaurant.getRestaurantID().toString())
-
-                }
-                trackSkipped()
-                allSaved.addAll(restaurants)
-                _stateFlow.value = SavedState.Loaded(allSaved)
+                allStored.addAll(restaurants)
+                Log.i(TAG,"stored all: ${allStored.size}")
+                getSavedList()
             })
     }
 
-    private fun trackSkipped() {
-        skippedIdList.clear()
-        val query: ParseQuery<SavedRestaurants> = ParseQuery.getQuery(SavedRestaurants::class.java)
-        query.include(KEY_USER)
-            .whereEqualTo(KEY_USER, ParseUser.getCurrentUser())
-            .whereEqualTo(KEY_IS_SAVED, false)
-            .findInBackground(FindCallback { restaurants, e ->
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting skipped restaurants", e)
-                    return@FindCallback;
-                }
-                for (restaurant in restaurants) {
-                    Log.i(TAG, "Skipped Restaurant: ${restaurant.getRestaurantName()}")
-                    skippedIdList.add(restaurant.getRestaurantID().toString())
-
-                }
-            })
+    fun removeItemAt(position: Int){
+        _stateFlow.value = SavedState.Update
+        allSaved[position].deleteInBackground { e ->
+            if (e == null) {
+                Log.i(SavedAdapter.TAG, "deleted")
+                allSaved.removeAt(position)
+                _stateFlow.value = SavedState.Loaded(allSaved)
+            }
+            else{
+                Log.i(SavedAdapter.TAG, "delete failed")
+            }
+        }
     }
 
     fun getSavedList(): ArrayList<String> {
+        savedIdList.clear()
+        allSaved.clear()
+        for (restaurant in allStored){
+            if (restaurant.getIsSaved()){
+                allSaved.add(restaurant)
+//                Log.i(TAG, "Saved Restaurant: ${restaurant.getRestaurantName()}")
+                savedIdList.add(restaurant.getRestaurantID().toString())
+            }
+        }
+        Log.i("SAVED","Saved Len: ${allSaved.size}")
+        _stateFlow.value = SavedState.Loaded(allSaved)
         return savedIdList
     }
 
     fun getSkippedList(): ArrayList<String> {
+        skippedIdList.clear()
+        for (restaurant in allStored){
+            if (!restaurant.getIsSaved()){
+//                Log.i(TAG, "Skipped Restaurant: ${restaurant.getRestaurantName()}")
+                skippedIdList.add(restaurant.getRestaurantID().toString())
+            }
+        }
         return skippedIdList
     }
 
     sealed class SavedState {
         object Loading : SavedState()
+        object Update : SavedState()
         data class Loaded(var allSaved : MutableList<SavedRestaurants>): SavedState()
     }
 }

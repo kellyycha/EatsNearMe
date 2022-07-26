@@ -9,6 +9,7 @@ import com.example.eatsnearme.googleMaps.MAPS_API_KEY
 import com.example.eatsnearme.googleMaps.MapsService
 import com.example.eatsnearme.restaurants.LocationService
 import com.example.eatsnearme.restaurants.RestaurantsViewModel
+import com.example.eatsnearme.restaurants.RestaurantsViewModel.Companion.KEY_WALKING
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
@@ -49,7 +50,7 @@ class DetailsViewModel(application: Application) : AndroidViewModel(application)
         _path.value = PathState.Loading
         polylineCoordinates.clear()
         val mapsService = MapsService.create()
-        mapsService.searchPath(MAPS_API_KEY, origin, destination, "WALKING")
+        mapsService.searchPath(MAPS_API_KEY, origin, destination, KEY_WALKING)
             .enqueue(object : Callback<DirectionsResponse> {
                 override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
                     Log.i(TAG, "onResponse $response")

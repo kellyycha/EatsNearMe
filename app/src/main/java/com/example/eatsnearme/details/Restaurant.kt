@@ -27,7 +27,7 @@ data class Restaurant (
                 is_saved = false,
                 name = yelpRestaurant.name,
                 rating = yelpRestaurant.rating,
-                price = yelpRestaurant.price,
+                price = yelpRestaurant.price.toString(),
                 review_count = yelpRestaurant.review_count,
                 image_url = yelpRestaurant.image_url,
                 categories =  categoriesToString(yelpRestaurant),

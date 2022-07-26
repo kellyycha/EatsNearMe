@@ -11,7 +11,7 @@ data class YelpRestaurant(
     var id: String,
     var name: String,
     val rating: Double,
-    val price: String,
+    val price: String?,
     val review_count: Int,
     val image_url: String,
     val categories: List<YelpCategory>,
@@ -21,7 +21,6 @@ data class YelpRestaurant(
     val is_open_now: Boolean
     // TODO: add photos
 )
-
 
 data class YelpCategory(
     val title: String

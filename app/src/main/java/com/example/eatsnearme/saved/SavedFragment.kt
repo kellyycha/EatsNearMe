@@ -47,6 +47,9 @@ class SavedFragment : Fragment() {
                     Log.i(RestaurantsFragment.TAG, "Loading restaurants")
                     savedSpinner.visibility = View.VISIBLE
                 }
+                is SavedViewModel.SavedState.Update -> {
+                    Log.i(RestaurantsFragment.TAG, "Deleted a card, show updated list")
+                }
                 is SavedViewModel.SavedState.Loaded -> {
                     Log.i(RestaurantsFragment.TAG, "Loaded all")
                     savedSpinner.visibility = View.GONE
@@ -57,7 +60,8 @@ class SavedFragment : Fragment() {
 
                     val swipeHandler = object : SwipeToDeleteCallback(requireContext()) {
                         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                            adapter.removeAt(viewHolder.adapterPosition)
+                            viewModel.removeItemAt(viewHolder.adapterPosition)
+                            adapter.notifyItemRemoved(viewHolder.adapterPosition)
                         }
                     }
                     val itemTouchHelper = ItemTouchHelper(swipeHandler)

@@ -7,7 +7,6 @@ data class DirectionsResponse (
     val routes: List<DirectionsRoute>
 )
 
-
 data class DirectionsGeocodedWaypoint(
     val geocoder_status: String,
     val place_id: String,
@@ -20,7 +19,7 @@ data class DirectionsRoute(
     val overview_polyline: DirectionsPolyline,
     val summary: String,
     val warnings: List<String>,
-    val waypoint_order: List<Integer>,
+    val waypoint_order: List<Int>,
     val overview_path: ArrayList<LatLng>,
 )
 
