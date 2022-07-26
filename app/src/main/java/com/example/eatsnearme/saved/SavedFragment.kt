@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eatsnearme.R
-import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
 import kotlinx.android.synthetic.main.fragment_saved.*
@@ -35,7 +34,7 @@ class SavedFragment : Fragment() {
 
         viewModel.querySaved()
 
-        collectLatestLifecycleFlow(viewModel.stateFlow) { it ->
+        collectLatestLifecycleFlow(viewModel.stateFlow) {
             when(it){
                 is SavedViewModel.SavedState.Loading -> {
                     Log.i(RestaurantsFragment.TAG, "Loading restaurants")

@@ -135,5 +135,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvClickedPhone" />
 
+    <ProgressBar
+        android:id="@+id/detailSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/mapView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/mapView"
+        android:indeterminateTint="@color/sage"
+        style="?android:attr/progressBarStyleLarge"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

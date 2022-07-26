@@ -50,15 +50,15 @@ data class Restaurant (
                 phone = parseRestaurant.getRestaurantPhone().toString(),
                 is_open_now = parseRestaurant.getIsOpened())
         }
-    }
-}
+        fun categoriesToString(restaurant: YelpRestaurant): String {
+            var categories = ""
+            for (i in restaurant.categories.indices){
+                categories += restaurant.categories[i].title+", "
+            }
+            return categories.dropLast(2)
+        }
 
-fun categoriesToString(restaurant: YelpRestaurant): String {
-    var categories = ""
-    for (i in restaurant.categories.indices){
-        categories += restaurant.categories[i].title+", "
     }
-    return categories.dropLast(2)
 }
 
 

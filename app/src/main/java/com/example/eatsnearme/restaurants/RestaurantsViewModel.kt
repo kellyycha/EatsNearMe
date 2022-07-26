@@ -5,7 +5,7 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.example.eatsnearme.SavedRestaurants
-import com.example.eatsnearme.details.categoriesToString
+import com.example.eatsnearme.details.Restaurant.Companion.categoriesToString
 import com.example.eatsnearme.googleMaps.DirectionsResponse
 import com.example.eatsnearme.googleMaps.MAPS_API_KEY
 import com.example.eatsnearme.googleMaps.MapsService
@@ -80,8 +80,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun setStateForNext(){
-        if (restaurantDisplay.size > 0){
-            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay[0]))
+        if (restaurantDisplay.isNotEmpty()){
+            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay.component1()))
         }
         else{
             _stateFlow.value = RestaurantState.Idle
@@ -125,6 +125,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         restaurantDisplay.clear()
         restaurantAllDisplay.clear()
         _stateFlow.value = RestaurantState.Loading
+
         mapDestination = null
 
         if (radius.isBlank()){
@@ -157,7 +158,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                 override fun onResponse(call: Call<DirectionsResponse>, response: Response<DirectionsResponse>) {
                     val body = response.body() ?: return
 
-                    mapOrigin = LatLng(body.routes[0].legs[0].end_location.lat.toDouble(),body.routes[0].legs[0].end_location.lng.toDouble())
+                    mapOrigin = LatLng(
+                        body.routes.component1().legs.component1().end_location.lat.toDouble(),
+                        body.routes.component1().legs.component1().end_location.lng.toDouble())
                 }
 
                 override fun onFailure(call: Call<DirectionsResponse>, t: Throwable) {
@@ -191,7 +194,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     polylineCoordinates = PolyUtil.decode(body.routes.component1().overview_polyline.points)
                     Log.i("MAPS", "overview polyline results: $polylineCoordinates")
 
-                    mapDestination = LatLng(body.routes[0].legs[0].end_location.lat.toDouble(),body.routes[0].legs[0].end_location.lng.toDouble())
+                    mapDestination = LatLng(
+                        body.routes.component1().legs.component1().end_location.lat.toDouble(),
+                        body.routes.component1().legs.component1().end_location.lng.toDouble())
 
                     getSpacedPoints(polylineCoordinates, typeOfFood, radius)
 
@@ -221,7 +226,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             val results = FloatArray(1)
             Location.distanceBetween(start.latitude, start.longitude, next.latitude, next.longitude, results)
 
-            if (results[0] > radius){
+            if (results.component1() > radius){
                 spacedCoordinates.add(next)
                 index1 = index2
                 index2++
@@ -363,7 +368,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     fun getCurrentRestaurant(): YelpRestaurant{
-        return restaurantDisplay[0]
+        return restaurantDisplay.component1()
     }
 
     sealed class RestaurantState {
@@ -371,5 +376,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         object Idle : RestaurantState()
         data class Success(var restaurant : YelpRestaurant) : RestaurantState()
     }
+
 }
 

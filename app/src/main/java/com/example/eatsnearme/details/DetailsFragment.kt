@@ -1,8 +1,7 @@
 package com.example.eatsnearme.details
 
+import android.graphics.Color
 import android.os.Bundle
-import android.text.style.TtsSpan.ARG_NUMBER
-import android.text.style.TtsSpan.ARG_TEXT
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,6 +28,14 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         const val light_blue = 200F
         const val padding = 200
         const val KEY_RESTAURANT = "Restaurant"
+
+        fun newInstance(restaurant: Restaurant): DetailsFragment {
+            val fragment = DetailsFragment()
+            val args = Bundle()
+            args.putParcelable(KEY_RESTAURANT, restaurant)
+            fragment.arguments = args
+            return fragment
+        }
     }
     private val viewModel: DetailsViewModel by activityViewModels()
     private val restaurantsVM: RestaurantsViewModel by activityViewModels()
@@ -46,6 +53,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        detailSpinner.visibility = View.GONE
+
         val args = this.arguments
         inputRestaurant = args?.get(KEY_RESTAURANT) as Restaurant
 
@@ -57,15 +66,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
         initGoogleMap(savedInstanceState)
     }
-
-    fun newInstance(restaurant: Restaurant): DetailsFragment {
-        val fragment = DetailsFragment()
-        val args = Bundle()
-        args.putParcelable(KEY_RESTAURANT, restaurant)
-        fragment.arguments = args
-        return fragment
-    }
-
 
     private fun setRestaurantInfo() {
         tvClickedName.text = inputRestaurant.name
@@ -124,16 +124,17 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         if (!inputRestaurant.is_saved){
             addOriginDestinationMarkers(map, builder)
         }
-        else if (LocationService().hasPermissions(requireContext())){
+        else if (inputRestaurant.is_saved && LocationService().hasPermissions(requireContext())){
             addCurrentLocationMarker(map, builder)
         }
+    }
 
-        scaleMap(map, builder)
+    private fun latLngToString(latLng: LatLng) : String{
+        return "${latLng.latitude}, ${latLng.longitude}"
     }
 
     private fun addRestaurantLocation(map: GoogleMap, builder: LatLngBounds.Builder) {
-        val restaurantLocation = LatLng(inputRestaurant.coordinates.latitude,
-            inputRestaurant.coordinates.longitude)
+        val restaurantLocation = inputRestaurant.coordinates
         map.addMarker(MarkerOptions()
             .position(restaurantLocation)
             .title(inputRestaurant.name))
@@ -143,41 +144,72 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     private fun addCurrentLocationMarker(map: GoogleMap, builder: LatLngBounds.Builder) {
         viewModel.getCurrentLocation()
 
-        collectLatestLifecycleFlow(viewModel.stateFlow) { it ->
-            when(it){
-                is DetailsViewModel.DetailState.Loading -> {
+        collectLatestLifecycleFlow(viewModel.currLocation) { curr ->
+            when (curr) {
+                is DetailsViewModel.CurrLocationState.Loading -> {
                     Log.i(TAG, "Loading location")
                 }
-                is DetailsViewModel.DetailState.Loaded -> {
+                is DetailsViewModel.CurrLocationState.Loaded -> {
                     Log.i(TAG, "Loaded location")
+                    val currLocationStr = latLngToString(curr.coordinates)
+                    drawPath(currLocationStr, inputRestaurant.address, map)
+
                     map.addMarker(
                         MarkerOptions()
-                            .position(it.currLocation)
+                            .position(curr.coordinates)
                             .title("Current Location")
-                            .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
-                    builder.include(it.currLocation)
-
+                            .icon(BitmapDescriptorFactory.defaultMarker(light_blue))
+                    )
+                    builder.include(curr.coordinates)
                     scaleMap(map, builder)
                 }
             }
         }
     }
 
+    private fun drawPath(origin: String, destination: String, map: GoogleMap) {
+        viewModel.getPath(origin, destination)
+
+        collectLatestLifecycleFlow(viewModel.path) {
+            when (it) {
+                is DetailsViewModel.PathState.Loading -> {
+                    Log.i(TAG, "Loading path")
+                    detailSpinner.visibility = View.VISIBLE
+                }
+                is DetailsViewModel.PathState.Loaded -> {
+                    detailSpinner.visibility = View.GONE
+                    Log.i(TAG, "points: ${it.points}")
+                    val polylineOptions = PolylineOptions()
+                    polylineOptions.addAll(it.points).color(Color.BLUE)
+                    map.addPolyline(polylineOptions)
+                }
+            }
+        }
+    }
+
     private fun addOriginDestinationMarkers(map: GoogleMap, builder: LatLngBounds.Builder) {
+        val origin = restaurantsVM.mapOrigin
         map.addMarker(MarkerOptions()
-            .position(restaurantsVM.mapOrigin)
+            .position(origin)
             .title(restaurantsVM.location)
             .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
+        builder.include(origin)
 
-        builder.include(restaurantsVM.mapOrigin)
+        val originStr = latLngToString(restaurantsVM.mapOrigin)
+        drawPath(originStr, inputRestaurant.address, map)
 
-        restaurantsVM.mapDestination?.let { mapDestination ->
+        restaurantsVM.mapDestination?.let { destination ->
             map.addMarker(MarkerOptions()
-                .position(mapDestination)
+                .position(destination)
                 .title(restaurantsVM.destination)
                 .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
-            builder.include(mapDestination)
+            builder.include(destination)
+
+            val destinationStr = latLngToString(destination)
+            drawPath(inputRestaurant.address, destinationStr, map)
         }
+
+        scaleMap(map, builder)
     }
 
     private fun scaleMap(map: GoogleMap, builder: LatLngBounds.Builder) {

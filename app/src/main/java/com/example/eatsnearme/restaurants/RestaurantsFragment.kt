@@ -20,7 +20,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.airbnb.lottie.LottieAnimationView
 import com.example.eatsnearme.R
 import com.example.eatsnearme.details.DetailsFragment
-import com.example.eatsnearme.details.DetailsFragment.Companion.KEY_RESTAURANT
 import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.yelp.YelpRestaurant
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -60,7 +59,7 @@ class RestaurantsFragment : Fragment() {
             showBottomSheet()
         }
 
-        collectLatestLifecycleFlow(viewModel.stateFlow) { it ->
+        collectLatestLifecycleFlow(viewModel.stateFlow) {
             when(it){
                 is RestaurantsViewModel.RestaurantState.Loading -> {
                     Log.i(TAG, "Loading restaurants")
@@ -89,20 +88,11 @@ class RestaurantsFragment : Fragment() {
     private fun swipeCard(view: View) {
 
         val swipeFlingAdapterView = view.findViewById<SwipeFlingAdapterView>(R.id.swipeFlingAdapterView)
-
         val arrayAdapter = CardAdapter(requireContext(), R.layout.item_card, viewModel.getRestaurantsToDisplay())
-
         swipeFlingAdapterView.adapter = arrayAdapter
 
-
         swipeFlingAdapterView.setOnItemClickListener { _, _ ->
-            val currentRestaurant = Restaurant.from(viewModel.getCurrentRestaurant())
-            val fragment = DetailsFragment().newInstance(currentRestaurant)
-
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.flContainer, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            goToDetailsView()
         }
 
         swipeFlingAdapterView.setFlingListener(object : onFlingListener {
@@ -111,32 +101,40 @@ class RestaurantsFragment : Fragment() {
             }
 
             override fun onLeftCardExit(dataObject: Any) {
-                Log.i(TAG, "swipe no")
                 playAndHideAnimation(avNo)
-                viewModel.storeRestaurant(restaurant, false,
+                viewModel.storeRestaurant(
+                    restaurant = restaurant,
+                    isSaved = false,
                     typeOfFood = viewModel.typeOfFood,
                     destination = viewModel.destination,
                     radius = viewModel.radius)
             }
 
             override fun onRightCardExit(dataObject: Any) {
-                Log.i(TAG, "swipe yes")
-
                 playAndHideAnimation(avYes)
-                viewModel.storeRestaurant(restaurant,true,
+                viewModel.storeRestaurant(
+                    restaurant = restaurant,
+                    isSaved = true,
                     typeOfFood = viewModel.typeOfFood,
                     destination = viewModel.destination,
                     radius = viewModel.radius)
             }
 
             override fun onAdapterAboutToEmpty(itemsInAdapter: Int) {
-
             }
 
             override fun onScroll(p0: Float) {
-
             }
         })
+    }
+
+    private fun goToDetailsView() {
+        val currentRestaurant = Restaurant.from(viewModel.getCurrentRestaurant())
+        val fragment = DetailsFragment.newInstance(currentRestaurant)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flContainer, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun playAndHideAnimation(av: LottieAnimationView) {
@@ -175,8 +173,6 @@ class RestaurantsFragment : Fragment() {
         dialog.show()
 
         btnSearch.setOnClickListener {
-            Log.i(TAG, "Clicked Search")
-
             viewModel.typeOfFood = etSearchFood.text.toString()
             viewModel.location = etLocation.text.toString()
             viewModel.destination = etDestination.text.toString()
@@ -196,12 +192,10 @@ class RestaurantsFragment : Fragment() {
     }
 
     private fun requestPermissionsIfNeed(context: Context) {
-        Log.i(TAG, "requesting")
         if (LocationService().hasPermissions(context)) {
-            Log.i(TAG,"has permissions")
+            Log.i(TAG,"Has Permissions")
             return
         }
-        Log.i(TAG,"need to request permissions")
         requestPermission(context)
     }
 
@@ -222,7 +216,6 @@ class RestaurantsFragment : Fragment() {
                                             grantResults: IntArray) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.i(TAG, "Request Permission Result")
         if(requestCode == LocationService.PERMISSION_REQUEST_CODE){
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Log.i(TAG, "Permission Granted")

@@ -1,8 +1,6 @@
 package com.example.eatsnearme.saved
 
 import android.content.Context
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import com.bumptech.glide.Glide
 import com.example.eatsnearme.R
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.details.DetailsFragment
-import com.example.eatsnearme.details.DetailsFragment.Companion.KEY_RESTAURANT
 import com.example.eatsnearme.details.Restaurant
 import kotlinx.android.synthetic.main.item_saved.view.*
 
@@ -36,7 +33,6 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bind(saved: SavedRestaurants) {
-
             itemView.tvSavedName.text = saved.getRestaurantName()
             itemView.tvSavedAddress.text = saved.getRestaurantAddress()
             itemView.tvCategories.text = saved.getRestaurantCategories()
@@ -44,17 +40,18 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
             Glide.with(context).load(saved.getRestaurantImage()).into(itemView.ivPic1)
 
             itemView.setOnClickListener{
-                Log.i(TAG,"clicked ${saved.getRestaurantName()}")
-
-                val currentRestaurant = Restaurant.from(saved)
-                val fragment = DetailsFragment().newInstance(currentRestaurant)
-
-                val activity = itemView.context as AppCompatActivity
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.flContainer, fragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
+                goToDetailsView(saved)
             }
+        }
+
+        private fun goToDetailsView(saved: SavedRestaurants) {
+            val currentRestaurant = Restaurant.from(saved)
+            val fragment = DetailsFragment.newInstance(currentRestaurant)
+            val activity = itemView.context as AppCompatActivity
+            val transaction = activity.supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.flContainer, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
 
     }
