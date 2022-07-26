@@ -5,6 +5,7 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import com.example.eatsnearme.SavedRestaurants
+import com.example.eatsnearme.details.categoriesToString
 import com.example.eatsnearme.googleMaps.DirectionsResponse
 import com.example.eatsnearme.googleMaps.MAPS_API_KEY
 import com.example.eatsnearme.googleMaps.MapsService
@@ -16,7 +17,6 @@ import com.example.eatsnearme.yelp.YelpService
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.PolyUtil
 import com.parse.ParseUser
-import com.parse.SaveCallback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Call
@@ -38,13 +38,13 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private var currLocation = ""
     private var queryIndex = 0
 
-    lateinit var mapOrigin: LatLng
-    var mapDestination: LatLng? = null
-
     var typeOfFood : String? = null
     var location : String? = null
     var destination : String? = null
     var radius : String? = null
+
+    lateinit var mapOrigin: LatLng
+    var mapDestination: LatLng? = null
 
     private val savedVM = SavedViewModel()
 
@@ -125,7 +125,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         restaurantDisplay.clear()
         restaurantAllDisplay.clear()
         _stateFlow.value = RestaurantState.Loading
-
         mapDestination = null
 
         if (radius.isBlank()){
@@ -349,39 +348,28 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         val categories = categoriesToString(restaurant)
         saved.setRestaurantCategories(categories)
 
-        saved.saveInBackground(SaveCallback { e ->
+        saved.saveInBackground { e ->
             if (e != null) {
                 Log.e(TAG, "Error while saving", e)
             }
             Log.i(TAG, "Restaurant save was successful")
-        })
+        }
 
         nextRestaurant(restaurant, typeOfFood, destination, radius)
-    }
-
-    fun categoriesToString(restaurant: YelpRestaurant): String {
-        var categories = ""
-        for (i in restaurant.categories.indices){
-            categories += restaurant.categories[i].title+", "
-        }
-        return categories.dropLast(2)
     }
 
     fun getRestaurantsToDisplay(): MutableList<YelpRestaurant> {
         return restaurantDisplay
     }
 
-    // TODO: get rid of this
     fun getCurrentRestaurant(): YelpRestaurant{
         return restaurantDisplay[0]
     }
-
 
     sealed class RestaurantState {
         object Loading : RestaurantState()
         object Idle : RestaurantState()
         data class Success(var restaurant : YelpRestaurant) : RestaurantState()
     }
-
 }
 

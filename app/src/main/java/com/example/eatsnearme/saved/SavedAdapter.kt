@@ -12,8 +12,8 @@ import com.bumptech.glide.Glide
 import com.example.eatsnearme.R
 import com.example.eatsnearme.SavedRestaurants
 import com.example.eatsnearme.details.DetailsFragment
+import com.example.eatsnearme.details.DetailsFragment.Companion.KEY_RESTAURANT
 import com.example.eatsnearme.details.Restaurant
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.synthetic.main.item_saved.view.*
 
 
@@ -45,23 +45,9 @@ class SavedAdapter(val context: Context, private val allSaved: List<SavedRestaur
 
             itemView.setOnClickListener{
                 Log.i(TAG,"clicked ${saved.getRestaurantName()}")
-                val bundle = Bundle()
-                // TODO: get rid of !! later. just trying to see if this works.
-                val currentRestaurant = Restaurant(true,
-                    saved.getRestaurantName()!!,
-                    saved.getRestaurantRating(),
-                    saved.getRestaurantPrice()!!,
-                    saved.getRestaurantReviewCount(),
-                    saved.getRestaurantImage()!!,
-                    saved.getRestaurantCategories()!!,
-                    saved.getRestaurantAddress()!!,
-                    LatLng(saved.getRestaurantLatitude(),saved.getRestaurantLongitude()),
-                    saved.getRestaurantPhone()!!,
-                    saved.getIsOpened())
-                bundle.putParcelable("Restaurant", currentRestaurant)
 
-                val fragment = DetailsFragment()
-                fragment.arguments = bundle
+                val currentRestaurant = Restaurant.from(saved)
+                val fragment = DetailsFragment().newInstance(currentRestaurant)
 
                 val activity = itemView.context as AppCompatActivity
                 val transaction = activity.supportFragmentManager.beginTransaction()

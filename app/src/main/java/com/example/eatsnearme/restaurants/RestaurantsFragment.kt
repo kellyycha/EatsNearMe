@@ -20,9 +20,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.airbnb.lottie.LottieAnimationView
 import com.example.eatsnearme.R
 import com.example.eatsnearme.details.DetailsFragment
+import com.example.eatsnearme.details.DetailsFragment.Companion.KEY_RESTAURANT
 import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.yelp.YelpRestaurant
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lorentzos.flingswipe.SwipeFlingAdapterView
@@ -95,24 +95,9 @@ class RestaurantsFragment : Fragment() {
         swipeFlingAdapterView.adapter = arrayAdapter
 
 
-        swipeFlingAdapterView.setOnItemClickListener { p0, p1 ->
-
-            val bundle = Bundle()
-            val currentRestaurant = Restaurant(false,
-                viewModel.getCurrentRestaurant().name,
-                viewModel.getCurrentRestaurant().rating,
-                viewModel.getCurrentRestaurant().price,
-                viewModel.getCurrentRestaurant().review_count,
-                viewModel.getCurrentRestaurant().image_url,
-                viewModel.categoriesToString(viewModel.getCurrentRestaurant()),
-                viewModel.getCurrentRestaurant().location.address,
-                LatLng(viewModel.getCurrentRestaurant().coordinates.latitude.toDouble(),viewModel.getCurrentRestaurant().coordinates.longitude.toDouble()),
-                viewModel.getCurrentRestaurant().phone,
-                viewModel.getCurrentRestaurant().is_open_now)
-            bundle.putParcelable("Restaurant", currentRestaurant)
-
-            val fragment = DetailsFragment()
-            fragment.arguments = bundle
+        swipeFlingAdapterView.setOnItemClickListener { _, _ ->
+            val currentRestaurant = Restaurant.from(viewModel.getCurrentRestaurant())
+            val fragment = DetailsFragment().newInstance(currentRestaurant)
 
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.flContainer, fragment)
