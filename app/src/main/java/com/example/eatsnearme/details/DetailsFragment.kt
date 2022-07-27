@@ -187,14 +187,10 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addPolyline(directionPoints: MutableList<LatLng>, map: GoogleMap) {
-        if (polyline == null) {
-            val line = PolylineOptions()
-            line.color(Color.BLUE)
-            line.addAll(directionPoints)
-            polyline = map.addPolyline(line)
-        } else {
-            polyline!!.points = directionPoints
-        }
+        val line = PolylineOptions()
+            .color(Color.BLUE)
+            .addAll(directionPoints)
+        polyline = map.addPolyline(line)
     }
 
     private fun addOriginDestinationMarkers(map: GoogleMap, builder: LatLngBounds.Builder) {
