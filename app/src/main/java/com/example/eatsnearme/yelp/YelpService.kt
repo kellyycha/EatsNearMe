@@ -17,7 +17,8 @@ interface YelpService {
         @Header("Authorization") authHeader: String,
         @Query("term") searchTerm: String,
         @Query("location") location: String,
-        @Query("radius") radius: Int) : Call<YelpSearchResult>
+        @Query("radius") radius: Int,
+        @Query("limit") limit: Int) : Call<YelpSearchResult>
 
     companion object {
         fun create(): YelpService {

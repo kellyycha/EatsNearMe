@@ -52,9 +52,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         const val MIN_SIZE = 10
         const val defaultRadius = "1000"
         const val defaultPathRadius = "100"
-
-        // TODO: this doesnt work because not of type TravelMode
-        const val KEY_WALKING = "WALKING"
+        const val MAX_RESPONSES = 50
+        val KEY_WALKING = MapsService.TravelMode.WALKING
     }
 
     private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
@@ -74,12 +73,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         restaurantDisplay.remove(restaurant)
         setStateForNext()
 
-
         if (destination.isNotEmpty()){
             queryAsNeeded(typeOfFood, radius.toInt())
-
         }
-
     }
 
     private fun setStateForNext(){
@@ -88,7 +84,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
         else{
             _stateFlow.value = RestaurantState.Idle
-
         }
     }
 
@@ -105,10 +100,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                 else{
                     getPath(typeOfFood, currLocation, destination, radius)
                 }
-
             }
         })
-
     }
 
     init {
@@ -151,7 +144,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         else{
             _stateFlow.value = RestaurantState.Idle
         }
-
     }
 
     private fun setOriginLatLng(location: String) {
@@ -170,7 +162,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                     Log.i("MAPS", "onFailure $t")
                 }
             })
-
     }
 
     private fun getPath(typeOfFood: String, origin: String, destination: String, radius: Int) {
@@ -266,7 +257,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             queryYelp(typeOfFood, location, radius)
             queryIndex++
         }
-
     }
 
     private fun queryYelp(typeOfFood: String, location: String, radius: Int){
@@ -274,7 +264,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         Log.i(TAG, "query yelp")
         val yelpService = YelpService.create()
 
-        yelpService.searchRestaurants("Bearer $YELP_API_KEY", typeOfFood, location, radius)
+        yelpService.searchRestaurants("Bearer $YELP_API_KEY", typeOfFood, location, radius, MAX_RESPONSES)
             .enqueue(object : Callback<YelpSearchResult> {
                 override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                     Log.i(TAG, "onResponse $response")

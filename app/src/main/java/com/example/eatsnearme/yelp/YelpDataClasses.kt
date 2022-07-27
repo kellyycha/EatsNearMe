@@ -18,7 +18,7 @@ data class YelpRestaurant(
     val location: YelpLocation,
     val coordinates: YelpCoordinates,
     @SerializedName("display_phone") val phone: String,
-    //val hours: List<YelpHours>
+    val hours: List<YelpHours>
     //TODO: add more pictures
 )
 

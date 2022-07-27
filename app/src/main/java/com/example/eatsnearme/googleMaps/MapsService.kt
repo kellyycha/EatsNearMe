@@ -19,9 +19,12 @@ interface MapsService {
         @Query("key") key: String,
         @Query("origin") origin: String, //LatLng | String | google.maps.Place,
         @Query("destination") destination: String,
-        @Query("travelMode") travelMode: String, //TravelMode
+        @Query("travelMode") travelMode: TravelMode
     ): Call<DirectionsResponse>
 
+    enum class TravelMode {
+        DRIVING, WALKING, BICYCLING, TRANSIT
+    }
 
     companion object {
         fun create(): MapsService {

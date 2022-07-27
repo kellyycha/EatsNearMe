@@ -132,7 +132,7 @@ class RestaurantsFragment : Fragment() {
         val currentRestaurant = Restaurant.from(viewModel.getCurrentRestaurant())
         val fragment = DetailsFragment.newInstance(currentRestaurant)
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up)
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
         transaction.replace(R.id.flContainer, fragment)
         transaction.addToBackStack(null)
         transaction.commit()

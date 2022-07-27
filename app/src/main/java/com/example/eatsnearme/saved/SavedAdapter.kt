@@ -49,7 +49,7 @@ class SavedAdapter(val context: Context, private val allSaved: MutableList<Saved
             val fragment = DetailsFragment.newInstance(currentRestaurant)
             val activity = itemView.context as AppCompatActivity
             val transaction = activity.supportFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up)
+            transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
             transaction.replace(R.id.flContainer, fragment)
             transaction.addToBackStack(null)
             transaction.commit()

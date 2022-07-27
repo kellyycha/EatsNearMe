@@ -61,7 +61,6 @@ class SignUpActivity : AppCompatActivity() {
                     else {
                         Toast.makeText(this, it.error, Toast.LENGTH_LONG).show()
                     }
-
                 }
             }
         }
