@@ -23,10 +23,12 @@ class SignUpViewModel : ViewModel() {
 
         user.signUpInBackground(object : SignUpCallback {
             override fun done(e: ParseException?) {
-                if (e != null) {
-                    _stateFlow.tryEmit(SignUpState.Loaded(e.message!!))
-                    _stateFlow.value = SignUpState.Loading
-                    return
+                e?.let{ error ->
+                    error.message?.let{
+                        _stateFlow.tryEmit(SignUpState.Loaded(it))
+                        _stateFlow.value = SignUpState.Loading
+                        return
+                    }
                 }
                 _stateFlow.tryEmit(SignUpState.Loaded("success"))
             }
