@@ -3,7 +3,6 @@ package com.example.eatsnearme.login_signup
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
@@ -30,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        loginSpinner.visibility = View.GONE
+        //loginSpinner.visibility = View.GONE
 
         Log.i(TAG, "in log in")
         initializeButtons()
@@ -46,6 +45,12 @@ class LoginActivity : AppCompatActivity() {
             Log.i(TAG, "onClick login button")
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
+            if (username.isEmpty() || password.isEmpty()){
+                Toast.makeText(this,
+                    "Please fill out all fields",
+                    Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             viewModel.loginUser(username, password)
             loggingInUser(username)
         }
@@ -61,16 +66,14 @@ class LoginActivity : AppCompatActivity() {
             when (it) {
                 is LoginViewModel.LoginState.Loading -> {
                     Log.i(TAG, "attempting to log in $username")
-                    loginSpinner.visibility = View.VISIBLE
+                    //loginSpinner.visibility = View.VISIBLE
                 }
                 is LoginViewModel.LoginState.Loaded -> {
-                    loginSpinner.visibility = View.GONE
+                    //loginSpinner.visibility = View.GONE
                     if (!it.success) {
-                        Toast.makeText(
-                            this,
-                            "Incorrect username or password",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        Toast.makeText(this,
+                            "Invalid username or password",
+                            Toast.LENGTH_LONG).show()
                     }
                     if (it.success) {
                         goMainActivity()

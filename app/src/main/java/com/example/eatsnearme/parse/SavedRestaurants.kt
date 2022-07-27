@@ -1,4 +1,4 @@
-package com.example.eatsnearme
+package com.example.eatsnearme.parse
 
 import com.parse.ParseClassName
 import com.parse.ParseObject

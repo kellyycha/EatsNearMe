@@ -1,31 +1,40 @@
 package com.example.eatsnearme.login_signup
 
-import android.app.Application
-import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+
 import androidx.lifecycle.ViewModel
 import com.parse.ParseException
 import com.parse.ParseUser
 import com.parse.SignUpCallback
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class SignUpViewModel(application: Application) : AndroidViewModel(application) {
+class SignUpViewModel : ViewModel() {
 
-    // copy and paste from the login activity before
-//    fun signUpUser(username: String, password: String) {
-//        val user = ParseUser()
-//        user.username = username
-//        user.setPassword(password)
-//        user.signUpInBackground(object : SignUpCallback {
-//            override fun done(e: ParseException?) {
-//                if (e != null) {
-//                    Log.e(LoginActivity.TAG, "Issue with sign up", e)
-//                    Toast.makeText(getApplication(), "Username taken", Toast.LENGTH_LONG).show()
-//                    return
-//                }
-//                LoginActivity().goMainActivity()
-//                Toast.makeText(getApplication(), "Sign up success!", Toast.LENGTH_SHORT).show()
-//            }
-//        })
-//    }
+    private val _stateFlow = MutableStateFlow<SignUpState>(SignUpState.Loading)
+    val stateFlow: StateFlow<SignUpState> = _stateFlow
+
+    fun signUpUser(email: String, username: String, password: String) {
+        _stateFlow.value = SignUpState.Loading
+
+        val user = ParseUser()
+        user.email = email
+        user.username = username
+        user.setPassword(password)
+
+        user.signUpInBackground(object : SignUpCallback {
+            override fun done(e: ParseException?) {
+                if (e != null) {
+                    _stateFlow.tryEmit(SignUpState.Loaded(e.message!!))
+                    _stateFlow.value = SignUpState.Loading
+                    return
+                }
+                _stateFlow.tryEmit(SignUpState.Loaded("success"))
+            }
+        })
+    }
+
+    sealed class SignUpState {
+        object Loading : SignUpState()
+        data class Loaded(var error : String): SignUpState()
+    }
 }

@@ -4,7 +4,7 @@ import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import com.example.eatsnearme.SavedRestaurants
+import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.details.Restaurant.Companion.categoriesToString
 import com.example.eatsnearme.googleMaps.DirectionsResponse
 import com.example.eatsnearme.googleMaps.MAPS_API_KEY

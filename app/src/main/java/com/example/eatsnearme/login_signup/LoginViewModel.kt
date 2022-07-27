@@ -1,13 +1,6 @@
 package com.example.eatsnearme.login_signup
 
-import android.app.Application
-import android.util.Log
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
-import com.example.eatsnearme.SavedRestaurants
-import com.example.eatsnearme.restaurants.RestaurantsViewModel
-import com.example.eatsnearme.saved.SavedViewModel
 import com.parse.LogInCallback
 import com.parse.ParseException
 import com.parse.ParseUser

@@ -2,8 +2,8 @@ package com.example.eatsnearme.saved
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.eatsnearme.KEY_USER
-import com.example.eatsnearme.SavedRestaurants
+import com.example.eatsnearme.parse.KEY_USER
+import com.example.eatsnearme.parse.SavedRestaurants
 import com.parse.FindCallback
 import com.parse.ParseQuery
 import com.parse.ParseUser

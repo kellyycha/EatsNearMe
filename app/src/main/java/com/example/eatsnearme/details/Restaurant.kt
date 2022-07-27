@@ -1,7 +1,7 @@
 package com.example.eatsnearme.details
 
 import android.os.Parcelable
-import com.example.eatsnearme.SavedRestaurants
+import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.yelp.YelpRestaurant
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.android.parcel.Parcelize

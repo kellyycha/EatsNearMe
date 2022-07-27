@@ -1,7 +1,6 @@
 package com.example.eatsnearme.parse
 
 import android.app.Application
-import com.example.eatsnearme.SavedRestaurants
 import com.parse.Parse
 import com.parse.ParseObject
 
