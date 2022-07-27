@@ -76,9 +76,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
 
         if (destination.isNotEmpty()){
-            if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
-                queryAsNeeded(typeOfFood, radius.toInt())
-            }
+            queryAsNeeded(typeOfFood, radius.toInt())
 
         }
 
@@ -260,12 +258,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         Log.i("QUERY","query as needed")
         Log.i("QUERY","list size: ${restaurantDisplay.size}")
 
-        val coordinate = spacedCoordinates[queryIndex]
-        val location = "${coordinate.latitude},${coordinate.longitude}"
-        Log.i("QUERY","query yelp at: $location")
-        Log.i("QUERY","query index: $queryIndex")
-        queryYelp(typeOfFood, location, radius)
-        queryIndex++
+        if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
+            val coordinate = spacedCoordinates[queryIndex]
+            val location = "${coordinate.latitude},${coordinate.longitude}"
+            Log.i("QUERY","query yelp at: $location")
+            Log.i("QUERY","query index: $queryIndex")
+            queryYelp(typeOfFood, location, radius)
+            queryIndex++
+        }
 
     }
 
@@ -305,10 +305,9 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         Log.i("MAPS", "${rest.name}, ${rest.location.address}")
                     }
 
-                    if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
-                        queryAsNeeded(typeOfFood, radius)
-                    }
-                    else if (restaurantDisplay.isEmpty()){
+                    queryAsNeeded(typeOfFood, radius)
+
+                    if (restaurantDisplay.isEmpty()){
                         _stateFlow.value = RestaurantState.Idle
                     }
                     else{
@@ -353,7 +352,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setRestaurantAddress(restaurant.location.address)
         saved.setRestaurantLatitude(restaurant.coordinates.latitude.toDouble())
         saved.setRestaurantLongitude(restaurant.coordinates.longitude.toDouble())
-        saved.setIsOpened(restaurant.is_open_now)
+//        saved.setIsOpened(restaurant.hours.component1().is_open_now)
+        saved.setIsOpened(true)
         val categories = categoriesToString(restaurant)
         saved.setRestaurantCategories(categories)
 

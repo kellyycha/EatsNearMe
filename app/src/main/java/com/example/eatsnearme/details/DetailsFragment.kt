@@ -9,17 +9,14 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet.GONE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.eatsnearme.R
 import com.example.eatsnearme.restaurants.LocationService
 import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
-import com.example.eatsnearme.saved.SavedViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
 
@@ -83,7 +80,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         tvClickedPhone.text = inputRestaurant.phone
 
         tvOpened.visibility = GONE
-        // TODO: Figure out why this is always false
 //        if (inputRestaurant.is_open_now){
 //            tvOpened.text = "Open Now"
 //            tvOpened.setTextColor(Color.parseColor("#32a832"))
@@ -192,7 +188,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
     private fun addPolyline(directionPoints: MutableList<LatLng>, map: GoogleMap) {
         if (polyline == null) {
-            val line = PolylineOptions().color(Color.BLUE)
+            val line = PolylineOptions()
+            line.color(Color.BLUE)
             line.addAll(directionPoints)
             polyline = map.addPolyline(line)
         } else {

@@ -1,13 +1,8 @@
 package com.example.eatsnearme
 
-import com.example.eatsnearme.yelp.YelpCategory
-import com.example.eatsnearme.yelp.YelpLocation
-import com.example.eatsnearme.yelp.YelpRestaurant
-import com.google.gson.annotations.SerializedName
 import com.parse.ParseClassName
 import com.parse.ParseObject
 import com.parse.ParseUser
-import org.json.JSONObject
 
 const val KEY_ID = "yelpId"
 const val KEY_IS_SAVED = "saved"

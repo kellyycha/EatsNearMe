@@ -34,7 +34,8 @@ data class Restaurant (
                 address = yelpRestaurant.location.address,
                 coordinates = LatLng(yelpRestaurant.coordinates.latitude.toDouble(),yelpRestaurant.coordinates.longitude.toDouble()),
                 phone = yelpRestaurant.phone,
-                is_open_now = yelpRestaurant.is_open_now)
+                //is_open_now = yelpRestaurant.hours.component1().is_open_now,
+                is_open_now = true)
         }
         fun from(parseRestaurant: SavedRestaurants): Restaurant {
             return Restaurant(

@@ -8,18 +8,14 @@ import com.example.eatsnearme.googleMaps.DirectionsResponse
 import com.example.eatsnearme.googleMaps.MAPS_API_KEY
 import com.example.eatsnearme.googleMaps.MapsService
 import com.example.eatsnearme.restaurants.LocationService
-import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.example.eatsnearme.restaurants.RestaurantsViewModel.Companion.KEY_WALKING
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.system.exitProcess
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
 

@@ -3,7 +3,6 @@ package com.example.eatsnearme.login
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.eatsnearme.R
@@ -32,19 +31,19 @@ class LoginActivity : AppCompatActivity() {
 
     }
     private fun uiComponents() {
-        btnLogin.setOnClickListener(View.OnClickListener {
+        btnLogin.setOnClickListener{
             Log.i(TAG, "onClick login button")
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
             loginUser(username, password)
-        })
+        }
 
-        btnSignUp.setOnClickListener(View.OnClickListener {
+        btnSignUp.setOnClickListener{
             Log.i(TAG, "onClick sign up button")
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
             signUpUser(username, password)
-        })
+        }
     }
 
     private fun loginUser(username: String, password: String) {
@@ -66,9 +65,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signUpUser(username: String, password: String) {
-        // Create the ParseUser
         val user = ParseUser()
-        // Set core properties
         user.username = username
         user.setPassword(password)
         user.signUpInBackground(object : SignUpCallback {

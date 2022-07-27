@@ -2,8 +2,6 @@ package com.example.eatsnearme.saved
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

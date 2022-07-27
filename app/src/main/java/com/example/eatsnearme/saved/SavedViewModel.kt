@@ -2,7 +2,6 @@ package com.example.eatsnearme.saved
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.eatsnearme.KEY_IS_SAVED
 import com.example.eatsnearme.KEY_USER
 import com.example.eatsnearme.SavedRestaurants
 import com.parse.FindCallback
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 class SavedViewModel : ViewModel() {
 
     companion object{
-//        private const val QUERY_LIMIT = 20
         private const val TAG = "SavedViewModel"
     }
 
@@ -33,7 +31,6 @@ class SavedViewModel : ViewModel() {
         val query: ParseQuery<SavedRestaurants> = ParseQuery.getQuery(SavedRestaurants::class.java)
         query.include(KEY_USER)
             .whereEqualTo(KEY_USER, ParseUser.getCurrentUser())
-//            .setLimit(QUERY_LIMIT)
             .addDescendingOrder("createdAt")
             .findInBackground(FindCallback { restaurants, e ->
                 if (e != null) {
@@ -66,7 +63,6 @@ class SavedViewModel : ViewModel() {
         for (restaurant in allStored){
             if (restaurant.getIsSaved()){
                 allSaved.add(restaurant)
-//                Log.i(TAG, "Saved Restaurant: ${restaurant.getRestaurantName()}")
                 savedIdList.add(restaurant.getRestaurantID().toString())
             }
         }
@@ -79,7 +75,6 @@ class SavedViewModel : ViewModel() {
         skippedIdList.clear()
         for (restaurant in allStored){
             if (!restaurant.getIsSaved()){
-//                Log.i(TAG, "Skipped Restaurant: ${restaurant.getRestaurantName()}")
                 skippedIdList.add(restaurant.getRestaurantID().toString())
             }
         }
