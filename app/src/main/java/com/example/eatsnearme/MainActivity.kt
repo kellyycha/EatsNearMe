@@ -1,17 +1,13 @@
 package com.example.eatsnearme
 
-import android.Manifest
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.eatsnearme.login.LoginActivity
+import com.example.eatsnearme.login_signup.LoginActivity
 import com.example.eatsnearme.profile.ProfileFragment
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.saved.SavedFragment
@@ -31,7 +27,6 @@ open class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottomNavigation()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

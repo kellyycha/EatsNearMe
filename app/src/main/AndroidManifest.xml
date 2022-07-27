@@ -24,7 +24,16 @@
         android:foregroundServiceType="location">
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyABfQsj6E4UzPyjyMbTbyrzZTH3LRpPyIU"/>
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".login_signup.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".login_signup.SignUpActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

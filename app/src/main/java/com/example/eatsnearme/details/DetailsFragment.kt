@@ -65,9 +65,13 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         }
 
         setRestaurantInfo()
-
         initGoogleMap(savedInstanceState)
     }
+
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
+//    }
 
     private fun setRestaurantInfo() {
         tvClickedName.text = inputRestaurant.name
@@ -187,10 +191,10 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addPolyline(directionPoints: MutableList<LatLng>, map: GoogleMap) {
-        val line = PolylineOptions()
-            .color(Color.BLUE)
-            .addAll(directionPoints)
-        polyline = map.addPolyline(line)
+        polyline = map.addPolyline(
+            PolylineOptions()
+                .color(Color.BLUE)
+                .addAll(directionPoints))
     }
 
     private fun addOriginDestinationMarkers(map: GoogleMap, builder: LatLngBounds.Builder) {
