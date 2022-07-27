@@ -3,13 +3,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
-    <item
-        android:id="@+id/btnLogout"
-        android:layout_marginEnd="100dp"
-        android:icon="@drawable/logout"
-        android:title="Log Out"
-        android:visible="true"
-        app:showAsAction="always" />
-
-
 </menu>

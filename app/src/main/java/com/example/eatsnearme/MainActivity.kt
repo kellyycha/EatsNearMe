@@ -34,25 +34,6 @@ open class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.btnLogout) {
-            logoutUser()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun logoutUser() {
-        Log.i(TAG, "attempting to log out")
-        ParseUser.logOutInBackground()
-        goLoginActivity()
-    }
-
-    private fun goLoginActivity() {
-        val i = Intent(this, LoginActivity::class.java)
-        startActivity(i)
-    }
-
     private fun bottomNavigation() {
         bottomNavigation.setOnItemSelectedListener {
             val fragment: Fragment = when (it.itemId) {
