@@ -22,6 +22,7 @@
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_restaurants.xml" value="0.29428253173828134" />
         <entry key="app/src/main/res/layout/fragment_saved.xml" value="0.3070002237955729" />
+        <entry key="app/src/main/res/layout/fragment_savedmap.xml" value="0.34322916666666664" />
         <entry key="app/src/main/res/layout/fragment_saves.xml" value="0.5619791666666667" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.34322916666666664" />
         <entry key="app/src/main/res/layout/item_card.xml" value="0.1" />

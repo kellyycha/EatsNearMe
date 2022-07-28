@@ -40,17 +40,6 @@ class ProfileFragment : Fragment() {
             ParseUser.logOutInBackground()
             goLoginActivity()
         }
-
-        btnSettings.setOnClickListener{
-            goToSettings()
-        }
-    }
-
-    private fun goToSettings() {
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flContainer, SettingsFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
     }
 
     private fun goLoginActivity() {

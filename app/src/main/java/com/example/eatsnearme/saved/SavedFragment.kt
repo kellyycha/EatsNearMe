@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eatsnearme.R
+import com.example.eatsnearme.details.Restaurant
+import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
 import kotlinx.android.synthetic.main.fragment_saved.*
@@ -53,6 +55,11 @@ class SavedFragment : Fragment() {
                     rvSaved.adapter = adapter
                     rvSaved.layoutManager = LinearLayoutManager(requireContext())
 
+                    btnMap.setOnClickListener{ _ ->
+                        Log.i("button", "map clicked")
+                        gotoMapView(it.allSaved)
+                    }
+
                     val swipeHandler = object : SwipeToDeleteCallback(requireContext()) {
                         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                             viewModel.removeItemAt(viewHolder.adapterPosition)
@@ -67,6 +74,25 @@ class SavedFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun gotoMapView(allSaved: MutableList<SavedRestaurants>) {
+        val savedList = ArrayList<SavedRestaurant>()
+        for (restaurant in allSaved){
+            val saved = SavedRestaurant(name = restaurant.getRestaurantName().toString(),
+                                        latitude = restaurant.getRestaurantLatitude(),
+                                        longitude = restaurant.getRestaurantLongitude())
+            savedList.add(saved)
+        }
+        val fragment = SavedMapFragment()
+        val args = Bundle()
+        args.putParcelableArrayList("saved", savedList)
+        fragment.arguments = args
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+//        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
+        transaction.replace(R.id.flContainer, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 }
