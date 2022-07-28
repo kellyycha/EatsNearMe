@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import com.example.eatsnearme.MainActivity
 import com.example.eatsnearme.R
 import com.example.eatsnearme.login_signup.LoginActivity
@@ -15,7 +14,6 @@ import com.parse.ParseUser
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
-    private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,17 +41,16 @@ class ProfileFragment : Fragment() {
             goLoginActivity()
         }
 
-        btnUsername.setOnClickListener{
-            viewModel.changeUsername()
+        btnSettings.setOnClickListener{
+            goToSettings()
         }
+    }
 
-        btnPassword.setOnClickListener{
-            viewModel.changePassword()
-        }
-
-        btnEmail.setOnClickListener{
-            viewModel.changeEmail()
-        }
+    private fun goToSettings() {
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flContainer, SettingsFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun goLoginActivity() {

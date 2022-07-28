@@ -31,12 +31,6 @@ class SignUpActivity : AppCompatActivity() {
             val email = etEmail.text.toString()
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
-            if (email.isEmpty() || username.isEmpty() || password.isEmpty()){
-                Toast.makeText(this,
-                    "Please fill out all fields",
-                    Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
             viewModel.signUpUser(email, username, password)
             signingUpUser(username)
         }
@@ -54,12 +48,12 @@ class SignUpActivity : AppCompatActivity() {
                     Log.i(LoginActivity.TAG, "attempting to sign up $username")
                 }
                 is SignUpViewModel.SignUpState.Loaded -> {
-                    if (it.error == "success") {
+                    if (it.message == "success") {
                         Toast.makeText(this, "Welcome $username!", Toast.LENGTH_SHORT).show()
                         goMainActivity()
                     }
                     else {
-                        Toast.makeText(this, it.error, Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                     }
                 }
             }

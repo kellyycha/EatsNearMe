@@ -80,7 +80,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         val clip = ClipData.newPlainText("Copied Text", restaurant.url)
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(requireContext(), "Link to ${restaurant.name} copied to clipboard", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(requireContext(), "Link to ${restaurant.name} copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     private fun setRestaurantInfo() {
@@ -133,10 +133,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         else if (inputRestaurant.is_saved && LocationService().hasPermissions(requireContext())){
             addCurrentLocationMarker(map, builder)
         }
-    }
-
-    private fun latLngToString(latLng: LatLng) : String{
-        return "${latLng.latitude}, ${latLng.longitude}"
     }
 
     private fun addRestaurantLocation(map: GoogleMap, builder: LatLngBounds.Builder) {
