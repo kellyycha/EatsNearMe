@@ -29,7 +29,7 @@ This app will help you decide on the best places to eat, to make the most out of
 (more focused on spontaneous)
 * [x] Users can log in
 * [x] Use current location and default radius or set a location and radius
-  * [ ] Filter search: Let the users select prices, food category, rating, number of reviews, open now
+  * [x] Filter search: Let the users select prices, open now
 * [x] Tinder-style swiping animation (use external library for visual polish requirement)
   * [x] Select yes or no for each restaurant
   * [x] Yes and No animations
@@ -45,11 +45,10 @@ This app will help you decide on the best places to eat, to make the most out of
 * [x] Use retrofit for API calls
 
 **Optional Nice-to-have Stories**
-(more focused on planning/sharing)
 * [ ] Show directions to restaurant
-* [ ] After eating there, mark if you would/wouldn't go again to either save into a favorites folder or delete from the current folder
+* [ ] More filtering: rating, number of reviews
 * [ ] Add an overall map view to your saved restaurants
-* [ ] Able to filter map by category
+  * [ ] Able to filter map by category
 * [ ] Sort saved restaurants in folders by location
 * [ ] Use data from what the user liked to recommend a restaurant near you using push notifications
 
