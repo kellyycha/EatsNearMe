@@ -84,7 +84,7 @@ class SavedFragment : Fragment() {
         }
         val fragment = SavedMapFragment.newInstance(savedList)
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        //transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
+        transaction.setCustomAnimations(R.anim.zoom_in, R.anim.zoom_out, R.anim.zoom_in, R.anim.zoom_out)
         transaction.replace(R.id.flContainer, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
