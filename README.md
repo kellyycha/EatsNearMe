@@ -47,10 +47,12 @@ This app will help you decide on the best places to eat, to make the most out of
 **Optional Nice-to-have Stories**
 * [ ] Show directions to restaurant
 * [ ] More filtering: rating, number of reviews
-* [ ] Add an overall map view to your saved restaurants
+* [x] Share yelp link of restaurant in details view by copying to clipboard to send
+* [x] Add an overall map view to your saved restaurants
   * [ ] Able to filter map by category
 * [ ] Sort saved restaurants in folders by location
 * [ ] Use data from what the user liked to recommend a restaurant near you using push notifications
+* [ ] Settings where you can change your username, password, email
 
 **Complex Features + ideas to execute them**
 1. Set a destination from your current location to find restaurants along the way
