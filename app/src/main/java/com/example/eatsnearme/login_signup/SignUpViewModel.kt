@@ -1,6 +1,5 @@
 package com.example.eatsnearme.login_signup
 
-
 import androidx.lifecycle.ViewModel
 import com.parse.ParseException
 import com.parse.ParseUser
@@ -27,12 +26,10 @@ class SignUpViewModel : ViewModel() {
 
         user.signUpInBackground(object : SignUpCallback {
             override fun done(e: ParseException?) {
-                e?.let{ error ->
-                    error.message?.let{
-                        _stateFlow.tryEmit(SignUpState.Loaded(it))
-                        _stateFlow.value = SignUpState.Loading
-                        return
-                    }
+                e?.message?.let{
+                    _stateFlow.tryEmit(SignUpState.Loaded(it))
+                    _stateFlow.value = SignUpState.Loading
+                    return
                 }
                 _stateFlow.tryEmit(SignUpState.Loaded("success"))
             }

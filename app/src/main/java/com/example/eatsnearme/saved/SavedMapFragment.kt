@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.eatsnearme.R
 import com.example.eatsnearme.details.DetailsFragment
-import com.example.eatsnearme.details.DetailsFragment.Companion.KEY_RESTAURANT
 import com.example.eatsnearme.details.DetailsFragment.Companion.MAPVIEW_BUNDLE_KEY
 import com.example.eatsnearme.details.DetailsFragment.Companion.padding
 import com.example.eatsnearme.details.Restaurant
@@ -24,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_savedmap.*
 class SavedMapFragment : Fragment(), OnMapReadyCallback {
 
     companion object{
+        private const val KEY_RESTAURANT = "Restaurant"
         private const val TAG = "SavedFragment"
 
         fun newInstance(savedList: ArrayList<Restaurant>): SavedMapFragment {

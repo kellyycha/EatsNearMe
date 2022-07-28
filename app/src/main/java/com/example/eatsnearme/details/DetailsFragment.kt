@@ -13,11 +13,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.eatsnearme.R
-import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.LocationService
 import com.example.eatsnearme.restaurants.RestaurantsViewModel
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
-import com.example.eatsnearme.saved.SavedMapFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,7 +29,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         private const val TAG = "DetailsFragment"
         private const val light_blue = 200F
         const val padding = 200
-        const val KEY_RESTAURANT = "Restaurant"
+        private const val KEY_RESTAURANT = "Restaurant"
 
         fun newInstance(restaurant: Restaurant): DetailsFragment {
             val fragment = DetailsFragment()

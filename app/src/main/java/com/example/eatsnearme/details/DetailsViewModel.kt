@@ -10,10 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 class DetailsViewModel(application: Application) : AndroidViewModel(application) {
 
-    companion object{
-        private const val TAG = "DetailsFragment"
-    }
-
     private val _currLocation = MutableStateFlow<CurrLocationState>(CurrLocationState.Loading)
     val currLocation: StateFlow<CurrLocationState> = _currLocation
 

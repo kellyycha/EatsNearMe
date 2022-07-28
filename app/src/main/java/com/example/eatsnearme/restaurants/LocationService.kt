@@ -18,7 +18,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import java.util.concurrent.TimeUnit
 
-
 class LocationService {
 
     companion object{

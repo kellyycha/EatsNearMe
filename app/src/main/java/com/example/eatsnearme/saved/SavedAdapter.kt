@@ -13,7 +13,6 @@ import com.example.eatsnearme.details.DetailsFragment
 import com.example.eatsnearme.details.Restaurant
 import kotlinx.android.synthetic.main.item_saved.view.*
 
-
 class SavedAdapter(val context: Context, private val allSaved: MutableList<SavedRestaurants>) : RecyclerView.Adapter<SavedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedAdapter.ViewHolder {
