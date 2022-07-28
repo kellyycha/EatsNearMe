@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.eatsnearme.R
+import com.example.eatsnearme.details.DetailsFragment
 import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.LocationService
@@ -22,6 +23,15 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
         const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
         const val TAG = "SavedFragment"
         const val padding = 200
+        const val KEY_MAP = "map"
+
+        fun newInstance(savedList: ArrayList<Restaurant>): SavedMapFragment {
+            val fragment = SavedMapFragment()
+            val args = Bundle()
+            args.putParcelableArrayList(KEY_MAP, savedList)
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     private lateinit var savedList: ArrayList<Restaurant>
@@ -39,7 +49,7 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         val args = this.arguments
-        savedList = args?.get("saved") as ArrayList<Restaurant>
+        savedList = args?.get(KEY_MAP) as ArrayList<Restaurant>
 
         initializeButtons()
         initGoogleMap(savedInstanceState)

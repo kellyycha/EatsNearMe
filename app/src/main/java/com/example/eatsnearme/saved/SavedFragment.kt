@@ -17,6 +17,7 @@ import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
+import com.example.eatsnearme.saved.SavedMapFragment.Companion.KEY_MAP
 import kotlinx.android.synthetic.main.fragment_saved.*
 
 class SavedFragment : Fragment() {
@@ -79,15 +80,13 @@ class SavedFragment : Fragment() {
     }
 
     private fun gotoMapView(allSaved: MutableList<SavedRestaurants>) {
+
         val savedList = ArrayList<Restaurant>()
         for (saved in allSaved){
             val currentRestaurant = Restaurant.from(saved)
             savedList.add(currentRestaurant)
         }
-        val fragment = SavedMapFragment()
-        val args = Bundle()
-        args.putParcelableArrayList("saved", savedList)
-        fragment.arguments = args
+        val fragment = SavedMapFragment.newInstance(savedList)
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
 //        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
         transaction.replace(R.id.flContainer, fragment)
