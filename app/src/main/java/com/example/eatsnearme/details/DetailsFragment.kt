@@ -1,14 +1,16 @@
 package com.example.eatsnearme.details
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet.GONE
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import com.example.eatsnearme.R
 import com.example.eatsnearme.restaurants.LocationService
@@ -19,7 +21,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_details.*
-
 
 class DetailsFragment : Fragment(), OnMapReadyCallback {
 
@@ -56,23 +57,31 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        detailSpinner.visibility = View.GONE
-
         val args = this.arguments
         inputRestaurant = args?.get(KEY_RESTAURANT) as Restaurant
 
-        btnExitDetail.setOnClickListener{
-            requireActivity().onBackPressed()
-        }
-
+        initializeButtons()
         setRestaurantInfo()
         initGoogleMap(savedInstanceState)
     }
 
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_up)
-//    }
+    private fun initializeButtons() {
+        btnShareYelpUrl.setOnClickListener{
+            setClipboard(requireContext(), inputRestaurant)
+        }
+
+        btnExitDetail.setOnClickListener{
+            requireActivity().onBackPressed()
+        }
+    }
+
+    private fun setClipboard(context: Context, restaurant: Restaurant) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Copied Text", restaurant.url)
+        clipboard.setPrimaryClip(clip)
+
+        Toast.makeText(requireContext(), "Link to ${restaurant.name} copied to clipboard", Toast.LENGTH_SHORT).show()
+    }
 
     private fun setRestaurantInfo() {
         tvClickedName.text = inputRestaurant.name
@@ -148,8 +157,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                 }
                 is DetailsViewModel.CurrLocationState.Loaded -> {
                     Log.i(TAG, "Loaded location")
-//                    val currLocationStr = latLngToString(curr.coordinates)
-//                    drawPath(currLocationStr, inputRestaurant.address, map)
 
                     map.addMarker(
                         MarkerOptions()
@@ -159,24 +166,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
                     )
                     builder.include(curr.coordinates)
                     scaleMap(map, builder)
-                }
-            }
-        }
-    }
-
-    private fun drawPath(origin: String, destination: String, map: GoogleMap) {
-        viewModel.getPath(origin, destination)
-
-        collectLatestLifecycleFlow(viewModel.path) {
-            when (it) {
-                is DetailsViewModel.PathState.Loading -> {
-                    Log.i(TAG, "Loading path")
-                    detailSpinner.visibility = View.VISIBLE
-                }
-                is DetailsViewModel.PathState.Loaded -> {
-                    detailSpinner.visibility = View.GONE
-                    Log.i(TAG, "points: ${it.points}")
-                    addPolyline(it.points, map)
                 }
             }
         }
@@ -197,18 +186,12 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
             .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
         builder.include(origin)
 
-//        val originStr = latLngToString(restaurantsVM.mapOrigin)
-//        drawPath(originStr, inputRestaurant.address, map)
-
         restaurantsVM.mapDestination?.let { destination ->
             map.addMarker(MarkerOptions()
                 .position(destination)
                 .title(restaurantsVM.destination)
                 .icon(BitmapDescriptorFactory.defaultMarker(light_blue)))
             builder.include(destination)
-
-//            val destinationStr = latLngToString(destination)
-//            drawPath(inputRestaurant.address, destinationStr, map)
 
             addPolyline(restaurantsVM.getPath(), map)
         }

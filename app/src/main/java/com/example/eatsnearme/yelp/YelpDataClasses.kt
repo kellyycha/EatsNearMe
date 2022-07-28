@@ -18,6 +18,7 @@ data class YelpRestaurant(
     val location: YelpLocation,
     val coordinates: YelpCoordinates,
     @SerializedName("display_phone") val phone: String,
+    val url: String
 )
 
 data class YelpCategory(

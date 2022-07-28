@@ -331,6 +331,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setRestaurantLongitude(restaurant.coordinates.longitude.toDouble())
         val categories = categoriesToString(restaurant)
         saved.setRestaurantCategories(categories)
+        saved.setYelpUrl(restaurant.url)
 
         saved.saveInBackground { e ->
             if (e != null) {

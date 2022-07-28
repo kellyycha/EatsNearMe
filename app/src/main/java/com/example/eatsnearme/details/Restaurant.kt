@@ -18,7 +18,8 @@ data class Restaurant (
     val categories: String,
     val address: String,
     val coordinates: LatLng,
-    val phone: String) : Parcelable{
+    val phone: String,
+    val url: String) : Parcelable{
 
     companion object {
         fun from(yelpRestaurant: YelpRestaurant): Restaurant {
@@ -32,7 +33,8 @@ data class Restaurant (
                 categories =  categoriesToString(yelpRestaurant),
                 address = yelpRestaurant.location.address,
                 coordinates = LatLng(yelpRestaurant.coordinates.latitude.toDouble(),yelpRestaurant.coordinates.longitude.toDouble()),
-                phone = yelpRestaurant.phone)
+                phone = yelpRestaurant.phone,
+                url = yelpRestaurant.url)
         }
         fun from(parseRestaurant: SavedRestaurants): Restaurant {
             return Restaurant(
@@ -45,7 +47,8 @@ data class Restaurant (
                 categories = parseRestaurant.getRestaurantCategories().toString(),
                 address = parseRestaurant.getRestaurantAddress().toString(),
                 coordinates = LatLng(parseRestaurant.getRestaurantLatitude(),parseRestaurant.getRestaurantLongitude()),
-                phone = parseRestaurant.getRestaurantPhone().toString())
+                phone = parseRestaurant.getRestaurantPhone().toString(),
+                url = parseRestaurant.getYelpUrl().toString())
         }
         fun categoriesToString(restaurant: YelpRestaurant): String {
             var categories = ""

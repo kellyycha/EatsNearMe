@@ -28,7 +28,6 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lorentzos.flingswipe.SwipeFlingAdapterView
 import com.lorentzos.flingswipe.SwipeFlingAdapterView.onFlingListener
-import kotlinx.android.synthetic.main.bottom_sheet_filter.*
 import kotlinx.android.synthetic.main.fragment_cardswipe.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest

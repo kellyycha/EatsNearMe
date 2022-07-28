@@ -14,7 +14,6 @@ import com.example.eatsnearme.login_signup.LoginActivity
 import com.parse.ParseUser
 import kotlinx.android.synthetic.main.fragment_profile.*
 
-
 class ProfileFragment : Fragment() {
     private val viewModel: ProfileViewModel by viewModels()
 

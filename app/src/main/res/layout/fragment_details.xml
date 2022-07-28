@@ -12,11 +12,11 @@
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel"
-        app:tint="#000000"
-        android:background="?attr/selectableItemBackgroundBorderless"/>
+        app:tint="#000000" />
 
     <LinearLayout
         android:id="@+id/Words"
@@ -52,9 +52,9 @@
         android:id="@+id/Rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/Words"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:layout_alignStart="@+id/Words"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Words">
 
@@ -97,8 +97,8 @@
         android:id="@+id/tvClickedAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Rating"
         tools:text="Address" />
@@ -124,16 +124,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvClickedPhone" />
 
-    <ProgressBar
-        android:id="@+id/detailSpinner"
+    <ImageButton
+        android:id="@+id/btnShareYelpUrl"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="90dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/share"
+        app:layout_constraintEnd_toEndOf="@+id/tvClickedAddress"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#000000" />
+
+    <TextView
+        android:id="@+id/shareLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/mapView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/mapView"
-        android:indeterminateTint="@color/sage"
-        style="?android:attr/progressBarStyleLarge"/>
+        android:text="Share Yelp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/btnShareYelpUrl"
+        app:layout_constraintStart_toStartOf="@+id/btnShareYelpUrl"
+        app:layout_constraintTop_toBottomOf="@+id/btnShareYelpUrl" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

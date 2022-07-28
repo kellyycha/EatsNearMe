@@ -1,6 +1,5 @@
 package com.example.eatsnearme.restaurants
 
-import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View

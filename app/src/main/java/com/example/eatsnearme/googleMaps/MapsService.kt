@@ -1,11 +1,9 @@
 package com.example.eatsnearme.googleMaps
 
-import android.text.Layout.Directions
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
 
@@ -17,7 +15,7 @@ interface MapsService {
     @GET("directions/json")
     fun searchPath(
         @Query("key") key: String,
-        @Query("origin") origin: String, //LatLng | String | google.maps.Place,
+        @Query("origin") origin: String,
         @Query("destination") destination: String,
         @Query("travelMode") travelMode: TravelMode
     ): Call<DirectionsResponse>

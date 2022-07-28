@@ -17,6 +17,7 @@ const val KEY_ADDRESS = "address"
 const val KEY_PHONE = "phone"
 const val KEY_LATITUDE = "latitude"
 const val KEY_LONGITUDE = "longitude"
+const val KEY_URL = "yelpUrl"
 
 @ParseClassName("SavedRestaurants")
 class SavedRestaurants : ParseObject() {
@@ -110,6 +111,13 @@ class SavedRestaurants : ParseObject() {
     }
     fun setRestaurantLongitude(longitude: Double) {
         put(KEY_LONGITUDE, longitude)
+    }
+
+    fun getYelpUrl(): String? {
+        return getString(KEY_URL)
+    }
+    fun setYelpUrl(url: String?) {
+        url?.let { u -> put(KEY_URL, u) }
     }
 
 }
