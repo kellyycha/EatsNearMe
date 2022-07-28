@@ -9,7 +9,6 @@ class ParseApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Register your parse models
         ParseObject.registerSubclass(SavedRestaurants::class.java)
 
         Parse.initialize(

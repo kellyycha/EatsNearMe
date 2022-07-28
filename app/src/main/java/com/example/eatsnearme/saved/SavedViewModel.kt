@@ -18,7 +18,7 @@ class SavedViewModel : ViewModel() {
 
     private var savedIdList = ArrayList<String>()
     private var skippedIdList = ArrayList<String>()
-    val allSaved = mutableListOf<SavedRestaurants>()
+    private val allSaved = mutableListOf<SavedRestaurants>()
     private val allStored = mutableListOf<SavedRestaurants>()
 
     private val _stateFlow = MutableStateFlow<SavedState>(SavedState.Loading)
@@ -34,7 +34,7 @@ class SavedViewModel : ViewModel() {
             .addDescendingOrder("createdAt")
             .findInBackground(FindCallback { restaurants, e ->
                 if (e != null) {
-                    Log.e(SavedFragment.TAG, "Issue with getting saved restaurants", e)
+                    Log.e(TAG, "Issue with getting saved restaurants", e)
                     return@FindCallback;
                 }
                 allStored.addAll(restaurants)
@@ -47,12 +47,12 @@ class SavedViewModel : ViewModel() {
         _stateFlow.value = SavedState.Update
         allSaved[position].deleteInBackground { e ->
             if (e == null) {
-                Log.i(SavedAdapter.TAG, "deleted")
+                Log.i(TAG, "deleted")
                 allSaved.removeAt(position)
                 _stateFlow.value = SavedState.Loaded(allSaved)
             }
             else{
-                Log.i(SavedAdapter.TAG, "delete failed")
+                Log.i(TAG, "delete failed")
             }
         }
     }
@@ -79,10 +79,6 @@ class SavedViewModel : ViewModel() {
             }
         }
         return skippedIdList
-    }
-
-    fun getAllSavedRestaurants(): MutableList<SavedRestaurants>{
-        return allSaved
     }
 
     sealed class SavedState {

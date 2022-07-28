@@ -28,8 +28,8 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
 
     companion object{
         const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
-        const val TAG = "DetailsFragment"
-        const val light_blue = 200F
+        private const val TAG = "DetailsFragment"
+        private const val light_blue = 200F
         const val padding = 200
         const val KEY_RESTAURANT = "Restaurant"
 
@@ -82,7 +82,7 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         val clip = ClipData.newPlainText("Copied Text", restaurant.url)
         clipboard.setPrimaryClip(clip)
 
-        //Toast.makeText(requireContext(), "Link to ${restaurant.name} copied to clipboard", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Link to ${restaurant.name} copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     private fun setRestaurantInfo() {

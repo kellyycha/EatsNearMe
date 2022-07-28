@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     companion object {
-        const val TAG = "LoginActivity"
+        private const val TAG = "LoginActivity"
     }
 
     private val viewModel: LoginViewModel by viewModels()
@@ -28,8 +28,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
-        //loginSpinner.visibility = View.GONE
 
         Log.i(TAG, "in log in")
         initializeButtons()
@@ -66,10 +64,8 @@ class LoginActivity : AppCompatActivity() {
             when (it) {
                 is LoginViewModel.LoginState.Loading -> {
                     Log.i(TAG, "attempting to log in $username")
-                    //loginSpinner.visibility = View.VISIBLE
                 }
                 is LoginViewModel.LoginState.Loaded -> {
-                    //loginSpinner.visibility = View.GONE
                     if (!it.success) {
                         Toast.makeText(this,
                             "Invalid username or password",

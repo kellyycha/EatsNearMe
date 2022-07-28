@@ -16,10 +16,6 @@ import kotlinx.android.synthetic.main.item_saved.view.*
 
 class SavedAdapter(val context: Context, private val allSaved: MutableList<SavedRestaurants>) : RecyclerView.Adapter<SavedAdapter.ViewHolder>() {
 
-    companion object{
-        const val TAG = "Saved"
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SavedAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_saved, parent, false))
     }

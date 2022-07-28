@@ -8,27 +8,28 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.eatsnearme.R
 import com.example.eatsnearme.details.DetailsFragment
+import com.example.eatsnearme.details.DetailsFragment.Companion.KEY_RESTAURANT
+import com.example.eatsnearme.details.DetailsFragment.Companion.MAPVIEW_BUNDLE_KEY
+import com.example.eatsnearme.details.DetailsFragment.Companion.padding
 import com.example.eatsnearme.details.Restaurant
-import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.LocationService
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_savedmap.*
 
 class SavedMapFragment : Fragment(), OnMapReadyCallback {
 
     companion object{
-        const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
-        const val TAG = "SavedFragment"
-        const val padding = 200
-        const val KEY_MAP = "map"
+        private const val TAG = "SavedFragment"
 
         fun newInstance(savedList: ArrayList<Restaurant>): SavedMapFragment {
             val fragment = SavedMapFragment()
             val args = Bundle()
-            args.putParcelableArrayList(KEY_MAP, savedList)
+            args.putParcelableArrayList(KEY_RESTAURANT, savedList)
             fragment.arguments = args
             return fragment
         }
@@ -49,7 +50,7 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         val args = this.arguments
-        savedList = args?.get(KEY_MAP) as ArrayList<Restaurant>
+        savedList = args?.get(KEY_RESTAURANT) as ArrayList<Restaurant>
 
         initializeButtons()
         initGoogleMap(savedInstanceState)
@@ -57,7 +58,7 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
 
     private fun initializeButtons() {
         btnSaved.setOnClickListener{
-            Log.i("button", "saved clicked")
+            Log.i(TAG, "saved clicked")
             requireActivity().onBackPressed()
         }
     }
@@ -93,20 +94,40 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
         val builder = LatLngBounds.Builder()
 
         for (restaurant in savedList){
-            Log.i("map", "restaurants ${restaurant.name}")
             addRestaurants(map, builder, restaurant)
         }
-        scaleMap(map, builder)
 
+        map.setOnInfoWindowClickListener {
+            for (restaurant in savedList){
+                val restaurantLocation = LatLng(restaurant.coordinates.latitude, restaurant.coordinates.longitude)
+                if (restaurantLocation == it.position){
+                    goToDetailsView(restaurant)
+                }
+            }
+        }
+        scaleMap(map, builder)
     }
 
     private fun addRestaurants(map: GoogleMap, builder: LatLngBounds.Builder, restaurant: Restaurant) {
         val restaurantLocation = LatLng(restaurant.coordinates.latitude, restaurant.coordinates.longitude)
+
         map.addMarker(
             MarkerOptions()
             .position(restaurantLocation)
             .title(restaurant.name))
         builder.include(restaurantLocation)
+
+        savedMapView.onResume()
+
+    }
+
+    private fun goToDetailsView(restaurant: Restaurant) {
+        val fragment = DetailsFragment.newInstance(restaurant)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
+        transaction.replace(R.id.flContainer, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     private fun scaleMap(map: GoogleMap, builder: LatLngBounds.Builder) {

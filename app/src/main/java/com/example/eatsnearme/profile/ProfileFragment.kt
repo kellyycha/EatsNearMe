@@ -36,7 +36,6 @@ class ProfileFragment : Fragment() {
 
     private fun initializeButtons() {
         btnLogout.setOnClickListener{
-            Log.i(MainActivity.TAG, "attempting to log out")
             ParseUser.logOutInBackground()
             goLoginActivity()
         }

@@ -5,19 +5,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eatsnearme.R
-import com.example.eatsnearme.details.DetailsFragment
 import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.parse.SavedRestaurants
-import com.example.eatsnearme.restaurants.RestaurantsFragment
 import com.example.eatsnearme.restaurants.collectLatestLifecycleFlow
-import com.example.eatsnearme.saved.SavedMapFragment.Companion.KEY_MAP
 import kotlinx.android.synthetic.main.fragment_saved.*
 
 class SavedFragment : Fragment() {
@@ -25,7 +21,7 @@ class SavedFragment : Fragment() {
     private val viewModel: SavedViewModel by viewModels()
 
     companion object{
-        const val TAG = "SavedFragment"
+        private const val TAG = "SavedFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,14 +40,14 @@ class SavedFragment : Fragment() {
         collectLatestLifecycleFlow(viewModel.stateFlow) {
             when(it){
                 is SavedViewModel.SavedState.Loading -> {
-                    Log.i(RestaurantsFragment.TAG, "Loading restaurants")
+                    Log.i(TAG, "Loading restaurants")
                     savedSpinner.visibility = View.VISIBLE
                 }
                 is SavedViewModel.SavedState.Update -> {
-                    Log.i(RestaurantsFragment.TAG, "Deleted a card, show updated list")
+                    Log.i(TAG, "Deleted a card, show updated list")
                 }
                 is SavedViewModel.SavedState.Loaded -> {
-                    Log.i(RestaurantsFragment.TAG, "Loaded all")
+                    Log.i(TAG, "Loaded all")
                     savedSpinner.visibility = View.GONE
 
                     val adapter = SavedAdapter(requireActivity(), it.allSaved)
@@ -88,7 +84,7 @@ class SavedFragment : Fragment() {
         }
         val fragment = SavedMapFragment.newInstance(savedList)
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-//        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
+        //transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, R.anim.slide_out_down, R.anim.slide_in_down)
         transaction.replace(R.id.flContainer, fragment)
         transaction.addToBackStack(null)
         transaction.commit()

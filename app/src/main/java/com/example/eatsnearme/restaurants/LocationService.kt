@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit
 class LocationService {
 
     companion object{
-        val TIME_LIMIT: Long = TimeUnit.HOURS.toMillis(1L)
-        const val TAG = "LocationService"
+        private val TIME_LIMIT: Long = TimeUnit.HOURS.toMillis(1L)
+        private const val TAG = "LocationService"
         const val PERMISSION_REQUEST_CODE = 100
-        lateinit var myLocationListener: MyLocationListener
+        private lateinit var myLocationListener: MyLocationListener
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -90,7 +90,7 @@ class LocationService {
     }
 
     fun hasPermissions(context: Context): Boolean {
-        Log.i(RestaurantsFragment.TAG, "Checking Permissions")
+        Log.i(TAG, "Checking Permissions")
         return (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)

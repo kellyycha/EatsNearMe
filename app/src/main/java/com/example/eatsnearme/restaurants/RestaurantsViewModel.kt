@@ -50,12 +50,12 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private val savedVM = SavedViewModel()
 
     companion object {
-        const val TAG = "RestaurantsViewModel"
-        const val MIN_SIZE = 10
-        const val defaultRadius = "1000"
-        const val defaultPathRadius = "100"
-        const val MAX_RESPONSES = 50
-        val KEY_WALKING = MapsService.TravelMode.WALKING
+        private const val TAG = "RestaurantsViewModel"
+        private const val MIN_SIZE = 10
+        private const val defaultRadius = "1000"
+        private const val defaultPathRadius = "100"
+        private const val MAX_RESPONSES = 50
+        private val KEY_WALKING = MapsService.TravelMode.WALKING
     }
 
     init {

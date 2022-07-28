@@ -15,19 +15,23 @@ import kotlinx.android.synthetic.main.activity_signup.etUsername
 
 class SignUpActivity : AppCompatActivity() {
 
+    companion object {
+        private const val TAG = "SignUpActivity"
+    }
+
     private val viewModel: SignUpViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        Log.i(LoginActivity.TAG, "in sign up")
+        Log.i(TAG, "in sign up")
         initializeButtons()
     }
 
     private fun initializeButtons() {
         btnCreateAccount.setOnClickListener {
-            Log.i(LoginActivity.TAG, "onClick sign up button")
+            Log.i(TAG, "onClick sign up button")
             val email = etEmail.text.toString()
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
@@ -36,7 +40,7 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         btnLogin.setOnClickListener{
-            Log.i(LoginActivity.TAG, "onClick sign up button")
+            Log.i(TAG, "onClick sign up button")
             goLoginActivity()
         }
     }
@@ -45,7 +49,7 @@ class SignUpActivity : AppCompatActivity() {
         collectLatestLifecycleFlow(viewModel.stateFlow) {
             when (it) {
                 is SignUpViewModel.SignUpState.Loading -> {
-                    Log.i(LoginActivity.TAG, "attempting to sign up $username")
+                    Log.i(TAG, "attempting to sign up $username")
                 }
                 is SignUpViewModel.SignUpState.Loaded -> {
                     if (it.message == "success") {

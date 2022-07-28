@@ -39,7 +39,7 @@ class RestaurantsFragment : Fragment() {
     private val viewModel: RestaurantsViewModel by activityViewModels()
 
     companion object {
-        const val TAG = "RestaurantsFragment"
+        private const val TAG = "RestaurantsFragment"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
