@@ -18,17 +18,6 @@
         app:tint="#000000"
         android:background="?attr/selectableItemBackgroundBorderless"/>
 
-    <TextView
-        android:id="@+id/tvOpened"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="18dp"
-        android:text="Opened"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/Words"
         android:layout_width="match_parent"

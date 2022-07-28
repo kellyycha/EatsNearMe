@@ -18,8 +18,7 @@ data class Restaurant (
     val categories: String,
     val address: String,
     val coordinates: LatLng,
-    val phone: String,
-    val is_open_now: Boolean) : Parcelable{
+    val phone: String) : Parcelable{
 
     companion object {
         fun from(yelpRestaurant: YelpRestaurant): Restaurant {
@@ -33,9 +32,7 @@ data class Restaurant (
                 categories =  categoriesToString(yelpRestaurant),
                 address = yelpRestaurant.location.address,
                 coordinates = LatLng(yelpRestaurant.coordinates.latitude.toDouble(),yelpRestaurant.coordinates.longitude.toDouble()),
-                phone = yelpRestaurant.phone,
-                //is_open_now = yelpRestaurant.hours.component1().is_open_now,
-                is_open_now = true)
+                phone = yelpRestaurant.phone)
         }
         fun from(parseRestaurant: SavedRestaurants): Restaurant {
             return Restaurant(
@@ -48,8 +45,7 @@ data class Restaurant (
                 categories = parseRestaurant.getRestaurantCategories().toString(),
                 address = parseRestaurant.getRestaurantAddress().toString(),
                 coordinates = LatLng(parseRestaurant.getRestaurantLatitude(),parseRestaurant.getRestaurantLongitude()),
-                phone = parseRestaurant.getRestaurantPhone().toString(),
-                is_open_now = parseRestaurant.getIsOpened())
+                phone = parseRestaurant.getRestaurantPhone().toString())
         }
         fun categoriesToString(restaurant: YelpRestaurant): String {
             var categories = ""

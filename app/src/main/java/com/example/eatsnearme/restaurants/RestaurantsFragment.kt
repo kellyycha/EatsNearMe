@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Switch
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,9 +24,11 @@ import com.example.eatsnearme.details.DetailsFragment
 import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.yelp.YelpRestaurant
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.lorentzos.flingswipe.SwipeFlingAdapterView
 import com.lorentzos.flingswipe.SwipeFlingAdapterView.onFlingListener
+import kotlinx.android.synthetic.main.bottom_sheet_filter.*
 import kotlinx.android.synthetic.main.fragment_cardswipe.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -166,6 +169,11 @@ class RestaurantsFragment : Fragment() {
         val etLocation = bottomSheetView.findViewById<EditText>(R.id.etLocation)
         val etDestination = bottomSheetView.findViewById<EditText>(R.id.etDestination)
         val etRadius = bottomSheetView.findViewById<EditText>(R.id.etRadius)
+        val c1 = bottomSheetView.findViewById<Chip>(R.id.c1)
+        val c2 = bottomSheetView.findViewById<Chip>(R.id.c2)
+        val c3 = bottomSheetView.findViewById<Chip>(R.id.c3)
+        val c4 = bottomSheetView.findViewById<Chip>(R.id.c4)
+        val openNow = bottomSheetView.findViewById<Switch>(R.id.openNow)
 
         val dialog = BottomSheetDialog(requireContext())
 
@@ -178,18 +186,32 @@ class RestaurantsFragment : Fragment() {
             viewModel.location = etLocation.text.toString()
             viewModel.destination = etDestination.text.toString()
             viewModel.radius = etRadius.text.toString()
+            viewModel.prices = getPriceString(c1.isChecked, c2.isChecked, c3.isChecked, c4.isChecked)
+            viewModel.openNow = openNow.isChecked
 
             viewModel.fetchRestaurants(
                 typeOfFood = viewModel.typeOfFood!!,
                 location = viewModel.location!!,
                 destination = viewModel.destination!!,
-                radius = viewModel.radius!!)
+                radius = viewModel.radius!!,
+                prices = viewModel.prices,
+                openNow = viewModel.openNow)
             dialog.dismiss()
         }
 
         btnExitFilter.setOnClickListener {
             dialog.dismiss()
         }
+    }
+
+    private fun getPriceString(c1: Boolean, c2: Boolean, c3: Boolean, c4: Boolean): String {
+        var priceString = ""
+        if (c1) priceString += "1,"
+        if (c2) priceString += "2,"
+        if (c3) priceString += "3,"
+        if (c4) priceString += "4,"
+        else if (!c1 && !c2 && !c3 && !c4) priceString = "1,2,3,4,"
+        return priceString.dropLast(1)
     }
 
     private fun requestPermissionsIfNeed(context: Context) {

@@ -18,19 +18,12 @@ data class YelpRestaurant(
     val location: YelpLocation,
     val coordinates: YelpCoordinates,
     @SerializedName("display_phone") val phone: String,
-    val hours: List<YelpHours>
-    //TODO: add more pictures
-)
-
-data class YelpHours(
-    val is_open_now: Boolean
 )
 
 data class YelpCategory(
     val title: String
 )
 
-// TODO: display address
 data class YelpLocation(
     @SerializedName("address1") val address: String
 )

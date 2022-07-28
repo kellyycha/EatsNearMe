@@ -84,15 +84,6 @@ class DetailsFragment : Fragment(), OnMapReadyCallback {
         tvClickedAddress.text = inputRestaurant.address
         tvClickedPhone.text = inputRestaurant.phone
 
-        tvOpened.visibility = GONE
-//        if (inputRestaurant.is_open_now){
-//            tvOpened.text = "Open Now"
-//            tvOpened.setTextColor(Color.parseColor("#32a832"))
-//        }
-//        else{
-//            tvOpened.text = "Closed Now"
-//            tvOpened.setTextColor(Color.parseColor("#e30707"))
-//        }
     }
 
     private fun initGoogleMap(savedInstanceState: Bundle?) {

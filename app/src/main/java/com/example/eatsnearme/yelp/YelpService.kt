@@ -18,7 +18,9 @@ interface YelpService {
         @Query("term") searchTerm: String,
         @Query("location") location: String,
         @Query("radius") radius: Int,
-        @Query("limit") limit: Int) : Call<YelpSearchResult>
+        @Query("limit") limit: Int,
+        @Query ("price") price: String,
+        @Query ("open_now") open_now: Boolean) : Call<YelpSearchResult>
 
     companion object {
         fun create(): YelpService {

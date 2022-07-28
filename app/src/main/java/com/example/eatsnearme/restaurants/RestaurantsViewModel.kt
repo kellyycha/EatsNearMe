@@ -41,6 +41,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     var location : String? = null
     var destination : String? = null
     var radius : String? = null
+    var prices : String = "1,2,3,4"
+    var openNow : Boolean = false
 
     lateinit var mapOrigin: LatLng
     var mapDestination: LatLng? = null
@@ -56,64 +58,23 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         val KEY_WALKING = MapsService.TravelMode.WALKING
     }
 
-    private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?) {
-
-        // null check for if you start selecting restaurants without setting filters
-        if (typeOfFood == null || destination == null){
-            restaurantDisplay.remove(restaurant)
-            setStateForNext()
-            return
-        }
-
-        else if (radius.isNullOrEmpty()){
-            nextRestaurant(restaurant, typeOfFood, destination, defaultPathRadius)
-            return
-        }
-
-        restaurantDisplay.remove(restaurant)
-        setStateForNext()
-
-        if (destination.isNotEmpty()){
-            queryAsNeeded(typeOfFood, radius.toInt())
-        }
-    }
-
-    private fun setStateForNext(){
-        if (restaurantDisplay.isNotEmpty()){
-            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay.component1()))
-        }
-        else{
-            _stateFlow.value = RestaurantState.Idle
-        }
-    }
-
-    private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, destination: String, radius: Int) {
-        LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
-            override fun onLocationChanged(currentLocation: Location) {
-                Log.d(TAG,"Coordinates: ${currentLocation.latitude}, ${currentLocation.longitude}")
-                currLocation = "${currentLocation.latitude}, ${currentLocation.longitude}"
-                mapOrigin = LatLng(currentLocation.latitude, currentLocation.longitude)
-                location = "Current Location"
-                if (destination.isBlank()){
-                    queryYelp(typeOfFood, currLocation, radius)
-                }
-                else{
-                    getPath(typeOfFood, currLocation, destination, radius)
-                }
-            }
-        })
-    }
-
     init {
-        Log.i(TAG, "init")
         fetchRestaurants()
     }
 
-    fun fetchRestaurants(typeOfFood: String = "", location: String = "", destination: String = "", radius: String = "") {
+    fun fetchRestaurants(typeOfFood: String = "",
+                         location: String = "",
+                         destination: String = "",
+                         radius: String = "",
+                         prices: String = "1,2,3,4",
+                         openNow: Boolean = false) {
+
         Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "Location: $location")
         Log.i(TAG, "destination: $destination")
         Log.i(TAG, "radius: $radius")
+        Log.i(TAG, "prices: $prices")
+        Log.i(TAG, "openNow: $openNow")
 
         savedVM.querySaved()
 
@@ -125,25 +86,42 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         mapDestination = null
 
         if (radius.isBlank()){
-            fetchRestaurants(typeOfFood, location, destination, if (destination.isBlank()) defaultRadius else defaultPathRadius)
+            fetchRestaurants(typeOfFood, location, destination, if (destination.isBlank()) defaultRadius else defaultPathRadius, prices, openNow)
             return
         }
 
         if(location.isBlank() && LocationService().hasPermissions(getApplication())){
             Log.i(TAG, "get current location")
-            fetchRestaurantsForCurrentLocation(typeOfFood, destination, radius.toInt())
+            fetchRestaurantsForCurrentLocation(typeOfFood, destination, radius.toInt(), prices, openNow)
         }
         else if (location.isNotBlank() && destination.isBlank()){
             setOriginLatLng(location)
-            queryYelp(typeOfFood, location, radius.toInt())
+            queryYelp(typeOfFood, location, radius.toInt(), prices, openNow)
         }
         else if (location.isNotBlank() && destination.isNotBlank()){
             setOriginLatLng(location)
-            getPath(typeOfFood, location, destination, radius.toInt())
+            getPath(typeOfFood, location, destination, radius.toInt(), prices, openNow)
         }
         else{
             _stateFlow.value = RestaurantState.Idle
         }
+    }
+
+    private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, destination: String, radius: Int, prices: String, openNow: Boolean) {
+        LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
+            override fun onLocationChanged(currentLocation: Location) {
+                Log.d(TAG,"Coordinates: ${currentLocation.latitude}, ${currentLocation.longitude}")
+                currLocation = "${currentLocation.latitude}, ${currentLocation.longitude}"
+                mapOrigin = LatLng(currentLocation.latitude, currentLocation.longitude)
+                location = "Current Location"
+                if (destination.isBlank()){
+                    queryYelp(typeOfFood, currLocation, radius, prices, openNow)
+                }
+                else{
+                    getPath(typeOfFood, currLocation, destination, radius, prices, openNow)
+                }
+            }
+        })
     }
 
     private fun setOriginLatLng(location: String) {
@@ -164,9 +142,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             })
     }
 
-    private fun getPath(typeOfFood: String, origin: String, destination: String, radius: Int) {
+    private fun getPath(typeOfFood: String, origin: String, destination: String, radius: Int, prices: String, openNow: Boolean) {
         Log.i("MAPS", "getting path")
-        Log.i(TAG, "type of food: $typeOfFood")
         Log.i(TAG, "origin: $origin")
         Log.i(TAG, "destination: $destination")
         Log.i(TAG, "radius: $radius")
@@ -192,7 +169,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         body.routes.component1().legs.component1().end_location.lat.toDouble(),
                         body.routes.component1().legs.component1().end_location.lng.toDouble())
 
-                    getSpacedPoints(polylineCoordinates, typeOfFood, radius)
+                    getSpacedPoints(polylineCoordinates, typeOfFood, radius, prices, openNow)
 
                 }
 
@@ -202,7 +179,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             })
     }
 
-    private fun getSpacedPoints(polylineCoordinates: MutableList<LatLng>, typeOfFood: String, radius: Int) {
+    private fun getSpacedPoints(polylineCoordinates: MutableList<LatLng>, typeOfFood: String, radius: Int, prices: String, openNow: Boolean) {
         spacedCoordinates.clear()
         Log.i("MAPS","amt in all: ${polylineCoordinates.size}")
 
@@ -241,11 +218,13 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
 
         queryIndex = 0
-        queryAsNeeded(typeOfFood, radius)
+        queryAsNeeded(typeOfFood, radius, prices, openNow)
 
     }
 
-    private fun queryAsNeeded(typeOfFood: String, radius: Int){
+    private fun queryAsNeeded(typeOfFood: String, radius: Int, prices: String, openNow: Boolean){
+        Log.i(TAG, "prices: $prices")
+        Log.i(TAG, "openNow: $openNow")
         Log.i("QUERY","query as needed")
         Log.i("QUERY","list size: ${restaurantDisplay.size}")
 
@@ -254,17 +233,18 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             val location = "${coordinate.latitude},${coordinate.longitude}"
             Log.i("QUERY","query yelp at: $location")
             Log.i("QUERY","query index: $queryIndex")
-            queryYelp(typeOfFood, location, radius)
+            queryYelp(typeOfFood, location, radius, prices, openNow)
             queryIndex++
         }
     }
 
-    private fun queryYelp(typeOfFood: String, location: String, radius: Int){
-
+    private fun queryYelp(typeOfFood: String, location: String, radius: Int, prices: String, openNow: Boolean){
         Log.i(TAG, "query yelp")
+        Log.i(TAG, "prices: $prices")
+        Log.i(TAG, "openNow: $openNow")
         val yelpService = YelpService.create()
 
-        yelpService.searchRestaurants("Bearer $YELP_API_KEY", typeOfFood, location, radius, MAX_RESPONSES)
+        yelpService.searchRestaurants("Bearer $YELP_API_KEY", typeOfFood, location, radius, MAX_RESPONSES, prices, openNow)
             .enqueue(object : Callback<YelpSearchResult> {
                 override fun onResponse(call: Call<YelpSearchResult>, response: Response<YelpSearchResult>) {
                     Log.i(TAG, "onResponse $response")
@@ -295,7 +275,7 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         Log.i("MAPS", "${rest.name}, ${rest.location.address}")
                     }
 
-                    queryAsNeeded(typeOfFood, radius)
+                    queryAsNeeded(typeOfFood, radius, prices, openNow)
 
                     if (restaurantDisplay.isEmpty()){
                         _stateFlow.value = RestaurantState.Idle
@@ -327,7 +307,14 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         return false
     }
 
-    fun storeRestaurant(restaurant: YelpRestaurant, isSaved: Boolean, typeOfFood: String? = "", destination: String? = "", radius: String? = "") {
+    fun storeRestaurant(restaurant: YelpRestaurant,
+                        isSaved: Boolean,
+                        typeOfFood: String? = "",
+                        destination: String? = "",
+                        radius: String? = "",
+                        prices: String = "1,2,3,4",
+                        openNow: Boolean = false) {
+
         val currentUser = ParseUser.getCurrentUser()
         val saved = SavedRestaurants()
         saved.setIsSaved(isSaved)
@@ -342,8 +329,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         saved.setRestaurantAddress(restaurant.location.address)
         saved.setRestaurantLatitude(restaurant.coordinates.latitude.toDouble())
         saved.setRestaurantLongitude(restaurant.coordinates.longitude.toDouble())
-//        saved.setIsOpened(restaurant.hours.component1().is_open_now)
-        saved.setIsOpened(true)
         val categories = categoriesToString(restaurant)
         saved.setRestaurantCategories(categories)
 
@@ -354,7 +339,40 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             Log.i(TAG, "Restaurant save was successful")
         }
 
-        nextRestaurant(restaurant, typeOfFood, destination, radius)
+        nextRestaurant(restaurant, typeOfFood, destination, radius, prices, openNow)
+    }
+
+    private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?, prices: String, openNow: Boolean) {
+        Log.i(TAG, "prices: $prices")
+        Log.i(TAG, "openNow: $openNow")
+
+        // null check for if you start selecting restaurants without setting filters
+        if (typeOfFood == null || destination == null){
+            restaurantDisplay.remove(restaurant)
+            setStateForNext()
+            return
+        }
+
+        else if (radius.isNullOrEmpty()){
+            nextRestaurant(restaurant, typeOfFood, destination, defaultPathRadius, prices, openNow)
+            return
+        }
+
+        restaurantDisplay.remove(restaurant)
+        setStateForNext()
+
+        if (destination.isNotEmpty()){
+            queryAsNeeded(typeOfFood, radius.toInt(), prices, openNow)
+        }
+    }
+
+    private fun setStateForNext(){
+        if (restaurantDisplay.isNotEmpty()){
+            _stateFlow.tryEmit(RestaurantState.Success(restaurantDisplay.component1()))
+        }
+        else{
+            _stateFlow.value = RestaurantState.Idle
+        }
     }
 
     fun getRestaurantsToDisplay(): MutableList<YelpRestaurant> {

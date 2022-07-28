@@ -15,7 +15,6 @@ const val KEY_IMAGE_URL = "imageUrl"
 const val KEY_CATEGORIES = "categories"
 const val KEY_ADDRESS = "address"
 const val KEY_PHONE = "phone"
-const val KEY_OPEN = "open_now"
 const val KEY_LATITUDE = "latitude"
 const val KEY_LONGITUDE = "longitude"
 
@@ -97,13 +96,6 @@ class SavedRestaurants : ParseObject() {
     }
     fun setRestaurantPhone(phone: String?) {
         phone?.let { p -> put(KEY_PHONE, p) }
-    }
-
-    fun getIsOpened(): Boolean {
-        return getBoolean(KEY_OPEN)
-    }
-    fun setIsOpened(isOpen: Boolean){
-        put(KEY_OPEN, isOpen)
     }
 
     fun getRestaurantLatitude(): Double {
