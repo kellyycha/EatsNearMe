@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.eatsnearme.R
+import com.example.eatsnearme.details.DetailsFragment
 import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.RestaurantsFragment
@@ -77,12 +79,10 @@ class SavedFragment : Fragment() {
     }
 
     private fun gotoMapView(allSaved: MutableList<SavedRestaurants>) {
-        val savedList = ArrayList<SavedRestaurant>()
-        for (restaurant in allSaved){
-            val saved = SavedRestaurant(name = restaurant.getRestaurantName().toString(),
-                                        latitude = restaurant.getRestaurantLatitude(),
-                                        longitude = restaurant.getRestaurantLongitude())
-            savedList.add(saved)
+        val savedList = ArrayList<Restaurant>()
+        for (saved in allSaved){
+            val currentRestaurant = Restaurant.from(saved)
+            savedList.add(currentRestaurant)
         }
         val fragment = SavedMapFragment()
         val args = Bundle()

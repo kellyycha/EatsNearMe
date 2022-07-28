@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.eatsnearme.R
+import com.example.eatsnearme.details.Restaurant
 import com.example.eatsnearme.parse.SavedRestaurants
 import com.example.eatsnearme.restaurants.LocationService
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -23,7 +24,7 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
         const val padding = 200
     }
 
-    private lateinit var savedList: ArrayList<SavedRestaurant>
+    private lateinit var savedList: ArrayList<Restaurant>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +39,7 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         val args = this.arguments
-        savedList = args?.get("saved") as ArrayList<SavedRestaurant>
+        savedList = args?.get("saved") as ArrayList<Restaurant>
 
         initializeButtons()
         initGoogleMap(savedInstanceState)
@@ -89,8 +90,8 @@ class SavedMapFragment : Fragment(), OnMapReadyCallback {
 
     }
 
-    private fun addRestaurants(map: GoogleMap, builder: LatLngBounds.Builder, restaurant: SavedRestaurant) {
-        val restaurantLocation = LatLng(restaurant.latitude, restaurant.longitude)
+    private fun addRestaurants(map: GoogleMap, builder: LatLngBounds.Builder, restaurant: Restaurant) {
+        val restaurantLocation = LatLng(restaurant.coordinates.latitude, restaurant.coordinates.longitude)
         map.addMarker(
             MarkerOptions()
             .position(restaurantLocation)
