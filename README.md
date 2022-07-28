@@ -49,6 +49,7 @@ This app will help you decide on the best places to eat, to make the most out of
 * [ ] More filtering: rating, number of reviews
 * [x] Share yelp link of restaurant in details view by copying to clipboard to send
 * [x] Add an overall map view to your saved restaurants
+  * [x] Click the markers to get information for each restaurant 
   * [ ] Able to filter map by category
 * [ ] Sort saved restaurants in folders by location
 * [ ] Use data from what the user liked to recommend a restaurant near you using push notifications
