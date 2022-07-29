@@ -29,7 +29,6 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        Log.i(TAG, "in log in")
         initializeButtons()
 
         if (ParseUser.getCurrentUser() != null) {
@@ -40,7 +39,6 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun initializeButtons() {
         btnLogin.setOnClickListener {
-            Log.i(TAG, "onClick login button")
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
             if (username.isEmpty() || password.isEmpty()){
@@ -54,7 +52,6 @@ class LoginActivity : AppCompatActivity() {
         }
 
         btnSignUp.setOnClickListener{
-            Log.i(TAG, "onClick sign up button")
             goSignUpActivity()
         }
     }

@@ -91,7 +91,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
         }
 
         if(location.isBlank() && LocationService().hasPermissions(getApplication())){
-            Log.i(TAG, "get current location")
             fetchRestaurantsForCurrentLocation(typeOfFood, destination, radius.toInt(), prices, openNow)
         }
         else if (location.isNotBlank() && destination.isBlank()){
@@ -110,7 +109,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     private fun fetchRestaurantsForCurrentLocation(typeOfFood: String, destination: String, radius: Int, prices: String, openNow: Boolean) {
         LocationService().getLastLocation(getApplication(), object : LocationService.MyLocationListener{
             override fun onLocationChanged(currentLocation: Location) {
-                Log.d(TAG,"Coordinates: ${currentLocation.latitude}, ${currentLocation.longitude}")
                 currLocation = "${currentLocation.latitude}, ${currentLocation.longitude}"
                 mapOrigin = LatLng(currentLocation.latitude, currentLocation.longitude)
                 location = "Current Location"
@@ -143,11 +141,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun getPath(typeOfFood: String, origin: String, destination: String, radius: Int, prices: String, openNow: Boolean) {
-        Log.i("MAPS", "getting path")
-        Log.i(TAG, "origin: $origin")
-        Log.i(TAG, "destination: $destination")
-        Log.i(TAG, "radius: $radius")
-
         polylineCoordinates.clear()
         val mapsService = MapsService.create()
         mapsService.searchPath(MAPS_API_KEY, origin, destination, KEY_WALKING)
@@ -159,11 +152,8 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                         Log.w("MAPS", "did not receive valid response body from Maps API")
                         return
                     }
-                    Log.i("MAPS", "geocoded waypoints results: ${body.geocoded_waypoints}")
-                    Log.i("MAPS", "routes results: ${body.routes}")
 
                     polylineCoordinates = PolyUtil.decode(body.routes.component1().overview_polyline.points)
-                    Log.i("MAPS", "overview polyline results: $polylineCoordinates")
 
                     mapDestination = LatLng(
                         body.routes.component1().legs.component1().end_location.lat.toDouble(),
@@ -181,11 +171,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
 
     private fun getSpacedPoints(polylineCoordinates: MutableList<LatLng>, typeOfFood: String, radius: Int, prices: String, openNow: Boolean) {
         spacedCoordinates.clear()
-        Log.i("MAPS","amt in all: ${polylineCoordinates.size}")
-
-        for (coord in polylineCoordinates) {
-            Log.i("MAPS", "all: ${coord.latitude},${coord.longitude}")
-        }
 
         var index1 = 0
         var index2 = 1
@@ -211,27 +196,17 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
             spacedCoordinates.add(polylineCoordinates[index1])
         }
 
-        Log.i("MAPS","amt in spaced: ${spacedCoordinates.size}")
-
-        for (coord in spacedCoordinates) {
-            Log.i("MAPS", "spaced: ${coord.latitude},${coord.longitude}")
-        }
-
         queryIndex = 0
         queryAsNeeded(typeOfFood, radius, prices, openNow)
 
     }
 
     private fun queryAsNeeded(typeOfFood: String, radius: Int, prices: String, openNow: Boolean){
-        Log.i(TAG, "prices: $prices")
-        Log.i(TAG, "openNow: $openNow")
-        Log.i("QUERY","query as needed")
         Log.i("QUERY","list size: ${restaurantDisplay.size}")
 
         if (restaurantDisplay.size < MIN_SIZE && queryIndex < spacedCoordinates.size){
             val coordinate = spacedCoordinates[queryIndex]
             val location = "${coordinate.latitude},${coordinate.longitude}"
-            Log.i("QUERY","query yelp at: $location")
             Log.i("QUERY","query index: $queryIndex")
             queryYelp(typeOfFood, location, radius, prices, openNow)
             queryIndex++
@@ -239,9 +214,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun queryYelp(typeOfFood: String, location: String, radius: Int, prices: String, openNow: Boolean){
-        Log.i(TAG, "query yelp")
-        Log.i(TAG, "prices: $prices")
-        Log.i(TAG, "openNow: $openNow")
         val yelpService = YelpService.create()
 
         yelpService.searchRestaurants("Bearer $YELP_API_KEY", typeOfFood, location, radius, MAX_RESPONSES, prices, openNow)
@@ -267,9 +239,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
                             restaurantDisplay.add(restaurant)
                         }
                     }
-
-                    Log.i(TAG, "all restaurants: $restaurantResults")
-                    Log.i(TAG, "display restaurants: $restaurantDisplay")
 
                     for (rest in restaurantDisplay){
                         Log.i("MAPS", "${rest.name}, ${rest.location.address}")
@@ -344,9 +313,6 @@ class RestaurantsViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun nextRestaurant(restaurant: YelpRestaurant, typeOfFood: String?, destination: String?, radius: String?, prices: String, openNow: Boolean) {
-        Log.i(TAG, "prices: $prices")
-        Log.i(TAG, "openNow: $openNow")
-
         // null check for if you start selecting restaurants without setting filters
         if (typeOfFood == null || destination == null){
             restaurantDisplay.remove(restaurant)

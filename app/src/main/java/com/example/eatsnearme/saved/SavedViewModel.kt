@@ -38,7 +38,6 @@ class SavedViewModel : ViewModel() {
                     return@FindCallback;
                 }
                 allStored.addAll(restaurants)
-                Log.i(TAG,"stored all: ${allStored.size}")
                 getSavedList()
             })
     }
@@ -66,7 +65,6 @@ class SavedViewModel : ViewModel() {
                 savedIdList.add(restaurant.getRestaurantID().toString())
             }
         }
-        Log.i("SAVED","Saved Len: ${allSaved.size}")
         _stateFlow.value = SavedState.Loaded(allSaved)
         return savedIdList
     }

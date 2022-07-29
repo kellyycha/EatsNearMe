@@ -5,7 +5,7 @@
         android:id="@+id/action_restaurants"
         android:enabled="true"
         android:icon="@drawable/utensils"
-        android:title="Reataurants"
+        android:title="Restaurants"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_saved"

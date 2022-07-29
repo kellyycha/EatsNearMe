@@ -25,13 +25,11 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        Log.i(TAG, "in sign up")
         initializeButtons()
     }
 
     private fun initializeButtons() {
         btnCreateAccount.setOnClickListener {
-            Log.i(TAG, "onClick sign up button")
             val email = etEmail.text.toString()
             val username = etUsername.text.toString()
             val password = etPassword.text.toString()
@@ -40,7 +38,6 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         btnLogin.setOnClickListener{
-            Log.i(TAG, "onClick sign up button")
             goLoginActivity()
         }
     }

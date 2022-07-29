@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:foregroundTint="#711717"
     tools:context=".saved.SavedFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -24,11 +23,13 @@
         android:id="@+id/btnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:backgroundTint="#85B590"
         android:clickable="true"
         android:src="@android:drawable/ic_dialog_map"
-        app:backgroundTint="#00FFFFFF" />
+        app:backgroundTint="#00FFFFFF"
+        android:focusable="true"
+        android:contentDescription="Map" />
 
 </FrameLayout>

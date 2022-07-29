@@ -23,7 +23,9 @@
         app:backgroundTint="#00FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/save" />
+        app:srcCompat="@drawable/save"
+        android:focusable="true"
+        android:contentDescription="Saved" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

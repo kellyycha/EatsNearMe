@@ -35,7 +35,7 @@ abstract class SwipeToDeleteCallback(context: Context) : ItemTouchHelper.SimpleC
         }
 
         // Draw the red delete background
-        background!!.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+        background!!.setBounds(itemView.left, itemView.top, itemView.right, itemView.bottom)
         background.draw(c)
 
         // Calculate position of delete icon
